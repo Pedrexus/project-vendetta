@@ -33,3 +33,10 @@ based on **Game Coding Complete 4th edition**
 
     special files only for the test team: test scripts, files that unlock cheats, and test utilities, logging text files.
 
+## Automation Scripts
+
+Always automate the monkey work, give the test team a good
+build every time, and never ever get in the way of a developer in the zone.
+
+- builds
+- tests
