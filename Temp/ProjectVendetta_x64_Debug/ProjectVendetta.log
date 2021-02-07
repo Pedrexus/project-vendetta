@@ -1,0 +1,264 @@
+﻿  ActorFactory.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.cpp(13,34): error C2653: 'XmlResourceLoader': is not a class or namespace name
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.cpp(13,53): error C3861: 'LoadAndReturnRootXmlElement': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.cpp(36,42): error C2664: 'void Actor::AddComponent(std::shared_ptr)': cannot convert argument 1 from 'std::shared_ptr<ActorComponent>' to 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.cpp(36,33): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,7): message : see declaration of 'Actor::AddComponent'
+  HealthPickup.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.h(16,11): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.h(16,43): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.h(16,59): error C2059: syntax error: ')'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.h(19,26): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.h(19,15): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\ActorFactory.h(19,85): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Pickups\AmmoPickup.h(6,1): error C2504: 'PickupInterface': base class undefined
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Pickups\AmmoPickup.h(8,18): error C3668: 'AmmoPickup::Init': method with override specifier 'override' did not override any base class methods
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Pickups\AmmoPickup.h(9,18): error C3668: 'AmmoPickup::Apply': method with override specifier 'override' did not override any base class methods
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Pickups\HealthPickup.cpp(3,38): warning C4356: 'ActorComponent::NAME': static data member cannot be initialized via derived class
+  GameApp.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  CheckCPUSpeed.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  CheckMemory.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  CheckStorage.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  GetSaveGameDirectory.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  SetMemoryChecks.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  __todo__.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  IsOnlyInstance.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  Window.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  Game.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  pch.cpp
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,19): error C2065: 'ActorComponentId': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,53): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2923: 'std::map': 'ActorComponentId' is not a valid template type argument for parameter '_Kty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,42): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,15): error C2976: 'std::map': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(13,70): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(16,20): error C2955: 'std::map': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\map(75): message : see declaration of 'std::map'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,36): error C2065: 'ActorComponent': undeclared identifier
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,25): error C2923: 'std::shared_ptr': 'ActorComponent' is not a valid template type argument for parameter '_Ty'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(19,52): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\memory(1041): message : see declaration of 'std::shared_ptr'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(37,2): error C2061: syntax error: identifier 'ActorComponentId'
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): error C3861: 'name': identifier not found
+D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Actors\Actor.h(39,66): message : This diagnostic occurred in the compiler generated function 'std::weak_ptr<_Ty> Actor::GetComponent(void)'
+  Generating Code...

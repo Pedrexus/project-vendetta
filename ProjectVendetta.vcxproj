@@ -19,7 +19,51 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\GameLogicLayer\Main.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Actors\ActorFactory.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Actors\Pickups\HealthPickup.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\GameApp.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\CheckCPUSpeed.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\CheckMemory.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\CheckStorage.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\GetSaveGameDirectory.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\SetMemoryChecks.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\__todo__.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\IsOnlyInstance.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\Window.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\MainLoop\ProcessManager.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\ResourceCache\Resource.cpp" />
+    <ClCompile Include="Source\GameLogicLayer\Game.cpp" />
+    <ClCompile Include="Source\Helpers\ZipFile\ZipFile.cpp" />
+    <ClCompile Include="Source\pch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\ApplicationLayer\Actors.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\ActorComponent.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Actor.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\ActorFactory.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\AmmoPickup.cpp" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\HealthPickup.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\AmmoPickup.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\PickupInterface.h" />
+    <ClInclude Include="Source\ApplicationLayer\MainLoop\Process.h" />
+    <ClInclude Include="Source\ApplicationLayer\MainLoop\ProcessManager.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceFiles\IResourceFile.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResCache.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResHandle.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\Resource.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceFiles\ResourceZipFile.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceLoaders\DefaultResourceLoader.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceLoaders\IResourceLoader.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceLoaders\XMLResourceLoader.h" />
+    <ClInclude Include="Source\const.h" />
+    <ClInclude Include="Source\ApplicationLayer\GameApp.h" />
+    <ClInclude Include="Source\Helpers\ZipFile\ZipFile.h" />
+    <ClInclude Include="Source\macros.h" />
+    <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\ApplicationLayer\Initialization.h" />
+    <ClInclude Include="Source\ApplicationLayer\MemoryCheck.h" />
+    <ClInclude Include="Source\types.h" />
+    <ClInclude Include="Source\utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -87,9 +131,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(MSBuildProjectDirectory)\Source;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Lib\$(PlatformName)_$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(PlatformName)_$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_$(PlatformName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)Lib\$(PlatformName)_$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(ProjectName)_$(PlatformName)_$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_$(PlatformName)_$(Configuration)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -133,6 +184,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,6 +200,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

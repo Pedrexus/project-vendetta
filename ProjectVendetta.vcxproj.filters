@@ -1,6 +1,82 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Source\GameLogicLayer\Main.cpp" />
+    <ClCompile Include="Source\GameLogicLayer\Game.cpp">
+      <Filter>LogicLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ApplicationLayer\GameApp.cpp">
+      <Filter>ApplicationLayer\GameApp</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ApplicationLayer\Initialization\Window.cpp" />
+    <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\IsOnlyInstance.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\CheckStorage.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\CheckMemory.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\CheckCPUSpeed.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\GetSaveGameDirectory.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Initialization\__todo__.cpp">
+      <Filter>ApplicationLayer\Utils\Initialization</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ApplicationLayer\Initialization\SetMemoryChecks.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Actors\ActorFactory.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Actors\Pickups\HealthPickup.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\MainLoop\ProcessManager.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\ResourceCache\Resource.cpp" />
+    <ClCompile Include="Source\Helpers\ZipFile\ZipFile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="LogicLayer">
+      <UniqueIdentifier>{3a351f0c-fd20-4bf4-b532-4c7f571fb401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ApplicationLayer">
+      <UniqueIdentifier>{3d00d8f1-c9e7-4900-9953-c3ab8a1c75b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ApplicationLayer\GameEngine">
+      <UniqueIdentifier>{de06d529-8b9f-49d6-bf90-933a0c4112e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ApplicationLayer\Utils">
+      <UniqueIdentifier>{7b57e6b5-d8fc-46b3-b271-93a0108906d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ApplicationLayer\Utils\Initialization">
+      <UniqueIdentifier>{8fb90e8b-8162-4841-95ba-a9dd521db80a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ApplicationLayer\GameApp">
+      <UniqueIdentifier>{eaecc768-7edf-4c46-bdd0-ee2abd96bfca}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\ApplicationLayer\MemoryCheck.h">
+      <Filter>ApplicationLayer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ApplicationLayer\GameApp.h">
+      <Filter>ApplicationLayer\GameApp</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ApplicationLayer\Initialization.h">
+      <Filter>ApplicationLayer\Utils\Initialization</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\const.h" />
+    <ClInclude Include="Source\macros.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\ActorFactory.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Actor.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\ActorComponent.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\PickupInterface.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\AmmoPickup.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\HealthPickup.h" />
+    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\AmmoPickup.cpp" />
+    <ClInclude Include="Source\ApplicationLayer\MainLoop\Process.h" />
+    <ClInclude Include="Source\ApplicationLayer\MainLoop\ProcessManager.h" />
+    <ClInclude Include="Source\types.h" />
+    <ClInclude Include="Source\utils.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\Resource.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResHandle.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResCache.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceLoaders\IResourceLoader.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceLoaders\DefaultResourceLoader.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceLoaders\XMLResourceLoader.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceFiles\IResourceFile.h" />
+    <ClInclude Include="Source\Helpers\ZipFile\ZipFile.h" />
+    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceFiles\ResourceZipFile.h" />
   </ItemGroup>
 </Project>

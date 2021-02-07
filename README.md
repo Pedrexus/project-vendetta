@@ -40,3 +40,25 @@ build every time, and never ever get in the way of a developer in the zone.
 
 - builds
 - tests
+
+## Game Initialization
+
+### Initialization Order
+
+1. Check system resources: hard drive space, memory, input and output devices.
+2. Check the CPU speed.
+3. Initialize your main random number generator (this was covered in Chapter 3).
+4. Load programmer’s options for debugging purposes.
+5. Initialize your memory cache.
+6. Create your window.
+7. Initialize the audio system.
+8. Load the player’s game options and saved game files.
+9. Create your drawing surface.
+10. Perform initialization for game systems: physics, AI, and so on.
+
+### Pitfalls
+
+1. Don't initialize global variables: use `nullptr` whenever you need global vars.
+2. **Avoid Deadlocks**: on shutdown, delete in reverse order in which the vars were initialized.
+
+
