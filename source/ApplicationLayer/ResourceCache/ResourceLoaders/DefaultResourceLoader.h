@@ -11,5 +11,4 @@ public:
 	virtual bool DiscardRawBufferAfterLoad() override { return true; }
 	virtual unsigned int GetLoadedResourceSize(char* rawBuffer, unsigned int rawSize) override { return rawSize; }
 	virtual bool LoadResource(char* rawBuffer, unsigned int rawSize, std::shared_ptr<ResourceHandle> handle) override { return true; }
-	
 };

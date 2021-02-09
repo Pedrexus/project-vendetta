@@ -1,8 +1,9 @@
 #pragma once
 
 #include <pch.h>
+#include <macros.h>
+#include <const.h>
 
-extern void SetMemoryChecks();
 extern bool IsOnlyInstance(LPCWSTR gameTitle);
 extern bool CheckStorage(const DWORDLONG diskSpaceNeeded);
 extern bool CheckMemory(const DWORDLONG physicalRAMNeeded, const DWORDLONG virtualRAMNeeded);

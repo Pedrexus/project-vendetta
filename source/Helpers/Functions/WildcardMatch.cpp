@@ -1,18 +1,4 @@
-#pragma once
-
-#include <string>
-#include <algorithm>
-#include <cctype>
-
-std::string StringToLower(std::string s) {
-    std::transform(s.begin(), s.end(), s.begin(),
-        // static_cast<int(*)(int)>(std::tolower)         // wrong
-        // [](int c){ return std::tolower(c); }           // wrong
-        // [](char c){ return std::tolower(c); }          // wrong
-        [](unsigned char c) { return std::tolower(c); } // correct
-    );
-    return s;
-}
+#include <helpers.h>
 
 // The following function was found on http://xoomer.virgilio.it/acantato/dev/wildcard/wildmatch.html, where it was attributed to 
 // the C/C++ Users Journal, written by Mike Cornelison. It is a little ugly, but it is FAST. Use this as an excercise in not reinventing the

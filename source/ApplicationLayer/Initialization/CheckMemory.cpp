@@ -4,18 +4,19 @@ bool CheckMemory(const DWORDLONG physicalRAMNeeded, const DWORDLONG virtualRAMNe
 {
 	MEMORYSTATUSEX status;
 	GlobalMemoryStatusEx(&status);
+	LOG_INFO("Available RAM: " + std::to_string(status.ullTotalPhys / MEGABYTE) + "Mb. Available Virtual Memory: " + std::to_string(status.ullAvailVirtual / MEGABYTE) + "Mb");
 
 	if (status.ullTotalPhys < physicalRAMNeeded)
 	{
-		// you don't have enough physical memory.
-		throw std::exception("CheckMemory Failure: Not enough physical memory.");
+		LOG_FATAL("Not enough physical memory.");
+		return false;
 	}
 
 	// Check for enough free memory.
 	if (status.ullAvailVirtual < virtualRAMNeeded)
 	{
-		// you don't have enough virtual memory available. 
-		throw std::exception("CheckMemory Failure: Not enough virtual memory.");
+		LOG_FATAL("Not enough virtual memory.");
+		return false;
 	}
 
 	return true;

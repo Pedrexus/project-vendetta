@@ -1,5 +1,7 @@
 #include <ApplicationLayer/Initialization.h>
 
+#include <macros.h>
+
 // Find the window. If active, set and return false
 // Only one game instance may have this mutex at a time...
 bool IsOnlyInstance(LPCWSTR gameTitle) // LPCTSTR = const char*
@@ -17,7 +19,8 @@ bool IsOnlyInstance(LPCWSTR gameTitle) // LPCTSTR = const char*
 		HWND windowHandle = FindWindow(gameTitle, NULL);
 		if (windowHandle)
 		{
-			// An instance of your game is already running.
+			LOG_WARNING("An instance of your game was already running.");
+
 			ShowWindow(windowHandle, SW_SHOWNORMAL);
 			SetFocus(windowHandle);
 			SetForegroundWindow(windowHandle);

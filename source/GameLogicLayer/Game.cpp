@@ -1,5 +1,7 @@
 // project headers
 #include <ApplicationLayer/GameApp.h>
+#include <Helpers/utils.h>
+#include <Helpers/Logger/Logger.h>
 
 // remember: set linker -> system -> subsystem = windows
 // windows entrypoint (wWinfMain for Unicode applications)
@@ -14,7 +16,7 @@ INT WINAPI wWinMain(
     SetMemoryChecks();
 
     // always the second: initialize logging system.
-    // FUTURE: Logger::Init("logging.xml");
+    Logger::Init("logging.xml");
 
     if (!DirectX::XMVerifyCPUSupport())
     {
@@ -26,15 +28,14 @@ INT WINAPI wWinMain(
     (void)GameApp();
 
     if (g_GameApp->Initialize(hInstance, lpCmdLine, 0, nShowCmd))
-    {
-        // Fix memory leaks if we hit this branch.
-        // TODO: print an error.
-        return FALSE;
-    }
+        return FALSE; // Fix memory leaks if we hit this branch. // TODO: print an error.
 
     MessageBox(nullptr, TEXT("Everything worked."), TEXT("Success"), MB_OK);
 
+    // shutdown
     g_GameApp->Shutdown();
+    Logger::Destroy();
+
 
     return 0;
 }

@@ -8,9 +8,14 @@
 #pragma comment(lib,"Shlwapi.lib")
 
 // includes
+#include <algorithm>
+// TODO: #include <format>
+#include <list>
+#include <map>
+#include <string>
 
-#include <stdexcept>
 
+// Windows headers
 #include <Windows.h>
 #include <Shlobj.h>
 #include <Knownfolders.h>
@@ -23,10 +28,6 @@
 #include <direct.h>
 #include <shlwapi.h>
 
-#include <memory>
-#include <map>
-#include <functional>
-
 /*
 	Third Party libraries
 
@@ -35,11 +36,4 @@
 
 */
 #include <tinyxml2.h>
-
-// project headers
-#include <const.h>
-#include <macros.h>
-
-#include <ApplicationLayer/GameApp.h>
-#include <ApplicationLayer/Initialization.h>
-#include <ApplicationLayer/Actors.h>
+#include <zlib.h>  // C:\tools\vcpkg\vcpkg.exe install zlib:x64-windows

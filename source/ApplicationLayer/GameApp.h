@@ -2,6 +2,8 @@
 
 #include <pch.h>
 
+#include "ResourceCache.h"
+
 // define class in header, implement in cpp
 
 /*
@@ -47,6 +49,8 @@ class GameApp
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_depthStencilView;
 
 	TCHAR m_saveGameDirectory[MAX_PATH];
+
+	ResourceCache* m_ResCache;
 
 public:
 	GameApp();

@@ -1,5 +1,8 @@
 #include <ApplicationLayer/Initialization.h>
 
+#include <const.h>
+#include <macros.h>
+
 // How to move this to GameApp?
 LRESULT CALLBACK WindowProcedure(
     HWND hWnd,

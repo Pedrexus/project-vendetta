@@ -1,5 +1,8 @@
 // edit Properties -> VC++ Directories -> Include Directories
-#include <ApplicationLayer/GameApp.h>
+#include "GameApp.h"
+#include "Initialization.h"
+
+#include <const.h>
 
 // smart pointer type
 // maintains a reference count 
@@ -16,7 +19,9 @@ GameApp::GameApp() :
     m_swapChain(nullptr),
     m_renderTargetView(nullptr),
     m_depthStencilView(nullptr),
-    m_featureLevel(D3D_FEATURE_LEVEL_11_1)
+    m_featureLevel(D3D_FEATURE_LEVEL_11_1),
+    m_saveGameDirectory(L""),
+    m_ResCache(nullptr)
 {
 	// only the game (GameApp subclass) calls the constructor
 
@@ -48,7 +53,13 @@ bool GameApp::Initialize(
 	if (!CheckCPUSpeed(CPU_SPEED))
 		return false;
 
-	// TODO: resource cache initialization - chapter 8
+	// TODO: development editor resource cache initialization - chapter 22
+    IResourceFile* zipFile = new ResourceZipFile(RESOURCES_ZIPFILE);
+    m_ResCache = new ResourceCache(RESOURCES_SIZE, zipFile);
+
+    if (!m_ResCache->Init())
+        return false;
+
 	// TODO: load strings - chapter 8
 
 	// TODO: event manager and event registering - Chapter 11

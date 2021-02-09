@@ -1,9 +1,10 @@
 #pragma once
 
+#include <pch.h>
+
 // constants to be used throghout the project
 
 constexpr auto MEGABYTE = 1024 * 1024;
-
 
 // project requirements and specifications
 
@@ -27,6 +28,14 @@ constexpr auto WINDOW_EXTENDED_STYLE = WS_EX_LEFT;
 constexpr auto WINDOW_STYLE = WS_OVERLAPPEDWINDOW;
 constexpr auto WINDOW_HAS_MENU = FALSE;
 
-// directory
+// dependencies
+
+constexpr auto RESOURCES_ZIPFILE = L"Assets.zip";
+constexpr auto RESOURCES_SIZE = 50 * MEGABYTE;
 
 constexpr auto SAVE_GAME_DIR = L"ProjectVendetta";
+
+// logger display flags
+
+constexpr auto LOGGING_CONFIG_FILENAME = "logging.xml";
+constexpr auto LOGGING_OUTPUT_FILENAME = "vendetta.log";

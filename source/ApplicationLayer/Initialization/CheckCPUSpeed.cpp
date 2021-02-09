@@ -1,4 +1,4 @@
-#include <ApplicationLayer/Initialization.h>
+#include "../Initialization.h"
 
 // CPU speed can be read from the system registry
 DWORD ReadCPUSpeed()
@@ -20,10 +20,14 @@ DWORD ReadCPUSpeed()
 }
 
 bool CheckCPUSpeed(DWORD minCpuSpeed)
-{
-	if (ReadCPUSpeed() < minCpuSpeed)
+{	
+	auto CPUSpeed = ReadCPUSpeed();
+	LOG_INFO("CPU Speed: " + std::to_string(CPUSpeed) + "MHz");
+
+	if (CPUSpeed < minCpuSpeed)
 	{
-		throw std::exception("CheckCPUSpeed failure: CPU is too slow for this game.");
+		LOG_FATAL("CPU is too slow for this game.");
+		return false;
 	}
 
 	return true;

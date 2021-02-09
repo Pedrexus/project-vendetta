@@ -41,7 +41,7 @@ protected:
 	void MemoryHasBeenFreed(unsigned int size);
 
 public:
-	ResourceCache(const unsigned int sizeInMb, IResourceFile* file);
+	ResourceCache(const unsigned int size, IResourceFile* file);
 	virtual ~ResourceCache();
 
 	bool Init();

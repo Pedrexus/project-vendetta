@@ -1,5 +1,8 @@
 #include <ApplicationLayer/Initialization.h>
 
+#include <const.h>
+#include <macros.h>
+
 // Most games need a bit of free secondary storage space for saving games
 bool CheckStorage(const DWORDLONG diskSpaceNeeded)
 {
@@ -11,16 +14,17 @@ bool CheckStorage(const DWORDLONG diskSpaceNeeded)
 
 	if (errorCode != ERROR_SUCCESS)
 	{
-		throw std::exception("CheckStorage Failure: _getdiskfree returned error code %d", errorCode);
+		LOG_ERROR("_getdiskfree returned error code " + errorCode);
+		return false;
 	}
 
-	const auto bytes_per_cluster = diskfree.sectors_per_cluster * diskfree.bytes_per_sector;
-	const auto neededClusters = diskSpaceNeeded / bytes_per_cluster;
+	const auto availableStorage = diskfree.avail_clusters * diskfree.sectors_per_cluster * diskfree.bytes_per_sector;
+	LOG_INFO("Free physical storage: " + std::to_string(availableStorage / MEGABYTE) + "Mb");
 
-	if (diskfree.avail_clusters < neededClusters)
+	if (availableStorage < diskSpaceNeeded)
 	{
-		// if you get here you don't have enough disk space!
-		throw std::exception("CheckStorage Failure: Not enough physical storage.");
+		LOG_ERROR("Not enough physical storage.");
+		return false;
 	}
 
 	return true;

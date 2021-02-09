@@ -17,12 +17,12 @@
     <ClCompile Include="Source\ApplicationLayer\Initialization\__todo__.cpp">
       <Filter>ApplicationLayer\Utils\Initialization</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ApplicationLayer\Initialization\SetMemoryChecks.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Actors\ActorFactory.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Actors\Pickups\HealthPickup.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\MainLoop\ProcessManager.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\ResourceCache\Resource.cpp" />
-    <ClCompile Include="Source\Helpers\ZipFile\ZipFile.cpp" />
+    <ClCompile Include="Source\Helpers\Logger\Logger.cpp" />
+    <ClCompile Include="Source\Helpers\Logger\LoggingManager.cpp" />
+    <ClCompile Include="Source\Helpers\Concurrency\CriticalSection.cpp" />
+    <ClCompile Include="Source\Helpers\Classes\noncopyable.h" />
+    <ClCompile Include="Source\Helpers\Functions\StringToLower.cpp" />
+    <ClCompile Include="Source\Helpers\Functions\SetMemoryChecks.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="LogicLayer">
@@ -57,26 +57,17 @@
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\const.h" />
     <ClInclude Include="Source\macros.h" />
-    <ClInclude Include="Source\ApplicationLayer\Actors\ActorFactory.h" />
-    <ClInclude Include="Source\ApplicationLayer\Actors\Actor.h" />
-    <ClInclude Include="Source\ApplicationLayer\Actors\ActorComponent.h" />
-    <ClInclude Include="Source\ApplicationLayer\Actors.h" />
-    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\PickupInterface.h" />
-    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\AmmoPickup.h" />
-    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\HealthPickup.h" />
-    <ClInclude Include="Source\ApplicationLayer\Actors\Pickups\AmmoPickup.cpp" />
-    <ClInclude Include="Source\ApplicationLayer\MainLoop\Process.h" />
-    <ClInclude Include="Source\ApplicationLayer\MainLoop\ProcessManager.h" />
     <ClInclude Include="Source\types.h" />
-    <ClInclude Include="Source\utils.h" />
-    <ClInclude Include="Source\ApplicationLayer\ResourceCache\Resource.h" />
     <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResHandle.h" />
     <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResCache.h" />
-    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceLoaders\IResourceLoader.h" />
-    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceLoaders\DefaultResourceLoader.h" />
-    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceLoaders\XMLResourceLoader.h" />
-    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceFiles\IResourceFile.h" />
-    <ClInclude Include="Source\Helpers\ZipFile\ZipFile.h" />
-    <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResourceFiles\ResourceZipFile.h" />
+    <ClInclude Include="Source\Helpers\Logger\Logger.h" />
+    <ClInclude Include="Source\Helpers\Logger\LoggingManager.h" />
+    <ClInclude Include="Source\Helpers\Concurrency\CriticalSection.h" />
+    <ClInclude Include="Source\Helpers\Functions\WildcardMatch.cpp" />
+    <ClInclude Include="Source\Helpers\utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="game\logging.xml" />
+    <Xml Include="logging.xml" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@ ResourceHandle::ResourceHandle(Resource& resource, char* buffer, unsigned int si
 	m_resource(resource),
 	m_buffer(buffer),
 	m_size(size),
-	m_extra(NULL),
+	// m_extra(nullptr),
 	m_pResCache(pResCache)
 {};
 

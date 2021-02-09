@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utils.h>
+#include <pch.h>
 
 class Resource
 {
@@ -8,5 +8,5 @@ class Resource
 
 public:
 	Resource(const std::string& name);
-	std::string GetName() { return m_name; }
+	std::string GetName() const { return m_name; }
 };
