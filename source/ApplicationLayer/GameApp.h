@@ -1,8 +1,13 @@
 #pragma once
 
 #include <pch.h>
+#include <const.h>
+#include <macros.h>
+#include <helpers.h>
 
-#include "ResourceCache.h"
+#include "Modules/Initialization.h"
+#include "Modules/ResourceCache.h"
+#include "Modules/ResourceCache.h"
 
 // define class in header, implement in cpp
 
@@ -38,7 +43,7 @@ class GameApp
 
 	// represents a device context which generates rendering commands
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext4> m_d3dContext;
-	
+
 	// implements one or more surfaces (IDXGISurface) for storing rendered data before presenting it to an output.
 	Microsoft::WRL::ComPtr<IDXGISwapChain4> m_swapChain;
 
@@ -51,6 +56,9 @@ class GameApp
 	TCHAR m_saveGameDirectory[MAX_PATH];
 
 	ResourceCache* m_ResCache;
+
+	std::map<std::wstring, std::wstring> m_textResource; // strings
+	std::map<std::wstring, UINT> m_hotkeys;
 
 public:
 	GameApp();
@@ -87,6 +95,11 @@ public:
 	virtual void CreateDevice();
 
 	virtual HWND InitializeWindow(HINSTANCE hInstance, INT nCmdShow, INT screenWidth, INT screenHeight);
+
+protected:
+	UINT MapCharToKeycode(const char pHotKey);
+	bool LoadStrings(std::string language);
+
 };
 
 extern GameApp* g_GameApp;

@@ -1,0 +1,16 @@
+[INFO] Logger initialized
+Function: Logger::Init
+Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Logger\Logger.cpp
+Line: 34
+[INFO] Free physical storage: 997Mb
+Function: CheckStorage
+Function: D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Modules\Initialization\CheckStorage.cpp
+Line: 22
+[INFO] Available RAM: 14073748835532Mb. Available Virtual Memory: 14073748835532Mb
+Function: CheckMemory
+Function: D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Modules\Initialization\CheckMemory.cpp
+Line: 7
+[INFO] CPU Speed: 2808MHz
+Function: CheckCPUSpeed
+Function: D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Modules\Initialization\CheckCPUSpeed.cpp
+Line: 25

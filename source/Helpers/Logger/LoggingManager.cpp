@@ -148,7 +148,7 @@ void LoggingManager::OutputFinalBufferToLogs(const std::string& finalBuffer, uns
 void LoggingManager::WriteToLogFile(const std::string& data)
 {
 	FILE* pLogFile = NULL;
-	fopen_s(&pLogFile, LOGGING_FILENAME, "a+");
+	fopen_s(&pLogFile, LOGGING_OUTPUT_FILENAME, "a+");
 
 	if (!pLogFile)
 		return;  // can't write to the log file for some reason

@@ -19,42 +19,63 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\ApplicationLayer\GameApp.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Initialization\CheckCPUSpeed.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Initialization\CheckMemory.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Initialization\CheckStorage.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Initialization\GetSaveGameDirectory.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Initialization\__todo__.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Initialization\IsOnlyInstance.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Initialization\Window.cpp" />
-    <ClCompile Include="Source\GameLogicLayer\Game.cpp" />
-    <ClCompile Include="Source\Helpers\Classes\noncopyable.h" />
-    <ClCompile Include="Source\Helpers\Concurrency\CriticalSection.cpp" />
-    <ClCompile Include="Source\Helpers\Functions\SetMemoryChecks.cpp" />
-    <ClCompile Include="Source\Helpers\Functions\StringToLower.cpp" />
-    <ClCompile Include="Source\Helpers\Logger\Logger.cpp" />
-    <ClCompile Include="Source\Helpers\Logger\LoggingManager.cpp" />
-    <ClCompile Include="Source\pch.cpp" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="Source\ApplicationLayer\GameApp.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\Initialization.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\Resource.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceCache.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceData\IResourceData.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceData\XMLResourceData.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceFiles\IResourceFile.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceFiles\ResourceZipFile.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceHandle.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceLoaders\DefaultResourceLoader.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceLoaders\IResourceLoader.h" />
+    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.h" />
     <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResCache.h" />
     <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResHandle.h" />
     <ClInclude Include="Source\const.h" />
-    <ClInclude Include="Source\ApplicationLayer\GameApp.h" />
+    <ClInclude Include="Source\helpers.h" />
+    <ClInclude Include="Source\Helpers\Classes\noncopyable.h" />
     <ClInclude Include="Source\Helpers\Concurrency\CriticalSection.h" />
+    <ClInclude Include="Source\Helpers\Functions\functions.h" />
     <ClInclude Include="Source\Helpers\Logger\Logger.h" />
     <ClInclude Include="Source\Helpers\Logger\LoggingManager.h" />
     <ClInclude Include="Source\Helpers\utils.h" />
+    <ClInclude Include="Source\ApplicationLayer\MemoryCheck.h" />
+    <ClInclude Include="Source\Helpers\ZipFile\ZipFile.h" />
     <ClInclude Include="Source\macros.h" />
     <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\ApplicationLayer\Initialization.h" />
-    <ClInclude Include="Source\ApplicationLayer\MemoryCheck.h" />
     <ClInclude Include="Source\types.h" />
-    <ClInclude Include="Source\Helpers\Functions\WildcardMatch.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="game\logging.xml" />
-    <Xml Include="logging.xml" />
+    <Xml Include="Game\logging.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\ApplicationLayer\GameApp.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\CheckCPUSpeed.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\CheckMemory.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\CheckStorage.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\GetSaveGameDirectory.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\IsOnlyInstance.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\Window.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\Resource.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceCache.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceData\XMLResourceData.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceFiles\ResourceZipFile.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceHandle.cpp" />
+    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.cpp" />
+    <ClCompile Include="Source\GameLogicLayer\Game.cpp" />
+    <ClCompile Include="Source\Helpers\Classes\noncopyable.cpp" />
+    <ClCompile Include="Source\Helpers\Concurrency\CriticalSection.cpp" />
+    <ClCompile Include="Source\Helpers\Functions\ConvertANSIToUNICODE.cpp" />
+    <ClCompile Include="Source\Helpers\Functions\SetMemoryChecks.cpp" />
+    <ClCompile Include="Source\Helpers\Functions\StringToLower.cpp" />
+    <ClCompile Include="Source\Helpers\Functions\WildcardMatch.cpp" />
+    <ClCompile Include="Source\Helpers\Logger\Logger.cpp" />
+    <ClCompile Include="Source\Helpers\Logger\LoggingManager.cpp" />
+    <ClCompile Include="Source\Helpers\ZipFile\ZipFile.cpp" />
+    <ClCompile Include="Source\pch.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

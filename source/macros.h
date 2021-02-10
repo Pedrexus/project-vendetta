@@ -29,7 +29,7 @@
 #define ERRORBOX(str, isFatal) \
 	do \
 	{ \
-		static auto msger = new Logger::ErrorMessenger; \
+		static auto msger = NEW Logger::ErrorMessenger; \
 		msger->Show(std::string(str), isFatal, __FUNCTION__, __FILE__, __LINE__); \
 	} \
 	while(0) \

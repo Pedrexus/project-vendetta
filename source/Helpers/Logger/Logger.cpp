@@ -28,7 +28,7 @@ namespace Logger
 	{
 		if (!LogMgrSingleton)
 		{
-			LogMgrSingleton = new LoggingManager;
+			LogMgrSingleton = NEW LoggingManager;
 			LogMgrSingleton->Init(loggingConfigFilename);
 
 			LOG_INFO("Logger initialized");

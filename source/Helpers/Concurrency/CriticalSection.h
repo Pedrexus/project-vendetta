@@ -1,8 +1,7 @@
 #pragma once
 
 #include <pch.h>
-
-#include "Helpers/Classes/noncopyable.h"
+#include "../Classes/noncopyable.h"
 
 class CriticalSection : public noncopyable
 {

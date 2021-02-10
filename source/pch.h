@@ -10,9 +10,13 @@
 // includes
 #include <algorithm>
 // TODO: #include <format>
+#include <iostream>
 #include <list>
 #include <map>
+#include <optional>
 #include <string>
+#include <memory>
+#include <vector>
 
 
 // Windows headers

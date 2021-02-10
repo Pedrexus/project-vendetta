@@ -1,10 +1,12 @@
 #pragma once
 
 #include <pch.h>
+#include <types.h>
 
 // constants to be used throghout the project
 
-constexpr auto MEGABYTE = 1024 * 1024;
+constexpr u64 KILOBYTE = 1024;
+constexpr u64 MEGABYTE = 1024 * 1024;
 
 // project requirements and specifications
 
@@ -37,5 +39,5 @@ constexpr auto SAVE_GAME_DIR = L"ProjectVendetta";
 
 // logger display flags
 
-constexpr auto LOGGING_CONFIG_FILENAME = "logging.xml";
+constexpr auto LOGGING_CONFIG_FILENAME = "Logging.xml";
 constexpr auto LOGGING_OUTPUT_FILENAME = "vendetta.log";

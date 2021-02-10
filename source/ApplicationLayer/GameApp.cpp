@@ -1,8 +1,5 @@
 // edit Properties -> VC++ Directories -> Include Directories
 #include "GameApp.h"
-#include "Initialization.h"
-
-#include <const.h>
 
 // smart pointer type
 // maintains a reference count 
@@ -54,13 +51,24 @@ bool GameApp::Initialize(
 		return false;
 
 	// TODO: development editor resource cache initialization - chapter 22
-    IResourceFile* zipFile = new ResourceZipFile(RESOURCES_ZIPFILE);
-    m_ResCache = new ResourceCache(RESOURCES_SIZE, zipFile);
+    IResourceFile* zipFile = NEW ResourceZipFile(RESOURCES_ZIPFILE);
+    m_ResCache = NEW ResourceCache(RESOURCES_SIZE, zipFile);
 
     if (!m_ResCache->Init())
         return false;
 
-	// TODO: load strings - chapter 8
+    // Note - register these in order from least specific to most specific! They get pushed onto a list.
+    // RegisterLoader is discussed in Chapter 5, page 142
+    // m_ResCache->RegisterLoader(CreateWAVResourceLoader());
+    // m_ResCache->RegisterLoader(CreateOGGResourceLoader());
+    // m_ResCache->RegisterLoader(CreateDDSResourceLoader());
+    // m_ResCache->RegisterLoader(CreateJPGResourceLoader());
+    m_ResCache->RegisterLoader(std::shared_ptr<IResourceLoader>{ NEW XMLResourceLoader() });
+    // m_ResCache->RegisterLoader(CreateSdkMeshResourceLoader());
+    // m_ResCache->RegisterLoader(CreateScriptResourceLoader());
+
+	// Load strings with the XML Resource Loader
+
 
 	// TODO: event manager and event registering - Chapter 11
 	
@@ -101,11 +109,10 @@ LRESULT GameApp::Shutdown()
     // BaseScriptComponent::UnregisterScriptFunctions();
     // ScriptExports::Unregister();
     // LuaStateManager::Destroy();
-    // SAFE_DELETE(m_ResCache);
+    SAFE_DELETE(m_ResCache);
 
     return 0;
 }
-
 
 void GameApp::CreateDevice()
 {
@@ -237,4 +244,54 @@ HWND GameApp::InitializeWindow(HINSTANCE hInstance, INT nCmdShow, INT screenWidt
     CoUninitialize();
 
     return hwnd;
+}
+
+UINT GameApp::MapCharToKeycode(const char pHotKey)
+{
+    if (pHotKey >= '0' && pHotKey <= '9')
+        return 0x30 + pHotKey - '0';
+
+    if (pHotKey >= 'A' && pHotKey <= 'Z')
+        return 0x41 + pHotKey - 'A';
+
+    LOG_ERROR("Platform specific hotkey " + std::to_string(pHotKey) + " is not defined");
+    return 0;
+}
+
+bool GameApp::LoadStrings(std::string language)
+{
+    auto languageFile = "Strings\\" + language + ".xml";
+
+    Resource resource(languageFile);
+    std::shared_ptr<ResourceHandle> handle = m_ResCache->GetHandle(&resource);  //  loads the file from the zip file
+    auto root = std::static_pointer_cast<ResourceData::XML>(handle->GetData())->GetRoot();
+    // auto root = m_ResCache->GetData<ResourceData::XML>(languageFile)->GetRoot();
+
+    if (!root)
+    {
+        LOG_ERROR("Strings are missing.");
+        return false;
+    }
+
+    // Loop through each child element and load the component
+    for (auto node = root->FirstChildElement(); node; node = node->NextSiblingElement())
+    {
+        const char* id = node->Attribute("id");
+        const char* value = node->Attribute("value");
+        const char* hotkey = node->Attribute("hotkey");
+        if (id && value)
+        {
+            auto wideKey = ConvertANSIToUNICODE(id, 64);
+            auto wideText = ConvertANSIToUNICODE(value, KILOBYTE);
+            m_textResource[wideKey] = wideText;
+
+            if (hotkey)
+                m_hotkeys[wideKey] = MapCharToKeycode(*hotkey);
+        }
+        else
+        {
+            LOG_WARNING("Malformed XML element at " + languageFile);
+        }
+    }
+    return true;
 }

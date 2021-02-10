@@ -1,7 +1,6 @@
 // project headers
 #include <ApplicationLayer/GameApp.h>
-#include <Helpers/utils.h>
-#include <Helpers/Logger/Logger.h>
+#include <helpers.h>
 
 // remember: set linker -> system -> subsystem = windows
 // windows entrypoint (wWinfMain for Unicode applications)

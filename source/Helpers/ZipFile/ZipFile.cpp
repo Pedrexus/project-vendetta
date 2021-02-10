@@ -3,7 +3,8 @@
 #include <pch.h>
 #include <types.h>
 #include <macros.h>
-#include <helpers.h>
+
+#include "../Functions/functions.h"
 
 
 // --------------------------------------------------------------------------
@@ -114,14 +115,16 @@ void ZipFile::End()
 	m_nEntries = 0;
 }
 
-
-int ZipFile::Find(const std::string& path) const
+std::optional<int> ZipFile::Find(const std::string& path) const
 {	
 	auto i = m_ZipContentsMap.find(StringToLower(path));
 	if (i == m_ZipContentsMap.end())
-		return -1;
+	{
+		LOG_WARNING(path + " was not found in zip file");
+		return std::nullopt;
+	}
 
-	return i->second;
+	return std::optional<int>{ i->second };
 }
 
 // --------------------------------------------------------------------------

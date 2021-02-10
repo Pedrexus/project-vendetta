@@ -1,9 +1,9 @@
 #pragma once
+#include "Logger.h"
 
 #include <pch.h>
 
 #include "../Concurrency/CriticalSection.h"
-#include "Logger.h"
 
 class LoggingManager
 {

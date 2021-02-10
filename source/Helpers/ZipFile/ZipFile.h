@@ -32,5 +32,5 @@ public:
 	// Added to show multi-threaded decompression
 	bool ReadLargeFile(int i, void* buffer, void (*progressCallback)(int, bool&));
 
-	int Find(const std::string& path) const;
+	std::optional<int> Find(const std::string& path) const;
 };
