@@ -35,6 +35,9 @@ public:
 	~LoggingManager(void);
 	void Init(const char* loggingConfigFilename);
 
+	// conditions
+	inline bool MustLogEverything() { return m_tags.find("INFO") != m_tags.end(); }
+
 	// logs
 	// TODO: add timestamp
 	void SetDisplayFlags(const std::string& tag, unsigned char flags);

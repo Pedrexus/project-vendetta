@@ -19,26 +19,94 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\ApplicationLayer\GameApp.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\Initialization.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\Resource.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceCache.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceData\IResourceData.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceData\XMLResourceData.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceFiles\IResourceFile.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceFiles\ResourceZipFile.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceHandle.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceLoaders\DefaultResourceLoader.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceLoaders\IResourceLoader.h" />
-    <ClInclude Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lapi.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lauxlib.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lcode.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lctype.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\ldebug.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\ldo.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lfunc.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lgc.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\llex.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\llimits.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lmem.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lobject.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lopcodes.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lparser.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lprefix.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lstate.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lstring.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\ltable.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\ltm.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lua.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lua.hpp" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\luaconf.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lualib.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lundump.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lvm.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lzio.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaAutoBlock.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaCall.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaFunction.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaHelper.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaHelper_Object.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaHelper_StackObject.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaObject.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaPlus.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaPlusCD.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaPlusConfig.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaPlusInternal.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStackObject.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStackTableIterator.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaState.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStateCD.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStateOutFile.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStateOutString.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\LuaPlus\LuaTableIterator.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\tilde\HostConfig.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\tilde\LuaDebugger.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\tilde\LuaDebuggerComms.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\tilde\LuaDebuggerHost.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\tilde\LuaDebuggerProtocol.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\tilde\LuaHostWindows.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\tilde\LuaTilde.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\tilde\ReceiveMessageBuffer.h" />
+    <ClInclude Include="Source\Dependencies\LuaPlus\tilde\SendMessageBuffer.h" />
+    <ClInclude Include="Source\GameApplicationLayer\GameApp.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Actor.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\ActorComponent.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\ActorFactory.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Pickups\AmmoPickup.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Pickups\HealthPickup.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Pickups\PickupInterface.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\EventSystem.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\EventSystem\BaseEventData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\EventSystem\EventManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\EventSystem\IEventData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Initialization.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\MainLoop\Process.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\MainLoop\ProcessManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Process.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\Resource.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceData\IResourceData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceData\XMLResourceData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceFiles\IResourceFile.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceFiles\ResourceZipFile.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceHandle.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\DefaultResourceLoader.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\IResourceLoader.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.h" />
     <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResCache.h" />
     <ClInclude Include="Source\ApplicationLayer\ResourceCache\ResHandle.h" />
     <ClInclude Include="Source\const.h" />
+    <ClInclude Include="Source\GameViewLayer\InputHandlers\interfaces.h" />
     <ClInclude Include="Source\helpers.h" />
     <ClInclude Include="Source\Helpers\Classes\noncopyable.h" />
     <ClInclude Include="Source\Helpers\Concurrency\CriticalSection.h" />
-    <ClInclude Include="Source\Helpers\Functions\functions.h" />
+    <ClInclude Include="Source\Helpers\Functions.h" />
     <ClInclude Include="Source\Helpers\Logger\Logger.h" />
     <ClInclude Include="Source\Helpers\Logger\LoggingManager.h" />
     <ClInclude Include="Source\Helpers\utils.h" />
@@ -52,30 +120,90 @@
     <Xml Include="Game\logging.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\ApplicationLayer\GameApp.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\CheckCPUSpeed.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\CheckMemory.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\CheckStorage.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\GetSaveGameDirectory.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\IsOnlyInstance.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\Initialization\Window.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\Resource.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceCache.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceData\XMLResourceData.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceFiles\ResourceZipFile.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceHandle.cpp" />
-    <ClCompile Include="Source\ApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.cpp" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lapi.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lauxlib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lbaselib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lbitlib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lcode.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lcorolib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lctype.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\ldblib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\ldebug.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\ldo.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\ldump.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lfunc.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lgc.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\linit.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\liolib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\llex.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lmathlib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lmem.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\loadlib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lobject.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lopcodes.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\loslib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lparser.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lstate.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lstring.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lstrlib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\ltable.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\ltablib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\ltm.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lua.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lundump.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lutf8lib.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lvm.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lzio.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\LuaPlus\LuaPlus.cpp" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\LuaPlus\LuaPlusAddons.c" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\LuaPlus\LuaState_DumpObject.cpp" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\tilde\HostConfig.cpp" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\tilde\LuaDebugger.cpp" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\tilde\LuaDebuggerComms.cpp" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\tilde\LuaHostWindows.cpp" />
+    <ClCompile Include="Source\Dependencies\LuaPlus\tilde\LuaTilde.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\GameApp.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\Actor.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\ActorFactory.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\Pickups\AmmoPickup.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\Pickups\HealthPickup.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\EventSystem\EventManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\CheckCPUSpeed.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\CheckMemory.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\CheckStorage.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\GetSaveGameDirectory.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\IsOnlyInstance.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\Window.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\MainLoop\Process.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\MainLoop\ProcessManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\Resource.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceData\XMLResourceData.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceFiles\ResourceZipFile.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceHandle.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.cpp" />
     <ClCompile Include="Source\GameLogicLayer\Game.cpp" />
     <ClCompile Include="Source\Helpers\Classes\noncopyable.cpp" />
     <ClCompile Include="Source\Helpers\Concurrency\CriticalSection.cpp" />
-    <ClCompile Include="Source\Helpers\Functions\ConvertANSIToUNICODE.cpp" />
-    <ClCompile Include="Source\Helpers\Functions\SetMemoryChecks.cpp" />
-    <ClCompile Include="Source\Helpers\Functions\StringToLower.cpp" />
-    <ClCompile Include="Source\Helpers\Functions\WildcardMatch.cpp" />
+    <ClCompile Include="Source\Helpers\Functions.cpp" />
     <ClCompile Include="Source\Helpers\Logger\Logger.cpp" />
     <ClCompile Include="Source\Helpers\Logger\LoggingManager.cpp" />
     <ClCompile Include="Source\Helpers\ZipFile\ZipFile.cpp" />
     <ClCompile Include="Source\pch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Game\vendetta.log" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="CppProperties.json" />
+    <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaCall.inl" />
+    <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaObject.inl" />
+    <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStackObject.inl" />
+    <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStackTableIterator.inl" />
+    <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaState.inl" />
+    <None Include="LICENSE" />
+    <None Include="README.md" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -194,10 +322,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableModules>false</EnableModules>
+      <WarningVersion>18</WarningVersion>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -210,10 +342,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnableModules>false</EnableModules>
+      <WarningVersion>18</WarningVersion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

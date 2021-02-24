@@ -26,3 +26,6 @@ typedef FLOAT f32;
 typedef double f64; // == long double in Windows
 
 #endif // defined(_WIN32) | defined(_WIN64)
+
+typedef u16 milliseconds;
+constexpr auto INFINITE_TIME = UINT16_MAX;

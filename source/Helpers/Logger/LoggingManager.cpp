@@ -2,6 +2,7 @@
 
 #include <const.h>
 #include <macros.h>
+#include <helpers.h>
 
 constexpr auto LOGFLAG_WRITE_TO_LOG_FILE = 1 << 0;
 constexpr auto LOGFLAG_WRITE_TO_DEBUGGER = 1 << 1;
@@ -41,8 +42,6 @@ void LoggingManager::Init(const char* loggingConfigFilename)
 			if (node->Attribute("file", "1"))
 				flags |= LOGFLAG_WRITE_TO_LOG_FILE;
 
-			// TODO: console logger
-
 			SetDisplayFlags(tag, flags);
 		}
 
@@ -51,6 +50,10 @@ void LoggingManager::Init(const char* loggingConfigFilename)
 	{
 		LOG_FATAL("Invalid logging config filename");
 	}
+
+	// init output file - either keep data (a+) or reset it (w+)
+	if (LOGGING_MODE == "clear")
+		ClearFile(LOGGING_OUTPUT_FILENAME);
 }
 
 void LoggingManager::SetDisplayFlags(const std::string& tag, unsigned char flags)
@@ -93,7 +96,8 @@ void LoggingManager::Log(
 
 	m_tagCriticalSection.Unlock();
 
-	if (tagExists)
+	// TODO: if INFO enabled, log everything
+	if (tagExists || MustLogEverything())
 	{
 		std::string buffer;
 		GetOutputBuffer(buffer, tag, message, funcName, sourceFile, lineNum);

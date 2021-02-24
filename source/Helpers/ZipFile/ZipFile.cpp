@@ -4,7 +4,7 @@
 #include <types.h>
 #include <macros.h>
 
-#include "../Functions/functions.h"
+#include "../Functions.h"
 
 
 // --------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void ZipFile::End()
 
 std::optional<int> ZipFile::Find(const std::string& path) const
 {	
-	auto i = m_ZipContentsMap.find(StringToLower(path));
+	auto i = m_ZipContentsMap.find(Convert::StringToLower(path));
 	if (i == m_ZipContentsMap.end())
 	{
 		LOG_WARNING(path + " was not found in zip file");

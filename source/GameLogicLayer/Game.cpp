@@ -1,6 +1,7 @@
 // project headers
-#include <ApplicationLayer/GameApp.h>
 #include <helpers.h>
+
+#include <GameApplicationLayer/GameApp.h>
 
 // remember: set linker -> system -> subsystem = windows
 // windows entrypoint (wWinfMain for Unicode applications)
@@ -24,7 +25,7 @@ INT WINAPI wWinMain(
         return -1;
     }
 
-    (void)GameApp();
+    auto app = NEW GameApp();
 
     if (g_GameApp->Initialize(hInstance, lpCmdLine, 0, nShowCmd))
         return FALSE; // Fix memory leaks if we hit this branch. // TODO: print an error.

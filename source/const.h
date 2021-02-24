@@ -11,6 +11,7 @@ constexpr u64 MEGABYTE = 1024 * 1024;
 // project requirements and specifications
 
 constexpr auto GAME_TITLE = L"Project Vendetta";
+constexpr auto GAME_LANGUAGE = "English";
 
 // hardware requirements
 
@@ -30,6 +31,9 @@ constexpr auto WINDOW_EXTENDED_STYLE = WS_EX_LEFT;
 constexpr auto WINDOW_STYLE = WS_OVERLAPPEDWINDOW;
 constexpr auto WINDOW_HAS_MENU = FALSE;
 
+constexpr auto SCREEN_REFRESH_RATE = 1000 / 60;  // 1s / 60 = 60 fps
+constexpr auto LOOP_EXECUTION_POLICY = std::execution::par_unseq; // parallel unsequenced policy
+
 // dependencies
 
 constexpr auto RESOURCES_ZIPFILE = L"Assets.zip";
@@ -41,3 +45,14 @@ constexpr auto SAVE_GAME_DIR = L"ProjectVendetta";
 
 constexpr auto LOGGING_CONFIG_FILENAME = "Logging.xml";
 constexpr auto LOGGING_OUTPUT_FILENAME = "vendetta.log";
+constexpr auto LOGGING_MODE = "clear";
+
+// namespaces (used as string enums)
+namespace Pointer
+{
+	constexpr auto Left = "PointerLeft";
+	constexpr auto Right = "PointerRight";
+}
+
+// {6C90E477-84F5-44D9-8EE3-E3C2BF252B7F}
+static const GUID ID1 = { 0x6c90e477, 0x84f5, 0x44d9, { 0x8e, 0xe3, 0xe3, 0xc2, 0xbf, 0x25, 0x2b, 0x7f } };

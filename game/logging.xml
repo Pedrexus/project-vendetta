@@ -9,5 +9,5 @@
     <Log tag="Lua" debugger="1" file="0"/>
 -->
 	<Log tag="Actor" debugger="0" file="1"/>
-	
+	<Log tag="Events" debugger="0" file="1"/>
 </Logging>
