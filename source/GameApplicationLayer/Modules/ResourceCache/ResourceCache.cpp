@@ -90,7 +90,7 @@ std::shared_ptr<ResourceHandle> ResourceCache::Load(Resource* r)
 		return nullptr;
 	}
 
-	int rawSize = m_file->GetRawResourceSize(*r);
+	size rawSize = m_file->GetRawResourceSize(*r);
 	if (rawSize < 0)
 	{
 		LOG_ERROR("Resource size returned -1. Resource not found!");
@@ -98,18 +98,18 @@ std::shared_ptr<ResourceHandle> ResourceCache::Load(Resource* r)
 	}
 
 	// allocates an empty string
-	int allocSize = rawSize + loader->AddNullZero();
+	size allocSize = rawSize + loader->AddNullZero();
 	char* rawBuffer = loader->UseRawFile() ? Allocate(allocSize) : NEW char[allocSize];
 	memset(rawBuffer, 0, allocSize); // fills the first allocSize bytes in rawBuffer to 0
 
-	if (rawBuffer == NULL || m_file->GetRawResource(*r, rawBuffer) == 0)
+	if (rawBuffer == nullptr || m_file->GetRawResource(*r, rawBuffer) == 0)
 	{
 		LOG_ERROR("Resource cache out of memory");
 		return nullptr;
 	}
 
-	char* buffer = NULL;
-	unsigned int size = 0;
+	char* buffer = nullptr;
+	size size = 0;
 
 	if (loader->UseRawFile())
 	{
@@ -121,14 +121,16 @@ std::shared_ptr<ResourceHandle> ResourceCache::Load(Resource* r)
 		size = loader->GetLoadedResourceSize(rawBuffer, rawSize);
 		buffer = Allocate(size);
 
-		if (rawBuffer == NULL || buffer == NULL)
+		if (rawBuffer == nullptr || buffer == nullptr)
 		{
 			LOG_ERROR("Resource cache out of memory");
 			return nullptr;
 		}
 
 		handle = std::shared_ptr<ResourceHandle>{ NEW ResourceHandle(*r, buffer, size, this) };
-		auto pResourceData = std::shared_ptr<IResourceData>(loader->LoadResource(rawBuffer, rawSize));
+		
+		// set ResourceData
+		auto pResourceData = std::shared_ptr<IResourceData>(loader->LoadResource(rawBuffer, rawSize, handle->WritableBuffer())); // TODO: make the loader unaware of the handle
 		handle->SetData(pResourceData);
 
 		// If the raw buffer from the resource file isn't needed, it shouldn't take up
@@ -198,7 +200,7 @@ void ResourceCache::FreeOneResource()
 	// be actually free again.
 }
 
-int ResourceCache::Preload(const std::string pattern, void (*progressCallback)(int, bool&))
+int ResourceCache::Preload(const std::string pattern, std::function<void(int, bool&)> progressCallback)
 {
 	if (m_file == NULL)
 		return 0;
@@ -216,7 +218,7 @@ int ResourceCache::Preload(const std::string pattern, void (*progressCallback)(i
 			++loaded;
 		}
 
-		if (progressCallback != NULL)
+		if (progressCallback)
 			progressCallback(i * 100 / numFiles, cancel);
 	}
 	return loaded;

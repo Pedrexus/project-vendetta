@@ -6,9 +6,6 @@
 // releases the interface when count goes to zero.
 using Microsoft::WRL::ComPtr;
 
-// global GameApp pointer
-GameApp* g_GameApp = nullptr;
-
 GameApp::GameApp() :
     m_window(nullptr),
     m_d3dDevice(nullptr),
@@ -23,9 +20,6 @@ GameApp::GameApp() :
     m_hotkeys({})
 {
 	// only the game (GameApp subclass) calls the constructor
-
-	// sets the global pointer
-	g_GameApp = this;
 };
 
 bool GameApp::Initialize(
@@ -73,9 +67,10 @@ bool GameApp::Initialize(
     LoadStrings(GAME_LANGUAGE);
 
 	// TODO: event manager and event registering - Chapter 11
-    auto m_EventManager = EventManager::GetInstance();
+    auto m_EventManager = EventManager::Get();
 	
 	// TODO: Lua script manager initialization - Chapter 12
+    LuaStateManager::Get()->Init();
 
 	// TODO: window must be a method
 	// window creation and initialization
@@ -108,10 +103,10 @@ LRESULT GameApp::Shutdown()
     DestroyWindow(m_window);
     // VDestroyNetworkEventForwarder();
     // SAFE_DELETE(m_pBaseSocketManager);
-    // SAFE_DELETE(m_pEventManager);
+    EventManager::Destroy();
     // BaseScriptComponent::UnregisterScriptFunctions();
     // ScriptExports::Unregister();
-    // LuaStateManager::Destroy();
+    LuaStateManager::Destroy();
     SAFE_DELETE(m_ResCache);
 
     return 0;

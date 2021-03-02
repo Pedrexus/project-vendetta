@@ -37,6 +37,8 @@
 #define LOG_ERROR(str) ERRORBOX(str, false)
 #define LOG_FATAL(str) ERRORBOX(str, true)
 
+#define ASSERT(expr) if (!(expr)) ERRORBOX(#expr, false);
+
 #else
 
 #define LOG(tag, str) noop;

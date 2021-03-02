@@ -2,7 +2,11 @@
 Function: Logger::Init
 Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Logger\Logger.cpp
 Line: 34
-[INFO] Free physical storage: 667526Mb
+[Lua] GameApp instantiated
+Function: GameApp::Get
+Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\GameApp.h
+Line: 57
+[INFO] Free physical storage: 666109Mb
 Function: MachineRead::FreeStorage
 Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Functions.cpp
 Line: 96
@@ -10,7 +14,7 @@ Line: 96
 Function: MachineRead::FreeVirtualMemory
 Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Functions.cpp
 Line: 80
-[INFO] Available Physical RAM: 6Gb
+[INFO] Available Physical RAM: 10Gb
 Function: MachineRead::FreePhysicalRAM
 Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Functions.cpp
 Line: 72
@@ -20,17 +24,21 @@ Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Functions.cpp
 Line: 57
 [INFO] Default Resource Loader registered
 Function: ResourceCache::Init
-Function: D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Modules\ResourceCache\ResourceCache.cpp
+Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.cpp
 Line: 29
 [INFO] loading Strings\English.xml from the zip file
 Function: ResourceCache::GetData
-Function: D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Modules\ResourceCache\ResourceCache.cpp
+Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.cpp
 Line: 276
 [INFO] 22 strings loaded from Strings\English.xml
 Function: GameApp::LoadStrings
-Function: D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\GameApp.cpp
-Line: 300
+Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\GameApp.cpp
+Line: 295
 [Events] EventManager instantiated
-Function: EventManager::GetInstance
-Function: D:\Coding\C++\ProjectVendetta\Source\ApplicationLayer\Modules\EventSystem\EventManager.cpp
-Line: 11
+Function: EventManager::Get
+Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\EventSystem\EventManager.h
+Line: 44
+[Lua] LuaStateManager instantiated
+Function: LuaStateManager::Get
+Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\LuaScriptingSystem\LuaStateManager.h
+Line: 29

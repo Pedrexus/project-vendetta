@@ -1,13 +1,14 @@
 #include "Singleton.h"
 
-#include <macros.h>
-
-Singleton* Singleton::GetInstance()
+Singleton* Singleton::Get()
 {
 	std::lock_guard<std::mutex> lock(mutex);
 
 	if (instance == nullptr)
+	{
+		LOG("INFO", "Singleton instantiated");
 		instance = NEW Singleton();
+	}
 
 	return instance;
 }

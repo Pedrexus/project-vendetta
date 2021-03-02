@@ -2,19 +2,6 @@
 
 #include <const.h>
 
-EventManager* EventManager::GetInstance()
-{
-	std::lock_guard<std::mutex> lock(mutex);
-
-	if (instance == nullptr)
-	{
-		LOG("Events", "EventManager instantiated");
-		instance = NEW EventManager();
-	}
-
-	return instance;
-}
-
 bool EventManager::AddListener(const EventListener::Pair& eventPair, const EventType& type)
 {
 	LOG("Events", "Adding delegate function for event type: " + std::string(type));

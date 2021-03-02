@@ -19,6 +19,8 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <ranges>
+#include <set>
 #include <string>
 #include <vector>
 

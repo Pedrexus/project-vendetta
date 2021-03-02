@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Helpers/Classes/noncopyable.h"
+#include "Helpers/Classes/Singleton.h"
 
 #include "Helpers/Functions.h"
 
@@ -12,5 +13,7 @@
 #include "Helpers/Logger/LoggingManager.h"
 
 #include "Helpers/Rendering/IRenderer.h"
+
+#include "Helpers/String/String.h"
 
 #include "Helpers/ZipFile/ZipFile.h"

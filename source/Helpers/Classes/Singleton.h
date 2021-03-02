@@ -1,6 +1,7 @@
 #pragma once
 
 #include <pch.h>
+#include <macros.h>
 
 // thread-safe singleton
 class Singleton
@@ -14,11 +15,8 @@ protected:
     ~Singleton() = default;
 
 public:
-    // Singletons should not be cloneable.
-    Singleton(Singleton& other) = delete;
-
-    // Singletons should not be assignable.
-    void operator=(const Singleton&) = delete;
+    Singleton(Singleton& other) = delete; // Singletons should not be cloneable.
+    void operator=(const Singleton&) = delete; // Singletons should not be assignable.
 
     /**
      * This is the static method that controls the access to the singleton
@@ -27,5 +25,6 @@ public:
      * object stored in the static field.
      */
 
-    static Singleton* GetInstance();
+    static Singleton* Get();
+    inline Singleton* Destroy() { SAFE_DELETE(instance); };
 };

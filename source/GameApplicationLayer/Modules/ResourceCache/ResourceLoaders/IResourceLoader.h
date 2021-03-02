@@ -12,7 +12,10 @@ public:
 	virtual std::string GetPattern() = 0;
 	virtual bool UseRawFile() = 0;
 	virtual bool DiscardRawBufferAfterLoad() = 0;
-	virtual unsigned int GetLoadedResourceSize(char* rawBuffer, unsigned int rawSize) = 0;
-	virtual IResourceData* LoadResource(char* rawBuffer, unsigned int rawSize) = 0;
-	virtual unsigned int AddNullZero() { return false; }  // false => +0, true => +1
+	virtual size GetLoadedResourceSize(char* rawBuffer, size rawSize) = 0;
+	virtual bool AddNullZero() { return false; }  // false => +0, true => +1
+
+	// The loader has to implement at least one
+	virtual IResourceData* LoadResource(char* rawBuffer, size rawSize) { return nullptr; };
+	virtual IResourceData* LoadResource(char* rawBuffer, size rawSize, char* writableBuffer) { return nullptr; };
 };

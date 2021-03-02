@@ -19,5 +19,7 @@ public:
 	int GetRawResourceSize(const Resource& r) override;
 	bool GetRawResource(const Resource& r, char* buffer) override;
 	int GetNumResources() const override;
+
+	// TODO: implement this option
 	bool IsUsingDevelopmentDirectories(void) const override { return false; }
 };

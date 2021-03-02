@@ -42,9 +42,11 @@ public:
 	bool Init();
 	void RegisterLoader(std::shared_ptr<IResourceLoader> loader);
 	std::shared_ptr<ResourceHandle> GetHandle(Resource* r);
-	int Preload(const std::string pattern, void (*progressCallback)(int, bool&));
+	int Preload(const std::string pattern, std::function<void(int, bool&)> progressCallback);
 	std::vector<std::string> Match(const std::string pattern);
 	void Flush(void);
+
+	inline bool IsUsingDevelopmentDirectories(void) const { return m_file->IsUsingDevelopmentDirectories(); }
 
 	// accessor
 	template<class T>

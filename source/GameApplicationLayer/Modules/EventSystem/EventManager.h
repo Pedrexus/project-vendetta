@@ -21,7 +21,35 @@ namespace EventListener
 // sound effect.
 class EventManager
 {
+#pragma region Singleton
+private:
+	inline static EventManager* instance;
+	inline static std::mutex mutex;
 
+protected:
+	EventManager() : m_activeQueue(0) {};
+	~EventManager() = default;
+
+public:
+	EventManager(EventManager& other) = delete; // Singletons should not be cloneable.
+	void operator=(const EventManager&) = delete; // Singletons should not be assignable.
+
+	static inline void Destroy() { SAFE_DELETE(instance); };
+	static inline EventManager* Get()
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+
+		if (instance == nullptr)
+		{
+			LOG("Events", "EventManager instantiated");
+			instance = NEW EventManager();
+		}
+
+		return instance;
+	}
+#pragma endregion
+
+private:
 	typedef std::list<std::shared_ptr<IEventData>> EventQueue;
 
 	EventListener::Map m_eventListenersMap;
@@ -30,20 +58,7 @@ class EventManager
 
 	Concurrency::concurrent_queue<std::shared_ptr<IEventData>> m_realtimeEventQueue;
 
-	inline static EventManager* instance;
-	inline static std::mutex mutex;
-
-protected:
-	inline EventManager() : m_activeQueue(0) {};
-	~EventManager() = default;
-
 public:
-	EventManager(EventManager& other) = delete; // Singletons should not be cloneable.
-	void operator=(const EventManager&) = delete; // Singletons should not be assignable.
-
-	static EventManager* GetInstance();
-	inline EventManager* Destroy() { SAFE_DELETE(instance); };
-
 	bool AddListener(const EventListener::Pair& eventPair, const EventType& type);
 	bool RemoveListener(const EventListener::Id id, const EventType& type); // Returns false if the id was not found.
 

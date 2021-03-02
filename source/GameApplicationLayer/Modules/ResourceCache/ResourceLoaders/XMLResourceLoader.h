@@ -1,5 +1,7 @@
 #pragma once
 
+#include <types.h>
+
 #include "IResourceLoader.h"
 #include "../ResourceData/XMLResourceData.h"
 
@@ -9,8 +11,8 @@ public:
     // interface overrides
     bool UseRawFile() override { return false; }
     bool DiscardRawBufferAfterLoad() override { return true; }
-    unsigned int GetLoadedResourceSize(char* rawBuffer, unsigned int rawSize) override { return rawSize; }
-    ResourceData::XML* LoadResource(char* rawBuffer, unsigned int rawSize) override;
+    size GetLoadedResourceSize(char* rawBuffer, size rawSize) override { return rawSize; }
+    ResourceData::XML* LoadResource(char* rawBuffer, size rawSize) override;
     std::string GetPattern() override { return "*.xml"; }
 };
 

@@ -25,15 +25,14 @@ INT WINAPI wWinMain(
         return -1;
     }
 
-    auto app = NEW GameApp();
-
-    if (g_GameApp->Initialize(hInstance, lpCmdLine, 0, nShowCmd))
+    if (GameApp::Get()->Initialize(hInstance, lpCmdLine, 0, nShowCmd))
         return FALSE; // Fix memory leaks if we hit this branch. // TODO: print an error.
 
     MessageBox(nullptr, TEXT("Everything worked."), TEXT("Success"), MB_OK);
 
     // shutdown
-    g_GameApp->Shutdown();
+    GameApp::Get()->Shutdown();
+    GameApp::Destroy();
     Logger::Destroy();
 
 

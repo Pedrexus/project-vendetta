@@ -2,7 +2,7 @@
 
 #include <macros.h>
 
-ResourceData::XML* XMLResourceLoader::LoadResource(char* rawBuffer, unsigned int rawSize)
+ResourceData::XML* XMLResourceLoader::LoadResource(char* rawBuffer, size rawSize)
 {
 	if (rawSize <= 0)
 		return nullptr;

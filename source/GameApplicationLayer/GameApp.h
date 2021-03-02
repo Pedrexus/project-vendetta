@@ -8,6 +8,8 @@
 #include "Modules/Initialization.h"
 #include "Modules/ResourceCache.h"
 #include "Modules/EventSystem.h"
+#include "Modules/ProcessSystem.h"
+#include "Modules/LuaScriptingSystem.h"
 
 // define class in header, implement in cpp
 
@@ -32,6 +34,35 @@
 */
 class GameApp
 {
+#pragma region Singleton
+private:
+	inline static GameApp* instance;
+	inline static std::mutex mutex;
+
+protected:
+	GameApp();
+	~GameApp() = default;
+
+public:
+	GameApp(GameApp & other) = delete; // Singletons should not be cloneable.
+	void operator=(const GameApp&) = delete; // Singletons should not be assignable.
+
+	static inline void Destroy() { SAFE_DELETE(instance); };
+	static inline GameApp* Get()
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+
+		if (instance == nullptr)
+		{
+			LOG("Lua", "GameApp instantiated");
+			instance = NEW GameApp();
+		}
+
+		return instance;
+	}
+#pragma endregion
+
+private:
 	// handle to a window
 	HWND m_window;
 
@@ -56,13 +87,11 @@ class GameApp
 	TCHAR m_saveGameDirectory[MAX_PATH];
 
 	ResourceCache* m_ResCache;
-	EventManager* m_EventManager;
+	ProcessManager* m_ProcessManager;
 
 	std::map<std::wstring, UINT> m_hotkeys;
 
 public:
-	GameApp();
-	~GameApp() = default;
 
 	/*
 		App::Initialize
@@ -88,6 +117,10 @@ public:
 		INT nCmdShow
 	);
 
+	// accessors
+	ResourceCache* GetResourceCache() { return m_ResCache; };
+	inline void AttachProcess(std::shared_ptr<Process> pProcess) { if (m_ProcessManager) m_ProcessManager->AttachProcess(pProcess); }
+
 	std::map<std::wstring, std::wstring> m_textResource; // strings
 	std::shared_ptr<IRenderer> m_Renderer;
 
@@ -104,5 +137,3 @@ protected:
 	bool LoadStrings(std::string language);
 
 };
-
-extern GameApp* g_GameApp;
