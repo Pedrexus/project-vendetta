@@ -1,6 +1,7 @@
 #include <pch.h>
 #include <types.h>
 #include <macros.h>
+#include "Functions.h"
 
 namespace Convert
 {
@@ -24,14 +25,29 @@ namespace Convert
 
 		return r;
 	}
-}
+	std::string ws2s(std::wstring const& wstr)
+	{
+		// This only works if all the characters are single byte, i.e. ASCII or ISO-8859-1. 
+		std::string wsTmp(wstr.begin(), wstr.end());
+		return wsTmp;
+	}
+	std::wstring s2ws(std::string const& str)
+	{
+		auto text = str.c_str();
+		auto size = mbsrtowcs(nullptr, &text, 0, nullptr);
 
-namespace Mem
-{
-	std::string as_kb(u64 size) { return std::to_string(size >> 10) + "Kb"; }
-	std::string as_mb(u64 size) { return std::to_string(size >> 20) + "Mb"; }
-	std::string as_gb(u64 size) { return std::to_string(size >> 30) + "Gb"; }
-	std::string as_tb(u64 size) { return std::to_string(size >> 40) + "Tb"; }
+		wchar_t* buf = NEW wchar_t[size + 1]();
+
+		size = mbsrtowcs(buf, &text, size + 1, nullptr);
+
+		return std::wstring(buf, size);
+	}
+	std::string int2hex(i64 number)
+	{
+		std::stringstream sstream;
+		sstream << std::hex << number;
+		return sstream.str();
+	}
 }
 
 // windows specific

@@ -4,7 +4,6 @@
 
 // link library dependencies
 
-#pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"Shlwapi.lib")
 
 // includes
@@ -19,7 +18,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <ranges>
+// TODO: #include <ranges>
 #include <set>
 #include <string>
 #include <vector>
@@ -35,9 +34,7 @@
 #include <Knownfolders.h>
 
 // DirectX Headers
-#include <d3d11_4.h>
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
+#include <XAudio2.h>
 
 #include <wrl/client.h>
 #include <crtdbg.h>
@@ -57,5 +54,9 @@
 */
 #include <tinyxml2.h>
 #include <zlib.h>  // C:\tools\vcpkg\vcpkg.exe install zlib:x64-windows
+#include <vorbis/codec.h>		// libvorbis:x64-windows           
+#include <vorbis/vorbisfile.h>	// libvorbis:x64-windows
+#include <fmt/core.h> // fmt:x64-windows
+#include <fmt/format.h> // fmt:x64-windows
 
 #include <Dependencies/LuaPlus/LuaPlus/LuaPlus.h>  // TODO: learn how include the build of this... (there are no headers)

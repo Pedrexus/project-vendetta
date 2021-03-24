@@ -22,8 +22,9 @@ constexpr auto CPU_SPEED = 1300; // 1.3GHz
 
 // window specifications
 
-constexpr auto WINDOW_WIDTH = 800;
-constexpr auto WINDOW_HEIGHT = 600;
+constexpr auto WINDOW_WIDTH = 1280;
+constexpr auto WINDOW_HEIGHT = 720;
+constexpr auto SCREEN_REFRESH_RATE = 1000 / 60;  // 1s / 60 = 60 fps
 
 constexpr auto WINDOW_CLASS_NAME = L"Project_Vendetta_GameWindowClass";
 constexpr auto WINDOW_TITLE_NAME = L"Project Vendetta Game";
@@ -31,8 +32,15 @@ constexpr auto WINDOW_EXTENDED_STYLE = WS_EX_LEFT;
 constexpr auto WINDOW_STYLE = WS_OVERLAPPEDWINDOW;
 constexpr auto WINDOW_HAS_MENU = FALSE;
 
-constexpr auto SCREEN_REFRESH_RATE = 1000 / 60;  // 1s / 60 = 60 fps
 constexpr auto LOOP_EXECUTION_POLICY = std::execution::par_unseq; // parallel unsequenced policy
+
+// sound system specifications
+
+constexpr auto NUMBER_PRIMARY_CHANNELS = 32;
+constexpr auto PRIMARY_SAMPLE_RATE = 44100;
+constexpr auto PRIMARY_AUDIO_BITRATE = 16;
+constexpr auto MINIMUM_VOLUME = 0;
+constexpr auto MAXIMUM_VOLUME = 100;
 
 // dependencies
 
@@ -53,6 +61,3 @@ namespace Pointer
 	constexpr auto Left = "PointerLeft";
 	constexpr auto Right = "PointerRight";
 }
-
-// {6C90E477-84F5-44D9-8EE3-E3C2BF252B7F}
-static const GUID ID1 = { 0x6c90e477, 0x84f5, 0x44d9, { 0x8e, 0xe3, 0xe3, 0xc2, 0xbf, 0x25, 0x2b, 0x7f } };

@@ -10,8 +10,15 @@
 #include "Modules/EventSystem.h"
 #include "Modules/ProcessSystem.h"
 #include "Modules/LuaScriptingSystem.h"
+#include "Modules/AudioSystem.h"
+#include "Modules/GraphicsSystem.h"
 
-// define class in header, implement in cpp
+#define Accessor(type, member) \
+	static inline std::shared_ptr<type> Get##type() { return std::shared_ptr<type>(Get()->member); };
+
+#define Accessor2(name, type, member) \
+	static inline std::shared_ptr<type> Get##name() { return std::shared_ptr<type>(Get()->member); };
+
 
 /*
 	Game Application Layer
@@ -44,7 +51,7 @@ protected:
 	~GameApp() = default;
 
 public:
-	GameApp(GameApp & other) = delete; // Singletons should not be cloneable.
+	GameApp(GameApp& other) = delete; // Singletons should not be cloneable.
 	void operator=(const GameApp&) = delete; // Singletons should not be assignable.
 
 	static inline void Destroy() { SAFE_DELETE(instance); };
@@ -63,36 +70,18 @@ public:
 #pragma endregion
 
 private:
-	// handle to a window
-	HWND m_window;
-
-	// set of features targeted by a Direct3D device
-	D3D_FEATURE_LEVEL m_featureLevel;
-
-	// represents a virtual adapter; it is used to create resources.
-	Microsoft::WRL::ComPtr<ID3D11Device5> m_d3dDevice;
-
-	// represents a device context which generates rendering commands
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext4> m_d3dContext;
-
-	// implements one or more surfaces (IDXGISurface) for storing rendered data before presenting it to an output.
-	Microsoft::WRL::ComPtr<IDXGISwapChain4> m_swapChain;
-
-	// identifies the render-target subresources that can be accessed during rendering
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_renderTargetView;
-
-	// accesses a texture resource during depth-stencil testing
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_depthStencilView;
-
 	TCHAR m_saveGameDirectory[MAX_PATH];
 
 	ResourceCache* m_ResCache;
 	ProcessManager* m_ProcessManager;
+	XAudioManager* m_AudioManager;
+	DX12Engine* m_GraphicsEngine;
+	Timer m_timer;
 
 	std::map<std::wstring, UINT> m_hotkeys;
+	std::map<std::wstring, std::wstring> m_textResource; // strings
 
 public:
-
 	/*
 		App::Initialize
 
@@ -110,30 +99,35 @@ public:
 		- Sets the directory for save games and other temporary files.
 		- Preloads selected resources from the resource cache.
 	*/
-	virtual bool Initialize(
-		HINSTANCE hInstance,
-		LPWSTR lpCmdLine,
-		HWND hWnd,
-		INT nCmdShow
-	);
-
-	// accessors
-	ResourceCache* GetResourceCache() { return m_ResCache; };
-	inline void AttachProcess(std::shared_ptr<Process> pProcess) { if (m_ProcessManager) m_ProcessManager->AttachProcess(pProcess); }
-
-	std::map<std::wstring, std::wstring> m_textResource; // strings
-	std::shared_ptr<IRenderer> m_Renderer;
-
-	// Shutdown sequence occurs in reverse order from initialization
+	virtual bool Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, HWND hWnd, INT nCmdShow);
 	virtual LRESULT Shutdown();
 
-	// create the resources that depend on the device.
-	virtual void CreateDevice();
+	inline void AttachProcess(std::shared_ptr<Process> pProcess) { if (m_ProcessManager) m_ProcessManager->AttachProcess(pProcess); }
 
-	virtual HWND InitializeWindow(HINSTANCE hInstance, INT nCmdShow, INT screenWidth, INT screenHeight);
+// event handlers
+public:
+	inline void OnSuspending() { m_timer.Stop(); }
+	inline void OnResuming() { m_timer.Start(); } // Unpause
+
+	inline bool IsReady() { return m_GraphicsEngine->IsReady(); } // TODO: should check if Init has been called
+	inline bool IsSuspended() { return m_timer.IsPaused(); }
+
+public:
+	virtual bool Run(); // main loop
+	virtual void OnLoopIteration(); // game loop iteration
+protected:
+	virtual inline void OnUpdate() {};
+
+public:
+	// static accessors
+	Accessor(ResourceCache, m_ResCache);
+	Accessor(XAudioManager, m_AudioManager);
+
+	// accessors
+	inline DX12Engine* GetWindow() { return m_GraphicsEngine; }
 
 protected:
 	UINT MapCharToKeycode(const char pHotKey);
 	bool LoadStrings(std::string language);
-
+	void MeasureFrameStats();
 };

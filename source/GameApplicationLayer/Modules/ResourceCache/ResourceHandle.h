@@ -2,7 +2,10 @@
 
 #include <pch.h>
 
-#include "../ResourceCache.h"
+#include "Resource.h"
+#include "ResourceCache.h"
+
+#include "ResourceData/IResourceData.h"
 
 // TODO: add IResourceExtraData fields
 class ResourceHandle
@@ -27,6 +30,13 @@ public:
 	inline char* Buffer() const { return m_buffer; }
 	inline char* WritableBuffer() { return m_buffer; }
 
-	std::shared_ptr<IResourceData> GetData();
-	inline void SetData(std::shared_ptr<IResourceData> data) { m_resourceData = data; }
+	inline void SetData(std::shared_ptr<IResourceData> data) { m_resourceData = data; data->SetResource(m_resource); }
+	template<class T> 
+	std::shared_ptr<T> GetData()
+	{
+		if (!m_resourceData)
+			LOG_FATAL("Data was not loaded for handle of resource " + this->GetName());
+
+		return std::dynamic_pointer_cast<T>(m_resourceData);
+	}
 };

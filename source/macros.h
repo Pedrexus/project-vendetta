@@ -19,6 +19,10 @@
 	#define SAFE_DELETE_ARRAY(x) if (x) delete[] x; x = nullptr; 
 #endif
 
+#ifndef SAFE_RELEASE
+#define SAFE_RELEASE(x) if(x) x->Release(); x=NULL;
+#endif
+
 // logging
 #ifdef _DEBUG
 

@@ -1,8 +1,11 @@
 #pragma once
 
 #include <pch.h>
+#include <types.h>
 
 #include "../ResourceData/IResourceData.h"
+
+class ResourceHandle;
 
 // A resource loader specifies how a file inside the resource file should be read
 //	The implementations can be for .ogg, .wav, .bitmap, ...  (data files)
@@ -16,6 +19,5 @@ public:
 	virtual bool AddNullZero() { return false; }  // false => +0, true => +1
 
 	// The loader has to implement at least one
-	virtual IResourceData* LoadResource(char* rawBuffer, size rawSize) { return nullptr; };
-	virtual IResourceData* LoadResource(char* rawBuffer, size rawSize, char* writableBuffer) { return nullptr; };
+	virtual IResourceData* LoadResource(char* rawBuffer, size rawSize, std::shared_ptr<ResourceHandle> handle) = 0;
 };

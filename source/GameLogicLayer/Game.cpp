@@ -18,23 +18,25 @@ INT WINAPI wWinMain(
     // always the second: initialize logging system.
     Logger::Init("logging.xml");
 
-    if (!DirectX::XMVerifyCPUSupport())
+    auto game = GameApp::Get();
+
+    if (!game->Initialize(hInstance, lpCmdLine, 0, nShowCmd))
     {
-        // creates a pop up windows message box
-        MessageBox(nullptr, TEXT("Failed to verify DirectX Math library support."), TEXT("Error"), MB_OK);
-        return -1;
+        // LOG_FATAL("Failed intializing GameApp");
+        return FALSE; // Fix memory leaks if we hit this branch. // TODO: print an error.
     }
 
-    if (GameApp::Get()->Initialize(hInstance, lpCmdLine, 0, nShowCmd))
-        return FALSE; // Fix memory leaks if we hit this branch. // TODO: print an error.
+    // game loop
+    if (!game->Run())
+         return FALSE;
+
+    // shutdown
+    game->Shutdown();
 
     MessageBox(nullptr, TEXT("Everything worked."), TEXT("Success"), MB_OK);
 
-    // shutdown
-    GameApp::Get()->Shutdown();
     GameApp::Destroy();
     Logger::Destroy();
-
 
     return 0;
 }

@@ -9,6 +9,11 @@ namespace Convert
 {
 	std::string StringToLower(std::string s);
 	std::wstring ANSIToUNICODE(const char* source, const unsigned int length);
+
+	std::string ws2s(std::wstring const& wstr);
+	std::wstring s2ws(std::string const& str);
+
+	std::string int2hex(i64 number);
 }
 
 namespace Mem
@@ -47,8 +52,30 @@ namespace DX
 		if (FAILED(hr))
 		{
 			// Set a breakpoint on this line to catch DirectX API errors
-			throw std::exception("DirectX has failed");
+			throw std::exception("DirectX has failed with HRESULT " + hr);
 		}
+	}
+
+	namespace COM
+	{
+		
+		inline void Initialize()
+		{
+			// Initializes COM: a standard under which different pieces of software interact
+			HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+			if (FAILED(hr))
+				throw std::exception("Failed at initializing COM with HRESULT " + hr);
+		}
+
+		inline void Shutdown()
+		{
+			// Closes the COM library on the current thread, 
+			// unloads all DLLs loaded by the thread, 
+			// frees any other resources that the thread maintains, 
+			// and forces all RPC connections on the thread to close.
+			CoUninitialize();
+		}
+		
 	}
 }
 

@@ -130,7 +130,7 @@ std::shared_ptr<ResourceHandle> ResourceCache::Load(Resource* r)
 		handle = std::shared_ptr<ResourceHandle>{ NEW ResourceHandle(*r, buffer, size, this) };
 		
 		// set ResourceData
-		auto pResourceData = std::shared_ptr<IResourceData>(loader->LoadResource(rawBuffer, rawSize, handle->WritableBuffer())); // TODO: make the loader unaware of the handle
+		auto pResourceData = std::shared_ptr<IResourceData>(loader->LoadResource(rawBuffer, rawSize, handle)); // TODO: make the loader unaware of the handle
 		handle->SetData(pResourceData);
 
 		// If the raw buffer from the resource file isn't needed, it shouldn't take up
@@ -272,6 +272,9 @@ std::vector<std::string> ResourceCache::Match(const std::string pattern)
 	return matchingNames;
 }
 
+
+#include "ResourceCache.inl"
+
 template<class T>
 std::shared_ptr<T> ResourceCache::GetData(const std::string filename)
 {
@@ -279,8 +282,5 @@ std::shared_ptr<T> ResourceCache::GetData(const std::string filename)
 
 	Resource r{ filename };
 	auto handle = GetHandle(&r);
-	return std::dynamic_pointer_cast<T>(handle->GetData());
+	return handle->GetData<T>();
 }
-
-// explicit instantiations - avoid linker "unresolved external symbol"
-template std::shared_ptr<ResourceData::XML> ResourceCache::GetData(const std::string filename);

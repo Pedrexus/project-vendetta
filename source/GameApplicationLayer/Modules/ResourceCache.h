@@ -3,6 +3,7 @@
 // avoiding circular dependence
 class ResourceCache;
 class ResourceHandle;
+class IResourceLoader;
 
 #include "ResourceCache/ResourceData/IResourceData.h"
 #include "ResourceCache/ResourceData/XMLResourceData.h"

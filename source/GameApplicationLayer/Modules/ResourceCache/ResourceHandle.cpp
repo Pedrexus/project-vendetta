@@ -1,7 +1,6 @@
-#include "ResourceHandle.h"
-
 #include <macros.h>
 
+#include "ResourceHandle.h"
 
 ResourceHandle::ResourceHandle(Resource& resource, char* buffer, unsigned int size, ResourceCache* pResCache) :
 	m_resource(resource),
@@ -17,10 +16,3 @@ ResourceHandle::~ResourceHandle()
 	m_pResCache->MemoryHasBeenFreed(m_size);
 }
 
-std::shared_ptr<IResourceData> ResourceHandle::GetData()
-{
-	if (!m_resourceData)
-		LOG_FATAL("Data was not loaded for handle of resource " + this->GetName());
-
-	return m_resourceData;
-}

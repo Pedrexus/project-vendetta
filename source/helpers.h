@@ -16,4 +16,6 @@
 
 #include "Helpers/String/String.h"
 
+#include "Helpers/Timer/Timer.h"
+
 #include "Helpers/ZipFile/ZipFile.h"

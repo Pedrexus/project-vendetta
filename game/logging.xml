@@ -11,4 +11,5 @@
 	<Log tag="Actor" debugger="0" file="1"/>
 	<Log tag="Events" debugger="0" file="1"/>
 	<Log tag="Lua" debugger="0" file="1"/>
+	<Log tag="Graphics" debugger="0" file="1"/>
 </Logging>

@@ -128,10 +128,31 @@
     <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Components\BaseScriptComponent.h" />
     <ClInclude Include="Source\GameApplicationLayer\Modules\ProcessSystem.h" />
     <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\ActorComponent.h" />
-    <ClInclude Include="Source\GameApplicationLayer\Modules\Audio\SoundResource\ResourceData\SoundResourceData.h" />
-    <ClInclude Include="Source\GameApplicationLayer\Modules\Audio\SoundResource\ResourceLoaders\WaveResourceLoader.h" />
-    <ClInclude Include="Source\GameApplicationLayer\Modules\Audio\SoundResource\ResourceLoaders\OGGResourceLoader.h" />
-    <ClInclude Include="Source\GameApplicationLayer\Modules\Audio\Audio.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceData\SoundResourceData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\OGG\Vorbis.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\OGGResourceLoader.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\IAudioBuffer.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\Audio.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\WaveResourceLoader.h" />
+    <ClInclude Include="Source\libs.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\IAudioManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\XAudio2\XAudioManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\XAudio2\XAudioBuffer.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundProcess\SoundProcess.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\GraphicsSystem\Math\VEC3.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\GraphicsSystem\Math\VEC4.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\GraphicsSystem\Math\M4x4.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\GraphicsSystem.h" />
+    <ClInclude Include="Source\Dependencies\DirectX12\d3dx12.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsEngines\WindowManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsEngines\DX12Engine.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsEngines\DX12Helpers.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsEngines\dx12pch.h" />
+    <ClInclude Include="Source\Helpers\Timer\SystemTime.h" />
+    <ClInclude Include="Source\Helpers\Timer\Timer.h" />
+    <ClInclude Include="Source\GameViewLayer\WindowProcedure.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />
@@ -194,7 +215,6 @@
     <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\CheckStorage.cpp" />
     <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\GetSaveGameDirectory.cpp" />
     <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\IsOnlyInstance.cpp" />
-    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\Window.cpp" />
     <ClCompile Include="Source\GameApplicationLayer\Modules\MainLoop\Process.cpp" />
     <ClCompile Include="Source\GameApplicationLayer\Modules\MainLoop\ProcessManager.cpp" />
     <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceData\XMLResourceData.cpp" />
@@ -211,7 +231,19 @@
     <ClCompile Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptEventSystem\ScriptEventListener.cpp" />
     <ClCompile Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptProcessSystem\ScriptProcess.cpp" />
     <ClCompile Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptEventSystem\ScriptEventListenerManager.cpp" />
-    <ClCompile Include="Source\GameApplicationLayer\Modules\Audio\SoundResource\ResourceLoaders\WaveResourceLoader.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\OGGResourceLoader.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\WaveResourceLoader.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\DefaultResourceLoader.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\IAudioManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\XAudio2\XAudioManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\XAudio2\XAudioBuffer.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundProcess\SoundProcess.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsEngines\DX12Engine.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsEngines\WindowManager.cpp" />
+    <ClCompile Include="Source\Helpers\Timer\Timer.cpp" />
+    <ClCompile Include="Source\Helpers\Timer\SystemTime.cpp" />
+    <ClCompile Include="Source\GameViewLayer\WindowProcedure.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Game\logging.xml" />
@@ -229,5 +261,7 @@
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStackObject.inl" />
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStackTableIterator.inl" />
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaState.inl" />
+    <None Include="cpp.hint" />
+    <None Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.inl" />
   </ItemGroup>
 </Project>

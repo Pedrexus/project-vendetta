@@ -1,7 +1,8 @@
 #include "WaveResourceLoader.h"
 
-ResourceData::Sound* WaveResourceLoader::ParseWave(char* wavStream, size bufferLength, char* writableBuffer)
+ResourceData::Sound* WaveResourceLoader::ParseWave(char* wavStream, size bufferLength, std::shared_ptr<ResourceHandle> handle)
 {
+	XAUDIO2_BUFFER xaudio2buffer = { 0 };
 	WAVEFORMATEX waveformatex;
 
 	DWORD file = 0;
@@ -59,13 +60,17 @@ ResourceData::Sound* WaveResourceLoader::ParseWave(char* wavStream, size bufferL
 			case mmioFOURCC('d', 'a', 't', 'a'):
 			{
 				copiedBuffer = true;
-				if (length != bufferLength)
+				if (length != handle->Size())
 				{
 					LOG_ERROR("Wav resource size does not equal the buffer size");
 					return nullptr;
 				}
-				memcpy(writableBuffer, wavStream + pos, length);
+				memcpy(handle->WritableBuffer(), wavStream + pos, length);
 				pos += length;
+
+				xaudio2buffer.AudioBytes = length;  //size of the audio buffer in bytes
+				xaudio2buffer.pAudioData = (BYTE*)handle->Buffer();  //buffer containing audio data
+				xaudio2buffer.Flags = XAUDIO2_END_OF_STREAM; // tell the source voice not to expect any data after this buffer
 			}
 		}
 
@@ -75,7 +80,7 @@ ResourceData::Sound* WaveResourceLoader::ParseWave(char* wavStream, size bufferL
 		if (copiedBuffer)
 		{
 			milliseconds timeLength = (bufferLength * 1000) / waveformatex.nAvgBytesPerSec;
-			auto resourceData = NEW ResourceData::Sound(SoundType::WAVE, waveformatex, timeLength);
+			auto resourceData = NEW ResourceData::Sound(SoundType::WAVE, waveformatex, xaudio2buffer, timeLength);
 			return resourceData;
 		}
 
@@ -164,12 +169,12 @@ size WaveResourceLoader::GetLoadedResourceSize(char* rawBuffer, size rawSize)
 	return 0;
 }
 
-ResourceData::Sound* WaveResourceLoader::LoadResource(char* rawBuffer, size rawSize, char* writableBuffer)
+ResourceData::Sound* WaveResourceLoader::LoadResource(char* rawBuffer, size rawSize, std::shared_ptr<ResourceHandle> handle)
 {
 	if (rawSize <= 0)
 		return nullptr;
 	
-	auto resourceData = ParseWave(rawBuffer, rawSize, writableBuffer);
+	auto resourceData = ParseWave(rawBuffer, rawSize, handle);
 	if(!resourceData)
 		LOG_ERROR("Unable to parse .wav file as WAVE file");
 
