@@ -3,21 +3,18 @@
 #include <pch.h>
 #include <const.h>
 #include <macros.h>
-#include <helpers.h>
+#include <Helpers/Timer/Timer.h>
 
+#include "Modules/Actors.h"
 #include "Modules/Initialization.h"
 #include "Modules/ResourceCache.h"
 #include "Modules/EventSystem.h"
 #include "Modules/ProcessSystem.h"
 #include "Modules/LuaScriptingSystem.h"
 #include "Modules/AudioSystem.h"
-#include "Modules/GraphicsSystem.h"
 
 #define Accessor(type, member) \
-	static inline std::shared_ptr<type> Get##type() { return std::shared_ptr<type>(Get()->member); };
-
-#define Accessor2(name, type, member) \
-	static inline std::shared_ptr<type> Get##name() { return std::shared_ptr<type>(Get()->member); };
+	inline std::shared_ptr<type> Get##type() { return std::shared_ptr<type>(member); };
 
 
 /*
@@ -41,42 +38,13 @@
 */
 class GameApp
 {
-#pragma region Singleton
-private:
-	inline static GameApp* instance;
-	inline static std::mutex mutex;
-
 protected:
-	GameApp();
-	~GameApp() = default;
-
-public:
-	GameApp(GameApp& other) = delete; // Singletons should not be cloneable.
-	void operator=(const GameApp&) = delete; // Singletons should not be assignable.
-
-	static inline void Destroy() { SAFE_DELETE(instance); };
-	static inline GameApp* Get()
-	{
-		std::lock_guard<std::mutex> lock(mutex);
-
-		if (instance == nullptr)
-		{
-			LOG("Lua", "GameApp instantiated");
-			instance = NEW GameApp();
-		}
-
-		return instance;
-	}
-#pragma endregion
-
-private:
 	TCHAR m_saveGameDirectory[MAX_PATH];
 
+	Timer m_timer;
 	ResourceCache* m_ResCache;
 	ProcessManager* m_ProcessManager;
 	XAudioManager* m_AudioManager;
-	DX12Engine* m_GraphicsEngine;
-	Timer m_timer;
 
 	std::map<std::wstring, UINT> m_hotkeys;
 	std::map<std::wstring, std::wstring> m_textResource; // strings
@@ -100,7 +68,7 @@ public:
 		- Preloads selected resources from the resource cache.
 	*/
 	virtual bool Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, HWND hWnd, INT nCmdShow);
-	virtual LRESULT Shutdown();
+	virtual void Shutdown();
 
 	inline void AttachProcess(std::shared_ptr<Process> pProcess) { if (m_ProcessManager) m_ProcessManager->AttachProcess(pProcess); }
 
@@ -109,25 +77,25 @@ public:
 	inline void OnSuspending() { m_timer.Stop(); }
 	inline void OnResuming() { m_timer.Start(); } // Unpause
 
-	inline bool IsReady() { return m_GraphicsEngine->IsReady(); } // TODO: should check if Init has been called
+	inline bool IsReady() { return true; } // TODO: should check if Init has been called
 	inline bool IsSuspended() { return m_timer.IsPaused(); }
 
 public:
-	virtual bool Run(); // main loop
-	virtual void OnLoopIteration(); // game loop iteration
+	void Run(); // main loop
+private:
+	void ProcessMessage(MSG& msg);
+	void TickAndDispatchGameMessage(MSG& msg);
+
 protected:
-	virtual inline void OnUpdate() {};
+	virtual void DispatchGameMessage(MSG& msg) = 0;
+	virtual void OnUpdate(milliseconds dt) = 0;
 
 public:
 	// static accessors
 	Accessor(ResourceCache, m_ResCache);
 	Accessor(XAudioManager, m_AudioManager);
 
-	// accessors
-	inline DX12Engine* GetWindow() { return m_GraphicsEngine; }
-
 protected:
 	UINT MapCharToKeycode(const char pHotKey);
 	bool LoadStrings(std::string language);
-	void MeasureFrameStats();
 };

@@ -2,51 +2,75 @@
 Function: Logger::Init
 Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Logger\Logger.cpp
 Line: 34
-[Lua] GameApp instantiated
-Function: GameApp::Get
-Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\GameApp.h
-Line: 64
-[INFO] Free physical storage: 662820Mb
-Function: MachineRead::FreeStorage
-Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Functions.cpp
-Line: 112
-[INFO] Available Virtual Memory: 131067Gb
-Function: MachineRead::FreeVirtualMemory
-Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Functions.cpp
-Line: 96
-[INFO] Available Physical RAM: 9Gb
-Function: MachineRead::FreePhysicalRAM
-Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Functions.cpp
-Line: 88
-[INFO] CPU Speed: 2808MHz
-Function: MachineRead::CPUSpeed
-Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Functions.cpp
-Line: 73
-[INFO] Default Resource Loader registered
-Function: ResourceCache::Init
-Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.cpp
-Line: 29
-[INFO] loading Strings\English.xml from the zip file
-Function: ResourceCache::GetData
-Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.cpp
-Line: 281
-[INFO] 22 strings loaded from Strings\English.xml
-Function: GameApp::LoadStrings
-Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\GameApp.cpp
-Line: 198
-[Events] EventManager instantiated
-Function: EventManager::Get
-Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\EventSystem\EventManager.h
-Line: 44
-[Lua] LuaStateManager instantiated
-Function: LuaStateManager::Get
-Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\LuaScriptingSystem\LuaStateManager.h
-Line: 29
-[Graphics] D3D12 Device created with NVIDIA GeForce GTX 1060
-Function: DX12Engine::CreateHardwareDevice
-Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsEngines\DX12Engine.cpp
-Line: 204
-[Graphics] Using MSAA with 4 samples and 1 quality levels
-Function: DX12Engine::InitializeDirect3D
-Function: D:\Coding\C++\ProjectVendetta\Source\GameApplicationLayer\Modules\GraphicsSystem\GraphicsEngines\DX12Engine.cpp
-Line: 76
+[INFO] Game instantiated
+Function: Game::Get
+Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.h
+Line: 33
+[Graphics] Using MSAA with 1 samples and 1 quality levels
+Function: DX12Engine::CheckMSAASupport
+Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.cpp
+Line: 128
+[Graphics] 
+Adapter 7200: NVIDIA GeForce GTX 1060
+Adapter 22811: Intel(R) HD Graphics 630
+Output: \\.\DISPLAY1
+Mode: 320x200	60Hz
+Mode: 320x200	60Hz
+Mode: 320x240	60Hz
+Mode: 320x240	60Hz
+Mode: 400x300	60Hz
+Mode: 400x300	60Hz
+Mode: 512x384	60Hz
+Mode: 512x384	60Hz
+Mode: 640x400	60Hz
+Mode: 640x400	60Hz
+Mode: 640x480	60Hz
+Mode: 640x480	60Hz
+Mode: 800x600	60Hz
+Mode: 800x600	60Hz
+Mode: 1024x768	60Hz
+Mode: 1024x768	60Hz
+Mode: 1152x864	60Hz
+Mode: 1152x864	60Hz
+Mode: 1280x600	60Hz
+Mode: 1280x600	60Hz
+Mode: 1280x720	60Hz
+Mode: 1280x720	60Hz
+Mode: 1280x768	60Hz
+Mode: 1280x768	60Hz
+Mode: 1280x800	60Hz
+Mode: 1280x800	60Hz
+Mode: 1280x960	60Hz
+Mode: 1280x960	60Hz
+Mode: 1280x1024	60Hz
+Mode: 1280x1024	60Hz
+Mode: 1360x768	60Hz
+Mode: 1360x768	60Hz
+Mode: 1366x768	60Hz
+Mode: 1366x768	60Hz
+Mode: 1400x1050	60Hz
+Mode: 1400x1050	60Hz
+Mode: 1440x900	60Hz
+Mode: 1440x900	60Hz
+Mode: 1600x900	60Hz
+Mode: 1600x900	60Hz
+Mode: 1680x1050	60Hz
+Mode: 1680x1050	60Hz
+Mode: 1920x1080	60Hz
+Adapter 140: Microsoft Basic Render Driver
+
+Function: Display::LogInformation
+Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DXGI.h
+Line: 68
+[INFO] Game initialized
+Function: Game::Initialize
+Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
+Line: 14
+[INFO] Game shutdown
+Function: Game::Shutdown
+Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
+Line: 24
+[INFO] Logger destroyed
+Function: Logger::Destroy
+Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Logger\Logger.cpp
+Line: 40

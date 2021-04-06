@@ -4,6 +4,7 @@
 #include "ScriptEventSystem/ScriptEventListenerManager.h"
 
 #include "../../GameApp.h"
+#include <GameLogicLayer/Game.h>
 
 class InternalScriptExports
 {
@@ -38,8 +39,8 @@ public:
 	//---------------------------------------------------------------------------------------------------------------------
 	static bool LoadAndExecuteScriptResource(const char* scriptResource)
 	{
-		auto gameApp = GameApp::Get();
-		if (gameApp->GetResourceCache()->IsUsingDevelopmentDirectories())
+		auto game = Game::Get();
+		if (game->GetResourceCache()->IsUsingDevelopmentDirectories())
 		{
 			// If we're using development directories, have Lua execute the file directly instead of going through 
 			// the resource cache.  This allows Decoda to see the file for debugging purposes.
@@ -50,7 +51,7 @@ public:
 		else
 		{
 			Resource resource(scriptResource);
-			auto pResourceHandle = gameApp->GetResourceCache()->GetHandle(&resource);  // this actually loads the Lua file from the zip file
+			auto pResourceHandle = game->GetResourceCache()->GetHandle(&resource);  // this actually loads the Lua file from the zip file
 			return (bool) pResourceHandle;
 		}
 	}
@@ -106,7 +107,7 @@ public:
 		if (!__object.IsNil())
 		{
 			std::shared_ptr<Process> pProcess(static_cast<Process*>(__object.GetLightUserdata()));
-			GameApp::Get()->AttachProcess(pProcess);
+			Game::Get()->AttachProcess(pProcess);
 		}
 		else
 			LOG_ERROR("Couldn't find __object in script process");

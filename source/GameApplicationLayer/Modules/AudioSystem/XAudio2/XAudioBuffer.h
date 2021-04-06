@@ -1,5 +1,7 @@
 #pragma once
 
+#include <const.h>
+
 #include "../IAudioBuffer.h"
 #include "../SoundResource/ResourceData/SoundResourceData.h"
 

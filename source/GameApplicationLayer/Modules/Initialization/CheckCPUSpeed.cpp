@@ -1,4 +1,5 @@
 #include "../Initialization.h"
+#include <Helpers/Functions.h>
 
 bool CheckCPUSpeed(DWORD minCpuSpeed)
 {	

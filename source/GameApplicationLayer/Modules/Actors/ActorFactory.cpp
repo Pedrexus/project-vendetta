@@ -6,8 +6,7 @@
 #include "../ResourceCache.h"
 
 #include <macros.h>
-#include <helpers.h>
-
+#include <Helpers/Functions.h>
 
 ActorFactory::ActorFactory(void) : m_lastActorId(0)
 {

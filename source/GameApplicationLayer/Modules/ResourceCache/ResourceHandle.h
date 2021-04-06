@@ -1,6 +1,7 @@
 #pragma once
 
 #include <pch.h>
+#include <macros.h>
 
 #include "Resource.h"
 #include "ResourceCache.h"

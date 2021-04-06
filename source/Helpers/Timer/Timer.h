@@ -16,7 +16,7 @@ public:
 	Timer();
 
 	f64 GetTotalTime() const; // in seconds
-	inline f64 GetDeltaTime() const { return m_DeltaTime; } // in seconds
+	inline milliseconds GetDeltaMilliseconds() const { return m_DeltaTime * 1000; }
 	inline bool IsPaused() const { return m_Stopped; }
 
 	void Reset(); // Call before message loop.

@@ -35,6 +35,6 @@ namespace ResourceData
 		inline SoundType GetSoundType() { return m_SoundType; }
 		inline WAVEFORMATEX const* GetFormat() { return &m_WavFormatEx; }
 		inline XAUDIO2_BUFFER* GetBuffer() { return &m_xaudio2buffer; }
-		inline u64 GetLengthMilliseconds() const { return m_LengthMilliseconds; }
+		inline milliseconds GetLengthMilliseconds() const { return m_LengthMilliseconds; }
     };
 }

@@ -16,8 +16,8 @@ class Console
 	RECT m_ConsoleOutputRect;	//Where results get shown
 	RECT m_ConsoleInputRect;	//Where input is entered
 
-	DirectX::PackedVector::XMCOLOR m_InputColor;
-	DirectX::PackedVector::XMCOLOR m_OutputColor;
+	// DirectX::PackedVector::XMCOLOR m_InputColor;
+	// DirectX::PackedVector::XMCOLOR m_OutputColor;
 
 	std::string m_CurrentOutputString;	//What's the current output string?
 	std::string m_CurrentInputString;	//What's the current input string?
@@ -36,18 +36,18 @@ class Console
 	bool m_bExecuteStringOnUpdate;
 
 public:
-	Console(void);
-	~Console(void);
+	Console(void) {};
+	~Console(void) {};
 
-	void AddDisplayText(const std::string& newText);
-	void SetDisplayText(const std::string& newText);
+	void AddDisplayText(const std::string& newText) {};
+	void SetDisplayText(const std::string& newText) {};
 
 	void SetActive(const bool bIsActive) { m_bActive = bIsActive; }
 	bool IsActive(void) const { return m_bActive; }
 
-	void HandleKeyboardInput(const unsigned int keyVal, const unsigned int oemKeyVal, const bool bKeyDown);
+	void HandleKeyboardInput(const unsigned int keyVal, const unsigned int oemKeyVal, const bool bKeyDown) {};
 
-	void Update(const int deltaMilliseconds);
+	void Update(const int deltaMilliseconds) {};
 
-	void Render();
+	void Render() {};
 };

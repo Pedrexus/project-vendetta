@@ -1,16 +1,7 @@
 // edit Properties -> VC++ Directories -> Include Directories
 #include "GameApp.h"
 
-#include <helpers.h>
-
-GameApp::GameApp() :
-	m_saveGameDirectory(L""),
-	m_ResCache(nullptr),
-	m_textResource({}),
-	m_hotkeys({})
-{
-	// only the game (GameApp subclass) calls the constructor
-};
+#include <Helpers/Functions.h>
 
 bool GameApp::Initialize(
 	HINSTANCE hInstance,
@@ -19,7 +10,7 @@ bool GameApp::Initialize(
 	INT nCmdShow
 )
 {
-	DX::COM::Initialize();
+	COM::Initialize();
 
 	// Check for existing instance of the same window
 	// TODO: create a splash screen to help minimize this problem
@@ -71,9 +62,6 @@ bool GameApp::Initialize(
 	// TODO: Lua script manager initialization - Chapter 12
 	LuaStateManager::Get()->Init();
 
-	m_GraphicsEngine = NEW DX12Engine(hInstance);
-	m_GraphicsEngine->OnInit();
-
 	// TODO: create game logic & view - Chapter 21
 
 	// copy the string ptr
@@ -85,7 +73,7 @@ bool GameApp::Initialize(
 }
 
 // Shutdown sequence occurs in reverse order from initialization
-LRESULT GameApp::Shutdown()
+void GameApp::Shutdown()
 {
 	/*
 		The creation order was:
@@ -99,53 +87,47 @@ LRESULT GameApp::Shutdown()
 	// SAFE_DELETE(m_pGame);
 	// VDestroyNetworkEventForwarder();
 	// SAFE_DELETE(m_pBaseSocketManager);
-	SAFE_DELETE(m_GraphicsEngine);
 	EventManager::Destroy();
 	// BaseScriptComponent::UnregisterScriptFunctions();
 	// ScriptExports::Unregister();
 	LuaStateManager::Destroy();
 	SAFE_DELETE(m_ResCache);
-	DX::COM::Shutdown();
-
-	return 0;
+	COM::Shutdown();
 }
 
-// Starts the game
-bool GameApp::Run()
+void GameApp::Run()
 {
 	MSG msg = {};
+	m_timer.Reset();
 
 	while (msg.message != WM_QUIT)
-	{
-		// If there are Window messages then process them.
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		// Otherwise, do animation/game stuff.
-		else
-		{
-			m_timer.Tick();
-
-			if (IsSuspended())
-				Sleep(100);
-			else
-				this->OnLoopIteration();
-		}
-	}
-
-	return msg.wParam;
+		ProcessMessage(msg);
 }
 
-void GameApp::OnLoopIteration()
+void GameApp::ProcessMessage(MSG& msg)
 {
-	this->MeasureFrameStats();
-	// this->OnUpdate();
-
-	m_GraphicsEngine->Draw();
+	auto isWindowMessage = PeekMessage(&msg, 0, 0, 0, PM_REMOVE);
+	if (isWindowMessage)
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	else
+		TickAndDispatchGameMessage(msg);
 }
 
+void GameApp::TickAndDispatchGameMessage(MSG& msg)
+{
+	m_timer.Tick();
+
+	if (IsSuspended())
+		Sleep(100);
+	else
+	{
+		DispatchGameMessage(msg);
+		OnUpdate(m_timer.GetDeltaMilliseconds());
+	}
+}
 
 UINT GameApp::MapCharToKeycode(const char pHotKey)
 {
@@ -197,32 +179,4 @@ bool GameApp::LoadStrings(std::string language)
 
 	LOG_INFO(std::to_string(counter) + " strings loaded from " + languageFile);
 	return true;
-}
-
-// Code computes the average frames per second, and also the 
-// average time it takes to render one frame.  These stats 
-// are appended to the window caption bar.
-void GameApp::MeasureFrameStats()
-{
-	static u32 frameCount = 0;
-	static u64 totalFrames = 0;
-	static f64 timeElapsed = 0;
-
-	frameCount++;
-
-	// Compute averages over one second period.
-	auto totalTime = m_timer.GetTotalTime();
-	if ((totalTime - timeElapsed) >= 1.0f)
-	{
-		auto fps = (f32) frameCount; // fps = frameCnt / 1
-		auto mspf = 1000.0f / fps; // milliseconds per frame
-		auto windowText = fmt::format(L"{} fps: {} mspf: {:.6f} total: {}", WINDOW_TITLE_NAME, fps, mspf, totalFrames);
-
-		SetWindowText(m_GraphicsEngine->GetMainWnd(), windowText.c_str());
-
-		// Reset for next average.
-		totalFrames += frameCount;
-		frameCount = 0;
-		timeElapsed += 1.0f;
-	}
 }

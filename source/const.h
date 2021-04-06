@@ -22,17 +22,17 @@ constexpr auto CPU_SPEED = 1300; // 1.3GHz
 
 // window specifications
 
-constexpr auto WINDOW_WIDTH = 1280;
-constexpr auto WINDOW_HEIGHT = 720;
+constexpr auto WINDOW_WIDTH = 800;
+constexpr auto WINDOW_HEIGHT = 600;
 constexpr auto SCREEN_REFRESH_RATE = 1000 / 60;  // 1s / 60 = 60 fps
 
 constexpr auto WINDOW_CLASS_NAME = L"Project_Vendetta_GameWindowClass";
 constexpr auto WINDOW_TITLE_NAME = L"Project Vendetta Game";
-constexpr auto WINDOW_EXTENDED_STYLE = WS_EX_LEFT;
+// constexpr auto WINDOW_EXTENDED_STYLE = WS_EX_LEFT;
 constexpr auto WINDOW_STYLE = WS_OVERLAPPEDWINDOW;
 constexpr auto WINDOW_HAS_MENU = FALSE;
 
-constexpr auto LOOP_EXECUTION_POLICY = std::execution::par_unseq; // parallel unsequenced policy
+// constexpr auto LOOP_EXECUTION_POLICY = std::execution::par_unseq; // parallel unsequenced policy
 
 // sound system specifications
 
@@ -41,6 +41,12 @@ constexpr auto PRIMARY_SAMPLE_RATE = 44100;
 constexpr auto PRIMARY_AUDIO_BITRATE = 16;
 constexpr auto MINIMUM_VOLUME = 0;
 constexpr auto MAXIMUM_VOLUME = 100;
+
+// graphics system specifications
+
+#include <d3dcommon.h>
+
+constexpr auto DXD12_MINIMUM_FEATURE_LEVEL = D3D_FEATURE_LEVEL_11_0;
 
 // dependencies
 
@@ -54,10 +60,3 @@ constexpr auto SAVE_GAME_DIR = L"ProjectVendetta";
 constexpr auto LOGGING_CONFIG_FILENAME = "Logging.xml";
 constexpr auto LOGGING_OUTPUT_FILENAME = "vendetta.log";
 constexpr auto LOGGING_MODE = "clear";
-
-// namespaces (used as string enums)
-namespace Pointer
-{
-	constexpr auto Left = "PointerLeft";
-	constexpr auto Right = "PointerRight";
-}

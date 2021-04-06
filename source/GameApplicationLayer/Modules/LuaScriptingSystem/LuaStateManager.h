@@ -2,7 +2,6 @@
 
 #include <pch.h>
 #include <macros.h>
-#include <helpers.h>
 
 class LuaStateManager
 {

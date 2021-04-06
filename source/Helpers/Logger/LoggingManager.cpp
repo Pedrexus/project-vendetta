@@ -2,7 +2,7 @@
 
 #include <const.h>
 #include <macros.h>
-#include <helpers.h>
+#include <Helpers/Functions.h>
 
 constexpr auto LOGFLAG_WRITE_TO_LOG_FILE = 1 << 0;
 constexpr auto LOGFLAG_WRITE_TO_DEBUGGER = 1 << 1;
@@ -22,7 +22,7 @@ void LoggingManager::Init(const char* loggingConfigFilename)
 {
 	if (loggingConfigFilename)
 	{
-		auto document = tinyxml2::XMLDocument();
+		tinyxml2::XMLDocument document{};
 		if (document.LoadFile(loggingConfigFilename) != tinyxml2::XML_SUCCESS)
 			LOG_FATAL("Unable to load logging config file");
 

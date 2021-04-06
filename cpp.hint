@@ -3,3 +3,5 @@
 // For more information see https://go.microsoft.com/fwlink/?linkid=865984
 #define Accessor(type, member) static inline std::shared_ptr<type> Get##type() { return std::shared_ptr<type>(Get()->member); };
 #define LOG_ERROR(str) ERRORBOX(str, false)
+#define NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#define NEW

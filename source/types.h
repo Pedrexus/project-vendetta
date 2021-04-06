@@ -27,7 +27,7 @@ typedef double f64;
 // there is also f80 = long long double 
 // in Unix systems, but I won't use it
 
-typedef u32 milliseconds;
+typedef f64 milliseconds;
 constexpr auto INFINITE_TIME = UINT32_MAX;
 
 typedef u32 size; // buffer size, file size, etc.

@@ -3,96 +3,50 @@
 #include <pch.h>
 #include <types.h>
 
-#include <ApplicationLayer/Modules/Process.h>
-#include <ApplicationLayer/GameApp.h>
-
-#include "../IGameView.h"
-#include "../IScreenElement.h"
-#include "../InputHandlers.h"
-
-#include "Console.h"
+#include "../Interfaces/IGameView.h"
+#include "../Interfaces/IScreenElement.h"
+#include "../Interfaces/InputHandlers.h"
+#include "../Interfaces/Enums.h"
+#include "../OutputHandlers/WindowManager.h"
+#include "../GraphicsEngines/IGraphicsEngine.h"
 
 class HumanView : public IGameView
 {
 	friend class GameApp;
 
 protected:
-	GameViewId m_ViewId;
-	ActorId m_ActorId;
+	GameState m_GameState;
+	GameViewId m_ViewId = Human;
+	// ActorId m_ActorId;
 
-	ProcessManager* m_pProcessManager; // strictly for things like button animations, etc.
-
-	u64 m_currTick; // time right now
-	u64 m_lastDraw;	// last time the game rendered
-	bool m_runFullSpeed; // set to true if you want to run full speed
-
+	bool m_isRunningFullSpeed;
+	
 	// Interface sensitive objects
-	u32 m_PointerRadius;
+	u32 m_PointerRadius = 1; // we assume we are on a mouse enabled machine - if this were a tablet we should detect and change the value in the constructor.
 	std::shared_ptr<IPointerHandler> m_PointerHandler;
 	std::shared_ptr<IKeyboardHandler> m_KeyboardHandler;
-
-	std::list<std::shared_ptr<IScreenElement>> m_ScreenElements; // a game screen entity
-
-	Console m_Console;
-
-	BaseGameState m_BaseGameState;	// current game state
-
-	virtual void RenderText() {};
+	std::shared_ptr<WindowManager> m_windowManager;
+	std::shared_ptr<IGraphicsEngine> m_graphicsEngine;
 
 public:
-	HumanView(std::shared_ptr<IRenderer> renderer);
+	HumanView(HINSTANCE hInstance);
 	virtual ~HumanView();
 
-	virtual GameViewType GetType() { return GameViewType::Human; }
-	virtual GameViewId GetId() const { return m_ViewId; }
+	GameViewType GetType() override { return Human; }
+	GameViewId GetId() const override { return m_ViewId; }
 
-	// Implement the IGameView interface, except for the VOnRender() method, which is renderer specific
-	virtual HRESULT OnRestore();
-	virtual HRESULT OnLostDevice();
-	virtual void OnRender(f64 time, f32 elapsedTime);
-	virtual void OnUpdate(const u32 dt);
-	virtual LRESULT CALLBACK OnMsgProc(AppMsg msg);
-	virtual void OnAttach(GameViewId vid, ActorId aid)
+	virtual void Initialize();
+	inline bool IsReady() { return m_windowManager->IsReady() && m_graphicsEngine->IsReady(); }
+
+	virtual void OnUpdate(milliseconds dt);
+	virtual void OnMessage(MSG msg);
+	virtual inline void OnResize(u32 width = NULL, u32 heigth = NULL) 
 	{
-		m_ViewId = vid;
-		m_ActorId = aid;
+		if (width == NULL || heigth == NULL)
+			std::tie(width, heigth) = m_windowManager->GetDimensions();
+			
+		m_graphicsEngine->OnResize(width, heigth);
 	}
 
-	// Virtual methods to control the layering of interface elements
-	virtual void PushElement(std::shared_ptr<IScreenElement> element);
-	virtual void RemoveElement(std::shared_ptr<IScreenElement> element);
-
-	void TogglePause(bool active);
-
-	// Audio
-	bool InitAudio();
-	inline ProcessManager* GetProcessManager() { return m_pProcessManager; }
-
-	//Camera adjustments.
-	virtual void SetCameraOffset(const Vec4& camOffset);
-
-	// Added post press
-	std::shared_ptr<ScreenElementScene> m_pScene;
-	std::shared_ptr<CameraNode> m_pCamera;
-
-	void HandleGameState(BaseGameState newState);
-
-	inline Console& GetConsole(void) { return m_Console; }
-
-	// Added post press - this helps the network system attach views to the right actor.
-	inline virtual void SetControlledActor(ActorId actorId) { m_ActorId = actorId; }
-
-	bool LoadGame(tinyxml2::XMLElement* levelData);
-protected:
-	inline virtual void LoadGameDelegate(tinyxml2::XMLElement* pLevelData) { PushElement(m_pScene); }
-
-public:
-	// Event delegates
-	void PlaySoundDelegate(IEventDataPtr pEventData);
-	void GameStateDelegate(IEventDataPtr pEventData);
-
-private:
-	void RegisterAllDelegates(void);
-	void RemoveAllDelegates(void);
-	
+	inline std::shared_ptr<WindowManager> GetWindow() { return m_windowManager; };
 };

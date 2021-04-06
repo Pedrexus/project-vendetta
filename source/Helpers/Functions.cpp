@@ -31,16 +31,14 @@ namespace Convert
 		std::string wsTmp(wstr.begin(), wstr.end());
 		return wsTmp;
 	}
-	std::wstring s2ws(std::string const& str)
+
+	const wchar_t* s2ws(const char* str)
 	{
-		auto text = str.c_str();
-		auto size = mbsrtowcs(nullptr, &text, 0, nullptr);
+		int wchars_num = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
+		wchar_t* wstr = new wchar_t[wchars_num];
 
-		wchar_t* buf = NEW wchar_t[size + 1]();
-
-		size = mbsrtowcs(buf, &text, size + 1, nullptr);
-
-		return std::wstring(buf, size);
+		MultiByteToWideChar(CP_UTF8, 0, str, -1, wstr, wchars_num);
+		return wstr;
 	}
 	std::string int2hex(i64 number)
 	{

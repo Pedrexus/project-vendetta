@@ -1,7 +1,6 @@
 #include "ProcessManager.h"
 
 #include <const.h>
-#include <helpers.h>
 
 ProcessManager::ProcessManager(void) :
     m_processList({})

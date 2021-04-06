@@ -1,6 +1,6 @@
 #include "Resource.h"
 
-#include <helpers.h>
+#include <Helpers/Functions.h>
 
 Resource::Resource(const std::string &name)
 {

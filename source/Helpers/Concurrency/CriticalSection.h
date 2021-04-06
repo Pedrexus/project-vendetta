@@ -1,10 +1,11 @@
 #pragma once
 
 #include <pch.h>
-#include "../Classes/noncopyable.h"
 
-class CriticalSection : public noncopyable
+class CriticalSection 
 {
+	CriticalSection(const CriticalSection& x) = delete;
+	CriticalSection& operator=(const CriticalSection& x) = delete;
 
 protected:
 	// the critical section itself

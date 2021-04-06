@@ -1,42 +1,58 @@
-// project headers
-#include <helpers.h>
+#include "Game.h"
 
-#include <GameApplicationLayer/GameApp.h>
+Game* Game::instance = nullptr;
+std::mutex Game::mutex = {};
 
-// remember: set linker -> system -> subsystem = windows
-// windows entrypoint (wWinfMain for Unicode applications)
-INT WINAPI wWinMain(
-    _In_ HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPWSTR lpCmdLine,
-    _In_ INT nShowCmd
-)
+bool Game::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, HWND hWnd, INT nCmdShow)
 {
-    // always the first: set memory check flags.
-    SetMemoryChecks();
+	// if (!GameApp::Initialize(hInstance, lpCmdLine, hWnd, nCmdShow))
+	// 		LOG_FATAL("Failed to initialized Game Application Layer");
 
-    // always the second: initialize logging system.
-    Logger::Init("logging.xml");
+	m_humanView = NEW HumanView(hInstance);
+	m_humanView->Initialize();
 
-    auto game = GameApp::Get();
+	LOG_INFO("Game initialized");
 
-    if (!game->Initialize(hInstance, lpCmdLine, 0, nShowCmd))
-    {
-        // LOG_FATAL("Failed intializing GameApp");
-        return FALSE; // Fix memory leaks if we hit this branch. // TODO: print an error.
-    }
+	return true;
+}
 
-    // game loop
-    if (!game->Run())
-         return FALSE;
+void Game::Shutdown()
+{
+	// GameApp::Shutdown();
+	SAFE_DELETE(m_humanView);
 
-    // shutdown
-    game->Shutdown();
+	LOG_INFO("Game shutdown");
+}
 
-    MessageBox(nullptr, TEXT("Everything worked."), TEXT("Success"), MB_OK);
+void Game::DispatchGameMessage(MSG& msg)
+{
+	m_humanView->OnMessage(msg);
+}
 
-    GameApp::Destroy();
-    Logger::Destroy();
+void Game::OnUpdate(milliseconds dt)
+{
+	m_humanView->OnUpdate(dt);
+}
 
-    return 0;
+void Game::Run()
+{
+	MSG msg = {};
+	m_timer.Reset();
+
+	while (msg.message != WM_QUIT)
+	{
+		auto isWindowMessage = PeekMessage(&msg, 0, 0, 0, PM_REMOVE);
+		if (isWindowMessage)
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else
+		{
+			m_timer.Tick();
+
+			DispatchGameMessage(msg);
+			OnUpdate(m_timer.GetDeltaMilliseconds());
+		}
+	}
 }

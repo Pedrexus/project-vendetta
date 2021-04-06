@@ -8,7 +8,7 @@
 namespace SystemTime
 {
     // The amount of time that elapses between ticks of the performance counter
-    static f64 s_CpuTickDelta = 0;
+    f64 s_CpuTickDelta = 0;
 
     // Query the performance counter frequency
     inline void Initialize(void)

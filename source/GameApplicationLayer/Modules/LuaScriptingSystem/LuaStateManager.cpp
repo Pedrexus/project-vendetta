@@ -1,5 +1,8 @@
 #include "LuaStateManager.h"
 
+#include <Helpers/Functions.h>
+#include <Helpers/String/String.h>
+
 void LuaStateManager::ThrowLastError()
 {
     // Note: If we get an error, we're hosed because LuaPlus throws an exception. So if this function

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <helpers.h>
+#include <Helpers/ZipFile/ZipFile.h>
+
 #include "IResourceFile.h"
 
 class ResourceZipFile : public IResourceFile

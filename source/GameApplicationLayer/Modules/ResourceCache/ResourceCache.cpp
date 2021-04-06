@@ -3,7 +3,7 @@
 
 #include <const.h>
 #include <macros.h>
-#include <helpers.h>
+#include <Helpers/Functions.h>
 
 ResourceCache::ResourceCache(const unsigned int size, IResourceFile* file) :
 	m_cacheSize(size),

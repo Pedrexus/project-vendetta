@@ -1,4 +1,5 @@
 #include "../Initialization.h"
+#include <Helpers/Functions.h>
 
 // Most games need a bit of free secondary storage space for saving games
 bool CheckStorage(const DWORDLONG diskSpaceNeeded)
