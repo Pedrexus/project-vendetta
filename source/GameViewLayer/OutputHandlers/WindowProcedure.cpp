@@ -6,27 +6,27 @@ inline void ResumeOrSuspendOnActivation(WPARAM wParam)
 {
 	auto game = Game::Get();
 	auto isDeactivatingWindow = LOWORD(wParam) == WA_INACTIVE;
-	// isDeactivatingWindow ? game->OnSuspending() : game->OnResuming();
+	isDeactivatingWindow ? game->OnSuspending() : game->OnResuming();
 }
 
 inline void SuspendOnStartingToResize()
 {
 	auto game = Game::Get();
-	// game->OnSuspending();
+	game->OnSuspending();
 	game->GetWindow()->SetResizing();
 }
 
 inline void ResumeOnStopResizing()
 {
 	auto game = Game::Get();
-	// game->OnResuming();
+	game->OnResuming();
 	game->GetWindow()->StopResizing();
 }
 
 inline void SuspendOnMinimize()
 {
 	auto game = Game::Get();
-	// game->OnSuspending();
+	game->OnSuspending();
 	game->GetWindow()->SetMinimize();
 }
 
@@ -43,7 +43,7 @@ inline void ResizeOnMaximize(LPARAM lParam)
 inline void ResumeAndResize()
 {
 	auto game = Game::Get();
-	// game->OnResuming();
+	game->OnResuming();
 	game->OnResize();
 }
 

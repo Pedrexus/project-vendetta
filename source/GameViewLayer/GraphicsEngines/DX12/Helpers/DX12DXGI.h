@@ -55,12 +55,12 @@ namespace Display
 		{
 			DXGI_ADAPTER_DESC3 adapterDesc;
 			adapter->GetDesc3(&adapterDesc);
-			text += fmt::format("Adapter {}: {}\n", adapterDesc.DeviceId, Convert::ws2s(adapterDesc.Description));
+			text += fmt::format("Adapter {}: {}\n", adapterDesc.DeviceId, Convert::wide2str(adapterDesc.Description));
 			for (auto& output : Display::GetAdapterOutputs(adapter))
 			{
 				DXGI_OUTPUT_DESC outputDesc;
 				output->GetDesc(&outputDesc);
-				text += fmt::format("Output: {}\n", Convert::ws2s(outputDesc.DeviceName));
+				text += fmt::format("Output: {}\n", Convert::wide2str(outputDesc.DeviceName));
 				for (auto& mode : Display::GetOutputModes(static_cast<IDXGIOutput1*>(output), backBufferFormat))
 					text += fmt::format("Mode: {}x{}\t{}Hz\n", mode.Width, mode.Height, mode.RefreshRate.Numerator / mode.RefreshRate.Denominator);
 			}

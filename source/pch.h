@@ -7,10 +7,10 @@
 #pragma comment(lib,"Shlwapi.lib")
 
 // includes
-// #include <any>
+#include <any>
 #include <array>
 #include <algorithm>
-// #include <execution>
+#include <execution>
 // TODO: #include <format> C++ 20
 #include <functional>
 #include <iterator>
@@ -18,12 +18,11 @@
 #include <map>
 #include <memory>
 #include <mutex>
-// #include <optional>
+#include <optional>
 // TODO: #include <ranges> C++ 20
 #include <set>
 #include <string>
 #include <vector>
-#include <unordered_map>
 
 #include <iostream>
 #include <fstream>

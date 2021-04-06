@@ -9,12 +9,12 @@ inline bool HadSuccessCreatingDevice(HRESULT createDeviceResult, IDXGIAdapter4* 
 
 	if (SUCCEEDED(createDeviceResult))
 	{
-		LOG("Graphics", "D3D12Device created with " + Convert::ws2s(adapterDesc.Description));
+		LOG("Graphics", "D3D12Device created with " + Convert::wide2str(adapterDesc.Description));
 		return true;
 	}
 	else
 	{
-		LOG_WARNING("Failure at D3D12CreateDevice with " + Convert::ws2s(adapterDesc.Description));
+		LOG_WARNING("Failure at D3D12CreateDevice with " + Convert::wide2str(adapterDesc.Description));
 		return false;
 	}
 }
@@ -40,7 +40,7 @@ inline void CreateWARPDevice(IDXGIFactory4* factory, ID3D12Device** device)
 }
 
 // A device represents the display adapter (graphics card). Direct3D 12 devices are singletons per adapter.
-inline void CreateHardwareDevice(Display::AdapterVector adapterVector, IDXGIFactory* factory, ID3D12Device** device)
+inline void CreateHardwareDevice(Display::AdapterVector adapterVector, IDXGIFactory6* factory, ID3D12Device** device)
 {
 	auto createDeviceResult = CreateDeviceFromAdapters(adapterVector, device);
 
@@ -48,6 +48,6 @@ inline void CreateHardwareDevice(Display::AdapterVector adapterVector, IDXGIFact
 	if (FAILED(createDeviceResult))
 	{
 		LOG_WARNING("Failure at D3D12CreateDevice with Highest Performance Adapter. Falling back to WARP device.");
-		CreateWARPDevice(static_cast<IDXGIFactory4*>(factory), device);
+		CreateWARPDevice(factory, device);
 	}
 }

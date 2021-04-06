@@ -89,7 +89,7 @@ void HumanView::OnMessage(MSG msg)
 			{
 				ReleaseCapture();
 				Point p(LOWORD(msg.lParam), HIWORD(msg.lParam));
-				m_PointerHandler->OnPointerButtonDown(p, m_PointerRadius, MK_RBUTTON);
+				m_PointerHandler->OnPointerButtonUp(p, m_PointerRadius, MK_RBUTTON);
 			}
 			break;
 

@@ -41,6 +41,8 @@ void Game::Run()
 
 	while (msg.message != WM_QUIT)
 	{
+		m_timer.Tick();
+
 		auto isWindowMessage = PeekMessage(&msg, 0, 0, 0, PM_REMOVE);
 		if (isWindowMessage)
 		{
@@ -49,8 +51,6 @@ void Game::Run()
 		}
 		else
 		{
-			m_timer.Tick();
-
 			DispatchGameMessage(msg);
 			OnUpdate(m_timer.GetDeltaMilliseconds());
 		}

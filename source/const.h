@@ -20,19 +20,20 @@ constexpr auto VIRTUAL_RAM = 1024 * MEGABYTE;
 constexpr auto DISK_SPACE = 10 * MEGABYTE;
 constexpr auto CPU_SPEED = 1300; // 1.3GHz
 
+// software execution settings
+
+constexpr auto LOOP_EXECUTION_POLICY = std::execution::par_unseq; // parallel unsequenced policy
+
 // window specifications
 
-constexpr auto WINDOW_WIDTH = 800;
-constexpr auto WINDOW_HEIGHT = 600;
+constexpr auto WINDOW_WIDTH = 960;
+constexpr auto WINDOW_HEIGHT = 540;
 constexpr auto SCREEN_REFRESH_RATE = 1000 / 60;  // 1s / 60 = 60 fps
 
 constexpr auto WINDOW_CLASS_NAME = L"Project_Vendetta_GameWindowClass";
 constexpr auto WINDOW_TITLE_NAME = L"Project Vendetta Game";
-// constexpr auto WINDOW_EXTENDED_STYLE = WS_EX_LEFT;
 constexpr auto WINDOW_STYLE = WS_OVERLAPPEDWINDOW;
 constexpr auto WINDOW_HAS_MENU = FALSE;
-
-// constexpr auto LOOP_EXECUTION_POLICY = std::execution::par_unseq; // parallel unsequenced policy
 
 // sound system specifications
 

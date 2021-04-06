@@ -60,8 +60,7 @@ void WindowManager::Initialize()
 {
 	RegisterWindowClass();
 
-	u32 width, height;
-	std::tie(width, height) = GetWindowDimensions(m_ClientWidth, m_ClientHeight);
+	auto [width, height] = GetWindowDimensions(m_ClientWidth, m_ClientHeight);
 	m_hWnd = CreateOverlappedWindow(m_hInstance, width, height);
 
 	if (!m_hWnd)

@@ -1,6 +1,9 @@
 #pragma once
 
+#include <DirectXMath.h>
+
 #include "../Interfaces/InputHandlers.h"
+
 
 template<typename T>
 static T Threshold(const T& x, const T& low, const T& high)
@@ -13,9 +16,9 @@ class Controller : public IPointerHandler // TODO: public IKeyboardHandler
 	Point m_lastMousePos;
 	i32 m_btnState;
 
-	f32 m_Theta = .0f;
-	f32 m_Phi = .0f;
-	f32 m_Radius = 5.0f;
+	f32 m_Theta = 0;
+	f32 m_Phi = 1;
+	f32 m_Radius = 5;
 
 protected:
 	bool IsLeftPointerDown() { return m_btnState == MK_LBUTTON; }

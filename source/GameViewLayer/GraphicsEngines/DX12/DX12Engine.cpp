@@ -24,10 +24,7 @@ void DX12Engine::Initialize()
 #endif
 
 	CreateDXGIFactoryWithDebugLayer();
-	
-	// CreateHardwareDeviceFromAdaptersOrderedByPerformance();
-	D3D12CreateDevice(nullptr, DXD12_MINIMUM_FEATURE_LEVEL, IID_PPV_ARGS(&m_d3dDevice));
-	
+	CreateHardwareDeviceWithHighestPerformanceAdapterAvailable();
 	CreateFence();
 	CheckMSAASupport();
 	CreateCommandObjects();
@@ -97,11 +94,10 @@ void DX12Engine::CreateDXGIFactoryWithDebugLayer()
 #else
 	UINT CREATE_FACTORY_FLAGS = 0;
 #endif
-	// ThrowIfFailed(CreateDXGIFactory2(CREATE_FACTORY_FLAGS, IID_PPV_ARGS(&m_dxgiFactory)));
-	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(&m_dxgiFactory)));
+	ThrowIfFailed(CreateDXGIFactory2(CREATE_FACTORY_FLAGS, IID_PPV_ARGS(&m_dxgiFactory)));
 }
 
-void DX12Engine::CreateHardwareDeviceFromAdaptersOrderedByPerformance()
+void DX12Engine::CreateHardwareDeviceWithHighestPerformanceAdapterAvailable()
 {
 	auto dxgiFactory6 = static_cast<IDXGIFactory6*>(m_dxgiFactory.Get());
 	auto adapters = Display::GetAdaptersOrderedByPerformance(dxgiFactory6);
@@ -367,8 +363,8 @@ void DX12Engine::BuildPipelineStateObject()
 void DX12Engine::OnUpdate(milliseconds dt)
 {
 	// Build the view matrix.
-	static const auto target = XMVectorZero();
-	static const auto up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	auto target = XMVectorZero();
+	auto up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	XMMATRIX view = XMMatrixLookAtLH(m_cameraPosition, target, up);
 	XMStoreFloat4x4(&m_View, view);
@@ -395,7 +391,7 @@ void DX12Engine::OnUpdate(milliseconds dt)
 		auto fps = (stats.PresentCount - presentCount) / elapsedTimeSinceLastWrite;
 		auto mspf = 1.0f / fps;
 
-		auto windowText = fmt::format(L"fps: {:.0f} mspf: {:.6f} - camera: ({}, {}, {})", fps, mspf, XMVectorGetX(m_cameraPosition), XMVectorGetY(m_cameraPosition), XMVectorGetZ(m_cameraPosition));
+		auto windowText = fmt::format(L"fps: {:.0f} mspf: {:.6f} - camera: ({:.2f}, {:.2f}, {:.2f})", fps, mspf, XMVectorGetX(m_cameraPosition), XMVectorGetY(m_cameraPosition), XMVectorGetZ(m_cameraPosition));
 		SetWindowText(Game::Get()->GetWindow()->GetMainWnd(), windowText.c_str());
 
 		elapsedTimeSinceLastWrite = 0;
@@ -574,4 +570,9 @@ void DX12Engine::OnResize(u32 width, u32 heigth)
 	m_ScreenViewport.MaxDepth = 1.0f;
 	 
 	m_ScissorRect = { 0, 0, (i32) width, (i32) heigth };
+
+	// The window resized, so update the aspect ratio and recompute the projection matrix.
+	auto window = Game::Get()->GetWindow();
+	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * XM_PI, window->GetAspectRatio(), 1.0f, 1000.0f);
+	XMStoreFloat4x4(&m_Proj, P);
 }

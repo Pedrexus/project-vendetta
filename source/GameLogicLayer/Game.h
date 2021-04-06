@@ -2,13 +2,13 @@
 
 #include <macros.h>
 
-// #include <GameApplicationLayer/GameApp.h>
+#include <GameApplicationLayer/GameApp.h>
 #include <GameViewLayer/GameView.h>
 #include <Helpers/Timer/Timer.h>
 
 typedef std::list<std::shared_ptr<IGameView>> GameViewList;
 
-class Game
+class Game : public GameApp
 {
 #pragma region Singleton
 private:

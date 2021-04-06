@@ -10,8 +10,8 @@ namespace Convert
 	std::string StringToLower(std::string s);
 	std::wstring ANSIToUNICODE(const char* source, const unsigned int length);
 
-	std::string ws2s(std::wstring const& wstr);
-	const wchar_t* s2ws(const char* str);
+	std::string wide2str(std::wstring const& wstr);
+	const wchar_t* str2wide(const char* str);
 
 	std::string int2hex(i64 number);
 }

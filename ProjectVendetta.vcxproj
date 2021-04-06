@@ -73,6 +73,52 @@
     <ClInclude Include="Source\Dependencies\LuaPlus\tilde\LuaTilde.h" />
     <ClInclude Include="Source\Dependencies\LuaPlus\tilde\ReceiveMessageBuffer.h" />
     <ClInclude Include="Source\Dependencies\LuaPlus\tilde\SendMessageBuffer.h" />
+    <ClInclude Include="Source\GameApplicationLayer\GameApp.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Actor.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\ActorComponent.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\ActorFactory.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Components\BaseScriptComponent.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Pickups\AmmoPickup.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Pickups\HealthPickup.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Pickups\PickupInterface.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\Audio.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\IAudioBuffer.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\IAudioManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundProcess\SoundProcess.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceData\SoundResourceData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\OGGResourceLoader.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\OGG\Vorbis.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\WaveResourceLoader.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\XAudio2\XAudioBuffer.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\AudioSystem\XAudio2\XAudioManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\EventSystem.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\EventSystem\BaseEventData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\EventSystem\EventManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\EventSystem\IEventData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\Initialization.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\LuaStateManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptEventSystem\ScriptEvent.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptEventSystem\ScriptEventListener.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptEventSystem\ScriptEventListenerManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptProcessSystem\ScriptProcess.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptsExports.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\MainLoop\Process.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\MainLoop\ProcessManager.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ProcessSystem.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\Resource.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceData\IResourceData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceData\XMLResourceData.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceFiles\IResourceFile.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceFiles\ResourceZipFile.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceHandle.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\DefaultResourceLoader.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\IResourceLoader.h" />
+    <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.h" />
     <ClInclude Include="Source\GameLogicLayer\Game.h" />
     <ClInclude Include="Source\GameViewLayer\GameView.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.h" />
@@ -109,6 +155,7 @@
     <ClInclude Include="Source\Helpers\String\String.h" />
     <ClInclude Include="Source\Helpers\utils.h" />
     <ClInclude Include="Source\ApplicationLayer\MemoryCheck.h" />
+    <ClInclude Include="Source\Helpers\ZipFile\ZipFile.h" />
     <ClInclude Include="Source\macros.h" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\types.h" />
@@ -159,6 +206,38 @@
     <ClCompile Include="Source\Dependencies\LuaPlus\tilde\LuaDebuggerComms.cpp" />
     <ClCompile Include="Source\Dependencies\LuaPlus\tilde\LuaHostWindows.cpp" />
     <ClCompile Include="Source\Dependencies\LuaPlus\tilde\LuaTilde.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\GameApp.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\Actor.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\ActorFactory.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\Pickups\AmmoPickup.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\Pickups\HealthPickup.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\IAudioManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundProcess\SoundProcess.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\OGGResourceLoader.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\SoundResource\ResourceLoaders\WaveResourceLoader.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\XAudio2\XAudioBuffer.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\AudioSystem\XAudio2\XAudioManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\EventSystem\EventManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\CheckCPUSpeed.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\CheckMemory.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\CheckStorage.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\GetSaveGameDirectory.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\Initialization\IsOnlyInstance.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\LuaStateManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptEventSystem\ScriptEvent.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptEventSystem\ScriptEventListener.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptEventSystem\ScriptEventListenerManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptProcessSystem\ScriptProcess.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\LuaScriptingSystem\ScriptsExports.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\MainLoop\Process.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\MainLoop\ProcessManager.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\Resource.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceData\XMLResourceData.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceFiles\ResourceZipFile.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceHandle.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\DefaultResourceLoader.cpp" />
+    <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.cpp" />
     <ClCompile Include="Source\GameLogicLayer\Game.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.cpp" />
     <ClCompile Include="Source\GameViewLayer\InputHandlers\Controller.cpp" />
@@ -172,6 +251,7 @@
     <ClCompile Include="Source\Helpers\Logger\Logger.cpp" />
     <ClCompile Include="Source\Helpers\Logger\LoggingManager.cpp" />
     <ClCompile Include="Source\Helpers\String\String.cpp" />
+    <ClCompile Include="Source\Helpers\ZipFile\ZipFile.cpp" />
     <ClCompile Include="Source\pch.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +268,7 @@
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaState.inl" />
     <None Include="LICENSE" />
     <None Include="README.md" />
+    <None Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.inl" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Game\Shaders\color.hlsl">
@@ -320,8 +401,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>Default</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
-      <LanguageStandard_C>Default</LanguageStandard_C>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <EnableModules>false</EnableModules>

@@ -27,7 +27,7 @@ INT WINAPI wWinMain(
 
     game->Shutdown();
 
-    MessageBox(nullptr, TEXT("Everything worked."), TEXT("Success"), MB_OK);
+    // MessageBox(nullptr, TEXT("Everything worked."), TEXT("Success"), MB_OK);
 
     Game::Destroy();
     Logger::Destroy();

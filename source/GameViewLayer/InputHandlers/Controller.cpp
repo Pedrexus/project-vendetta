@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 
 static f32 degreesPerPixel = .25f;
-static f32 lengthPerPixel = 0.005f;
+static f32 lengthPerPixel = 0.05f;
 
 inline f32 CalcDeltaAngleInRadians(i32 numberOfPixels)
 {

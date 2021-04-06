@@ -85,7 +85,7 @@ protected:
 	DXGI_FORMAT m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DXGI_FORMAT m_DepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	u32 m_MSAA_sampleCount = 1;
+	u32 m_MSAA_sampleCount = 1; // TODO: make it work
 	u32 m_MSAA_numQualityLevels = 0;
 
 public:
@@ -98,7 +98,7 @@ public:
 	void Initialize() override;
 private:
 	void CreateDXGIFactoryWithDebugLayer();
-	void CreateHardwareDeviceFromAdaptersOrderedByPerformance();
+	void CreateHardwareDeviceWithHighestPerformanceAdapterAvailable();
 	void CreateFence();
 	void CheckMSAASupport();
 	void CreateCommandObjects();

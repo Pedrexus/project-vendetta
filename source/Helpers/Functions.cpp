@@ -25,14 +25,14 @@ namespace Convert
 
 		return r;
 	}
-	std::string ws2s(std::wstring const& wstr)
+	std::string wide2str(std::wstring const& wstr)
 	{
 		// This only works if all the characters are single byte, i.e. ASCII or ISO-8859-1. 
 		std::string wsTmp(wstr.begin(), wstr.end());
 		return wsTmp;
 	}
 
-	const wchar_t* s2ws(const char* str)
+	const wchar_t* str2wide(const char* str)
 	{
 		int wchars_num = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
 		wchar_t* wstr = new wchar_t[wchars_num];
