@@ -52,6 +52,7 @@ void HumanView::OnMessage(MSG msg)
 		case WM_MOUSEMOVE:
 			if (m_PointerHandler)
 			{
+				SetCursor(LoadCursor(NULL, IDC_ARROW));
 				Point p(LOWORD(msg.lParam), HIWORD(msg.lParam));
 				m_PointerHandler->OnPointerMove(p, m_PointerRadius);
 			}

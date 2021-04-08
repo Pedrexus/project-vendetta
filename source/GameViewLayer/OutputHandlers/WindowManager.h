@@ -31,6 +31,11 @@ public:
 	virtual ~WindowManager() { DestroyWindow(m_hWnd); }
 
 	void Initialize();
+	inline void OnResize(u32 width, u32 height)
+	{
+		m_ClientWidth = width;
+		m_ClientHeight = height;
+	}
 	inline bool IsReady() { return m_hWnd; }
 
 	HINSTANCE GetAppInst() const { return m_hInstance; }

@@ -40,12 +40,13 @@ public:
 
 	virtual void OnUpdate(milliseconds dt);
 	virtual void OnMessage(MSG msg);
-	virtual inline void OnResize(u32 width = NULL, u32 heigth = NULL) 
+	virtual inline void OnResize(u32 width = NULL, u32 height = NULL) 
 	{
-		if (width == NULL || heigth == NULL)
-			std::tie(width, heigth) = m_windowManager->GetDimensions();
-			
-		m_graphicsEngine->OnResize(width, heigth);
+		if (width == NULL || height == NULL)
+			std::tie(width, height) = m_windowManager->GetDimensions();
+		else
+			m_windowManager->OnResize(width, height);
+		m_graphicsEngine->OnResize(width, height);
 	}
 
 	inline std::shared_ptr<WindowManager> GetWindow() { return m_windowManager; };

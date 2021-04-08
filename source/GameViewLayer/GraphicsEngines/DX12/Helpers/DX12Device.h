@@ -40,14 +40,20 @@ inline void CreateWARPDevice(IDXGIFactory4* factory, ID3D12Device** device)
 }
 
 // A device represents the display adapter (graphics card). Direct3D 12 devices are singletons per adapter.
-inline void CreateHardwareDevice(Display::AdapterVector adapterVector, IDXGIFactory6* factory, ID3D12Device** device)
+inline ComPtr<ID3D12Device> CreateHardwareDeviceWithHighestPerformanceAdapterAvailable(IDXGIFactory* factory)
 {
-	auto createDeviceResult = CreateDeviceFromAdapters(adapterVector, device);
+	auto dxgiFactory6 = static_cast<IDXGIFactory6*>(factory);
+	auto adapters = Display::GetAdaptersOrderedByPerformance(dxgiFactory6);
+
+	ComPtr<ID3D12Device> device;
+	auto createDeviceResult = CreateDeviceFromAdapters(adapters, &device);
 
 	// Fallback to WARP device.
 	if (FAILED(createDeviceResult))
 	{
 		LOG_WARNING("Failure at D3D12CreateDevice with Highest Performance Adapter. Falling back to WARP device.");
-		CreateWARPDevice(factory, device);
+		CreateWARPDevice(dxgiFactory6, &device);
 	}
+
+	return device;
 }

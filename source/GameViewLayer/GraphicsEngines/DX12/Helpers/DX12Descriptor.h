@@ -128,11 +128,17 @@ namespace Descriptor
 		// Each RTV buffer has its own handle
 		inline D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentBackBufferHandle(u32 currentBackBuffer) const
 		{
-			assert(currentBackBuffer >= 0);
+			assert(currentBackBuffer <= UINT8_MAX);
 			return CD3DX12_CPU_DESCRIPTOR_HANDLE(heap->GetCPUDescriptorHandleForHeapStart(), currentBackBuffer, descriptorSize);
 		}
 
-		inline D3D12_CPU_DESCRIPTOR_HANDLE GetHandle(u32 currentBackBuffer = -1)
+		inline CD3DX12_CPU_DESCRIPTOR_HANDLE GetSwapChainRTVCreationHandle()
+		{
+			assert(heapType == RenderTarget::Type);
+			return CD3DX12_CPU_DESCRIPTOR_HANDLE(heap->GetCPUDescriptorHandleForHeapStart());
+		}
+
+		inline D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(u32 currentBackBuffer = -1)
 		{
 			switch (heapType)
 			{
@@ -142,6 +148,19 @@ namespace Descriptor
 				case ConstantBuffer::Type: 
 					return heap->GetCPUDescriptorHandleForHeapStart();
 				default: 
+					return {};
+			}
+		}
+
+		inline D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(u32 currentBackBuffer = -1)
+		{
+			switch (heapType)
+			{
+				case RenderTarget::Type:
+				case DepthStencil::Type:
+				case ConstantBuffer::Type:
+					return heap->GetGPUDescriptorHandleForHeapStart();
+				default:
 					return {};
 			}
 		}

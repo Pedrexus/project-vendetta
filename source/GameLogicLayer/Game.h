@@ -47,7 +47,7 @@ public:
 
 	inline bool IsReady() { return m_humanView->IsReady(); }
 	inline std::shared_ptr<WindowManager> GetWindow() { return m_humanView->GetWindow(); }
-	void OnResize(u32 width = NULL, u32 heigth = NULL) { return m_humanView->OnResize(width, heigth); };
+	void OnResize(u32 width = NULL, u32 height = NULL) { return m_humanView->OnResize(width, height); };
 
 public:
 	void Run();

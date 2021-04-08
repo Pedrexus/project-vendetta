@@ -2,6 +2,26 @@
 
 #include "../dx12pch.h"
 
+namespace DXGI
+{
+	namespace Factory
+	{
+		ComPtr<IDXGIFactory> CreateWithDebugLayer()
+		{
+			ComPtr<IDXGIFactory> dxgiFactory = {};
+
+#ifdef _DEBUG
+			UINT CREATE_FACTORY_FLAGS = DXGI_CREATE_FACTORY_DEBUG;
+#else
+			UINT CREATE_FACTORY_FLAGS = 0;
+#endif
+			ThrowIfFailed(CreateDXGIFactory2(CREATE_FACTORY_FLAGS, IID_PPV_ARGS(&dxgiFactory)));
+			return dxgiFactory;
+		}
+	}
+
+}
+
 namespace Display
 {
 	inline std::vector<IDXGIOutput*> GetAdapterOutputs(IDXGIAdapter* adapter)

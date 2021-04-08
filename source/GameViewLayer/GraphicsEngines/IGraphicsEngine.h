@@ -16,5 +16,5 @@ public:
 	
 	virtual void OnUpdate(milliseconds dt) = 0;
 	virtual void OnDraw() = 0;
-	virtual void OnResize(u32 width = NULL, u32 heigth = NULL) = 0;
+	virtual void OnResize(u32 width = NULL, u32 height = NULL) = 0;
 };

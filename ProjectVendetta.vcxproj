@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Camera\Camera.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DepthStencilBuffer\DepthStencilManager.h" />
     <ClInclude Include="Source\Dependencies\DirectX12\d3dx12.h" />
     <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lapi.h" />
     <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lauxlib.h" />
@@ -128,11 +130,12 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Descriptor.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Device.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DXGI.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12InputAssembler.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12MSAA.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Command.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Shaders.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12SwapChain.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Window.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\IGraphicsEngine.h" />
     <ClInclude Include="Source\GameViewLayer\InputHandlers\Controller.h" />
     <ClInclude Include="Source\GameViewLayer\Interfaces\Enums.h" />
@@ -159,11 +162,13 @@
     <ClInclude Include="Source\macros.h" />
     <ClInclude Include="Source\pch.h" />
     <ClInclude Include="Source\types.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DXGISwapChain\SwapChainManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Game\logging.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DepthStencilBuffer\DepthStencilManager.cpp" />
     <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lapi.c" />
     <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lauxlib.c" />
     <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lbaselib.c" />
@@ -240,6 +245,7 @@
     <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.cpp" />
     <ClCompile Include="Source\GameLogicLayer\Game.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.cpp" />
     <ClCompile Include="Source\GameViewLayer\InputHandlers\Controller.cpp" />
     <ClCompile Include="Source\GameViewLayer\OutputHandlers\WindowManager.cpp" />
     <ClCompile Include="Source\GameViewLayer\UserInterface\HumanView.cpp" />
@@ -253,6 +259,7 @@
     <ClCompile Include="Source\Helpers\String\String.cpp" />
     <ClCompile Include="Source\Helpers\ZipFile\ZipFile.cpp" />
     <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DXGISwapChain\SwapChainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Game\vendetta.log" />

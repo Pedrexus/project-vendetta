@@ -2,6 +2,22 @@
 
 #include <GameLogicLayer/Game.h>
 
+inline void GetMinMaxWindowSizeInfo(LPARAM lParam)
+{
+	auto minmaxinfo = (MINMAXINFO*) lParam;
+	minmaxinfo->ptMinTrackSize.x = 200;
+	minmaxinfo->ptMinTrackSize.y = 200;
+}
+
+inline LRESULT AvoidErrorBeep()
+{
+	// The WM_MENUCHAR message is sent when a menu is active and the user presses 
+	// a key that does not correspond to any mnemonic or accelerator key. 
+	// Ignore so we don't produce an error beep.
+	static auto lresult = MAKELRESULT(0, MNC_CLOSE);
+	return lresult;
+}
+
 inline void ResumeOrSuspendOnActivation(WPARAM wParam)
 {
 	auto game = Game::Get();
@@ -21,6 +37,7 @@ inline void ResumeOnStopResizing()
 	auto game = Game::Get();
 	game->OnResuming();
 	game->GetWindow()->StopResizing();
+	game->OnResize();
 }
 
 inline void SuspendOnMinimize()
@@ -40,35 +57,15 @@ inline void ResizeOnMaximize(LPARAM lParam)
 	game->OnResize(width, height);
 }
 
-inline void ResumeAndResize()
+inline void ResumeAndResize(LPARAM lParam)
 {
 	auto game = Game::Get();
 	game->OnResuming();
-	game->OnResize();
-}
+	game->GetWindow()->StopResizing();
 
-inline void RestoreAndResize()
-{
-	auto game = Game::Get();
-
-	if (game->IsReady())
-	{
-		if (game->GetWindow()->IsMinimized() || game->GetWindow()->IsMaximized())
-			ResumeAndResize();
-		else if (game->GetWindow()->IsResizing())
-		{
-			// If user is dragging the resize bars, we do not resize 
-			// the buffers here because as the user continuously 
-			// drags the resize bars, a stream of WM_SIZE messages are
-			// sent to the window, and it would be pointless (and slow)
-			// to resize for each WM_SIZE message received from dragging
-			// the resize bars.  So instead, we reset after the user is 
-			// done resizing the window and releases the resize bars, which 
-			// sends a WM_EXITSIZEMOVE message.
-		}
-		else
-			game->OnResize();
-	}
+	auto width = LOWORD(lParam);
+	auto height = HIWORD(lParam);
+	game->OnResize(width, height);
 }
 
 void ResizeWindow(WPARAM wParam, LPARAM lParam)
@@ -82,12 +79,10 @@ void ResizeWindow(WPARAM wParam, LPARAM lParam)
 				break;
 			case SIZE_MAXIMIZED: ResizeOnMaximize(lParam);
 				break;
-			case SIZE_RESTORED: RestoreAndResize();
-				break;
-			default: 
+			case SIZE_RESTORED: ResumeAndResize(lParam);
 				break;
 		}
-		
+
 	}
 }
 
@@ -105,13 +100,10 @@ LRESULT CALLBACK WindowManager::WindowProcedure(HWND hWnd, UINT message, WPARAM 
 			return 0;
 		case WM_DESTROY: PostQuitMessage(0);
 			break;
-		case WM_MENUCHAR:
-			// The WM_MENUCHAR message is sent when a menu is active and the user presses 
-			// a key that does not correspond to any mnemonic or accelerator key. 
-			// Ignore so we don't produce an error beep.
-			return MAKELRESULT(0, MNC_CLOSE);
-
-		case WM_GETMINMAXINFO:
+		case WM_MENUCHAR: 
+			return AvoidErrorBeep();
+		case WM_GETMINMAXINFO: GetMinMaxWindowSizeInfo(lParam);
+			return 0;
 		case WM_PAINT:
 		case WM_ACTIVATEAPP:
 		case WM_POWERBROADCAST:

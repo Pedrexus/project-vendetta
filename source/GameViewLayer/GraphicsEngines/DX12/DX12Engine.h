@@ -6,30 +6,19 @@
 
 #include "../IGraphicsEngine.h"
 
+#include "Helpers/D3D12Fence/FenceManager.h"
+#include "Helpers/DXGISwapChain/SwapChainManager.h"
+#include "Helpers/DX12DepthStencilBuffer/DepthStencilManager.h"
+
 #include "Helpers/DX12Descriptor.h"
 #include "Helpers/DX12Buffers.h"
 #include "Helpers/DX12InputAssembler.h"
-
-inline XMFLOAT4X4 Identity4x4()
-{
-	static XMFLOAT4X4 I(
-		1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f);
-
-	return I;
-}
+#include "Helpers/Camera/Camera.h"
 
 struct Vertex
 {
 	XMFLOAT3 Pos;
 	XMFLOAT4 Color;
-};
-
-struct ObjectConstants
-{
-	XMFLOAT4X4 WorldViewProj = Identity4x4();
 };
 
 
@@ -38,34 +27,21 @@ class DX12Engine : public IGraphicsEngine
 	ComPtr<IDXGIFactory> m_dxgiFactory;
 	ComPtr<ID3D12Device> m_d3dDevice;
 
-	ComPtr<ID3D12Fence> m_fence;
-	u64 m_CurrentFence = 0;
+	std::unique_ptr<FenceManager> m_fence;
 
 	ComPtr<ID3D12CommandQueue> m_CommandQueue;
 	ComPtr<ID3D12CommandAllocator> m_CmdListAlloc;
 	ComPtr<ID3D12GraphicsCommandList> m_CommandList;
 
-	ComPtr<IDXGISwapChain> m_swapChain;
+	std::unique_ptr<SwapChainManager> m_SwapChain;
+	std::unique_ptr<DepthStencilManager> m_DepthStencil;
+	std::unique_ptr<Camera> m_Camera;
 
-	i32 m_CurrBackBuffer = 0;
-	static constexpr auto SwapChainBufferCount = 2;
-	ComPtr<ID3D12Resource> m_SwapChainBuffer[SwapChainBufferCount];
-
-	ComPtr<ID3D12Resource> m_DepthStencilBuffer;
-
-	Descriptor::Heap m_RtvHeap;
-	Descriptor::Heap m_DsvHeap;
-	Descriptor::Heap m_CbvHeap;
-
-	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS m_msaa;
-
-	XMVECTOR m_cameraPosition;
-
-	// by the book
+	DXGI_SAMPLE_DESC m_msaa;
 	D3D12_VIEWPORT m_ScreenViewport;
 	D3D12_RECT m_ScissorRect;
 
-	std::unique_ptr<UploadBuffer<ObjectConstants>> m_ObjectCB = nullptr;
+	// by the book
 	ComPtr<ID3D12RootSignature> m_RootSignature = nullptr;
 
 	std::unique_ptr<MeshGeometry> m_BoxGeo = nullptr;
@@ -77,14 +53,7 @@ class DX12Engine : public IGraphicsEngine
 
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
 
-	XMFLOAT4X4 m_World = Identity4x4();
-	XMFLOAT4X4 m_View = Identity4x4();
-	XMFLOAT4X4 m_Proj = Identity4x4();
-
 protected:
-	DXGI_FORMAT m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-	DXGI_FORMAT m_DepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-
 	u32 m_MSAA_sampleCount = 1; // TODO: make it work
 	u32 m_MSAA_numQualityLevels = 0;
 
@@ -97,15 +66,8 @@ public:
 public:
 	void Initialize() override;
 private:
-	void CreateDXGIFactoryWithDebugLayer();
-	void CreateHardwareDeviceWithHighestPerformanceAdapterAvailable();
-	void CreateFence();
 	void CheckMSAASupport();
 	void CreateCommandObjects();
-	void CreateDoubleBufferingSwapChain();
-	void CreateDescriptorHeaps();
-
-	void BuildConstantBuffers();
 	void BuildRootSignature();
 	void BuildShadersAndInputLayout();
 	void BuildPipelineStateObject();
@@ -114,17 +76,16 @@ private:
 public:
 	void ExecuteCommandLists();
 	void FlushCommandQueue();
-	inline ID3D12Resource* GetCurrentBackBuffer() { return m_SwapChainBuffer[m_CurrBackBuffer].Get(); }
-
+	
 public:
-	inline bool IsReady() override { return m_d3dDevice && m_swapChain && m_CmdListAlloc; };
+	inline bool IsReady() override { return m_d3dDevice && m_SwapChain->IsReady() && m_CmdListAlloc; };
 
 	inline void SetCameraPosition(CameraPosition3D pos) override
 	{
-		m_cameraPosition = XMVectorSet(pos[0], pos[1], pos[2], 1.0f);
+		m_Camera->SetCameraPosition(pos);
 	};
 
 	void OnUpdate(milliseconds dt) override;
 	void OnDraw() override;
-	void OnResize(u32 width = NULL, u32 heigth = NULL) override;
+	void OnResize(u32 width = NULL, u32 height = NULL) override;
 };
