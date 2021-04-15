@@ -1,12 +1,12 @@
 #pragma once
 
 #include "../../dx12pch.h"
-#include "../DX12Descriptor.h"
+#include "../Descriptors/DepthStencil.h"
 
 class DepthStencilManager
 {
 	ComPtr<ID3D12Resource> depthStencilBuffer;
-	Descriptor::Heap dsvHeap;
+	Descriptor::DepthStencil::Heap dsvHeap;
 
 public:
 	DXGI_FORMAT depthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -51,10 +51,7 @@ protected:
 	void CreateView(ID3D12Device* device);
 
 public:
-	DepthStencilManager(ID3D12Device* device)
-	{
-		dsvHeap = Descriptor::Heap(device, Descriptor::DepthStencil::Type);
-	}
+	DepthStencilManager(ID3D12Device* device) : dsvHeap(device) {}
 
 	inline D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle()
 	{
