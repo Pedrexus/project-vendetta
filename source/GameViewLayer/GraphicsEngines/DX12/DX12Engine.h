@@ -82,7 +82,7 @@ public:
 
 	inline void SetCameraPosition(CameraPosition3D pos) override
 	{
-		m_Camera->SetCameraPosition(pos);
+		m_Camera->UpdateCameraView(pos);
 	};
 
 	void OnUpdate(milliseconds dt) override;

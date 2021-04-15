@@ -12,7 +12,14 @@ public:
 	inline ConstantBuffer(ID3D12Device* device, u64 elementCount) :
 		UploadBuffer<T>(device, elementCount),
 		cbvHeap(device, Descriptor::ConstantBuffer::Type)
-	{}
+	{
+		assert(elementCount < 2);
+		for (u64 i = 0; i < elementCount; i++)
+		{
+			auto cbvDesc = SpecifyConstantBufferView(i);
+			device->CreateConstantBufferView(&cbvDesc, cbvHeap.GetCPUHandle());
+		}
+	}
 	ConstantBuffer(const ConstantBuffer& rhs) = delete;
 	ConstantBuffer& operator=(const ConstantBuffer& rhs) = delete;
 	virtual ~ConstantBuffer() = default;
@@ -43,7 +50,7 @@ public:
 
 		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 		cbvDesc.BufferLocation = cbGPUAddress;
-		cbvDesc.SizeInBytes = cbByteSize;
+		cbvDesc.SizeInBytes = static_cast<u32>(cbByteSize);
 
 		return cbvDesc;
 	}

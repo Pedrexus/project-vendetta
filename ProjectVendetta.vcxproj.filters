@@ -172,6 +172,8 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\DepthStencil.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\RenderTarget.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\DefaultBuffer.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\ConstantBuffer.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\UploadBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />

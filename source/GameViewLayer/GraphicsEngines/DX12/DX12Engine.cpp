@@ -246,8 +246,7 @@ void DX12Engine::BuildPipelineStateObject()
 
 void DX12Engine::OnUpdate(milliseconds dt)
 {
-	m_Camera->Update();
-
+	
 	// frame stats
 	static auto presentCount = 0;
 	static f64 elapsedTimeSinceLastWrite = 0;

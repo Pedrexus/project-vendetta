@@ -1,13 +1,15 @@
 #pragma once
 
 #include "../../dx12pch.h"
+#include "../Buffers/UploadBuffer.h"
+#include "../Buffers/ConstantBuffer.h"
 
 struct CameraConstants
 {
-	XMMATRIX WorldViewProj;
+	XMMATRIX ViewProj;
 };
 
-typedef std::unique_ptr<UploadBuffer<CameraConstants>> CameraConstantsUploadBuffer;
+typedef UploadBuffer<CameraConstants> CameraConstantsUploadBuffer;
 
 class CameraConstantBuffer
 {
@@ -15,17 +17,16 @@ class CameraConstantBuffer
 
 protected:
 	Descriptor::Heap cbvHeap;
-	CameraConstantsUploadBuffer uploadBuffer = nullptr;
+	CameraConstantsUploadBuffer uploadBuffer;
 
 public:
-	CameraConstantBuffer(ID3D12Device* device)
+	CameraConstantBuffer(ID3D12Device* device) : 
+		cbvHeap(device, Descriptor::ConstantBuffer::Type),
+		uploadBuffer(device, 1)
 	{
-		cbvHeap = Descriptor::Heap(device, Descriptor::ConstantBuffer::Type);
-		
-		uploadBuffer = std::make_unique<UploadBuffer<CameraConstants>>(device, 1, true);
 		UINT objCBByteSize = CalcConstantBufferByteSize(sizeof(CameraConstants));
 
-		auto cbAddress = uploadBuffer->Resource()->GetGPUVirtualAddress();
+		auto cbAddress = uploadBuffer.GetResource()->GetGPUVirtualAddress();
 
 		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
 		cbvDesc.BufferLocation = cbAddress;
@@ -37,7 +38,7 @@ public:
 	// Update the constant buffer with the latest worldViewProj matrix.
 	inline void Upload(XMMATRIX worldViewProj)
 	{
-		uploadBuffer->CopyData(0, { worldViewProj });
+		uploadBuffer.CopyToCPUBuffer(0, { worldViewProj });
 	}
 };
 
@@ -49,37 +50,38 @@ class Camera
 	inline static const auto nearZ = 1.0f;
 	inline static const auto farZ = 1000.0f;
 	
-	XMVECTOR position;
-	XMMATRIX world = XMMatrixIdentity();
-	XMMATRIX view = XMMatrixIdentity();
-	XMMATRIX proj = XMMatrixIdentity();
+	XMMATRIX _View = XMMatrixIdentity();
+	XMMATRIX _Proj = XMMatrixIdentity();
 
-	CameraConstantBuffer constantBuffer;
+	ConstantBuffer<CameraConstants> constantBuffer;
 
 public:
-	Camera(ID3D12Device* device) : constantBuffer(device) {};
+	Camera(ID3D12Device* device) : constantBuffer(device, 1) {};
 
-	inline void SetCameraPosition(CameraPosition3D pos)
+	inline void UpdateCameraView(CameraPosition3D pos)
 	{
-		position = XMVectorSet(pos[0], pos[1], pos[2], 1.0f);
-		view = XMMatrixLookAtLH(position, target, up);
+		auto position = XMVectorSet(pos[0], pos[1], pos[2], 1.0f);
+		UpdateView(position);
+
+		// Update the constant buffer with the latest worldViewProj matrix.
+		constantBuffer.CopyToCPUBuffer(0, { GetViewProj() });
 	};
 
-	inline XMMATRIX GetWorldViewProj()
+	inline void UpdateView(XMVECTOR pos)
 	{
-		return world * view * proj;
+		_View = XMMatrixLookAtLH(pos, target, up);
 	}
 
-	inline void Update()
+	inline XMMATRIX GetViewProj()
 	{
-		constantBuffer.Upload(GetWorldViewProj());
+		return _View * _Proj;
 	}
 
 	// The window resized, so update the aspect ratio and recompute the projection matrix.
 	inline void Resize(u32 width, u32 height)
 	{
 		auto aspectRatio = static_cast<f32>(width) / height;
-		proj = XMMatrixPerspectiveFovLH(fovAngleY, aspectRatio, nearZ, farZ);
+		_Proj = XMMatrixPerspectiveFovLH(fovAngleY, aspectRatio, nearZ, farZ);
 	}
 
 	inline ID3D12DescriptorHeap* GetBufferHeap()
