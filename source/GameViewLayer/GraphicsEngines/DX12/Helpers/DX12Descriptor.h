@@ -25,23 +25,6 @@
 */
 namespace Descriptor
 {
-	namespace RenderTarget
-	{
-		static constexpr auto Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-
-		inline D3D12_DESCRIPTOR_HEAP_DESC SpecifyHeap(u32 swapChainBufferCount)
-		{
-			assert(swapChainBufferCount > 0);
-
-			D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-			rtvHeapDesc.NumDescriptors = swapChainBufferCount;
-			rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-			rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-			rtvHeapDesc.NodeMask = 0;
-
-			return rtvHeapDesc;
-		}
-	}
 
 	namespace DepthStencil
 	{
@@ -125,16 +108,8 @@ namespace Descriptor
 			Create(device, swapChainBufferCount);
 		}
 
-		// Each RTV buffer has its own handle
-		inline D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentBackBufferHandle(u32 currentBackBuffer) const
-		{
-			assert(currentBackBuffer <= UINT8_MAX);
-			return CD3DX12_CPU_DESCRIPTOR_HANDLE(heap->GetCPUDescriptorHandleForHeapStart(), currentBackBuffer, descriptorSize);
-		}
-
 		inline CD3DX12_CPU_DESCRIPTOR_HANDLE GetSwapChainRTVCreationHandle()
 		{
-			assert(heapType == RenderTarget::Type);
 			return CD3DX12_CPU_DESCRIPTOR_HANDLE(heap->GetCPUDescriptorHandleForHeapStart());
 		}
 
@@ -142,8 +117,6 @@ namespace Descriptor
 		{
 			switch (heapType)
 			{
-				case RenderTarget::Type: 
-					return GetCurrentBackBufferHandle(currentBackBuffer);
 				case DepthStencil::Type:
 				case ConstantBuffer::Type: 
 					return heap->GetCPUDescriptorHandleForHeapStart();
@@ -156,7 +129,6 @@ namespace Descriptor
 		{
 			switch (heapType)
 			{
-				case RenderTarget::Type:
 				case DepthStencil::Type:
 				case ConstantBuffer::Type:
 					return heap->GetGPUDescriptorHandleForHeapStart();
@@ -169,7 +141,6 @@ namespace Descriptor
 		{
 			switch (heapType)
 			{
-				case RenderTarget::Type: return RenderTarget::SpecifyHeap(swapChainBufferCount);
 				case DepthStencil::Type: return DepthStencil::SpecifyHeap();
 				case ConstantBuffer::Type: return ConstantBuffer::SpecifyHeap();
 				default:

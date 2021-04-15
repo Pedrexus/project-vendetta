@@ -20,6 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Camera\Camera.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\BaseHeap.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\ConstantBuffer.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\DepthStencil.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\RenderTarget.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DepthStencilBuffer\DepthStencilManager.h" />
     <ClInclude Include="Source\Dependencies\DirectX12\d3dx12.h" />
     <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lapi.h" />

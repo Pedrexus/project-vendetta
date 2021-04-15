@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../dx12pch.h"
-#include "../DX12Descriptor.h"
+#include "../Descriptors/RenderTarget.h"
 
 #include <GameLogicLayer/Game.h>
 
@@ -22,7 +22,7 @@ class SwapChainManager
 	ComPtr<IDXGISwapChain4> swapChain;
 	ComPtr<ID3D12Resource> swapChainBuffers[SwapChainBufferCount];
 
-	Descriptor::Heap rtvHeap;
+	Descriptor::RenderTarget::Heap rtvHeap;
 
 public:
 	static constexpr auto BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;

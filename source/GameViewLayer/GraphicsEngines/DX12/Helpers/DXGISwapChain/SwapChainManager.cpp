@@ -34,12 +34,11 @@ void SwapChainManager::CreateRenderTargetViewsForBuffers(ID3D12Device* device)
 	}
 }
 
-SwapChainManager::SwapChainManager(IDXGIFactory* factory, ID3D12Device* device, ID3D12CommandQueue* cmdQueue, DXGI_SAMPLE_DESC msaa)
+SwapChainManager::SwapChainManager(IDXGIFactory* factory, ID3D12Device* device, ID3D12CommandQueue* cmdQueue, DXGI_SAMPLE_DESC msaa) :
+	rtvHeap(device, SwapChainBufferCount)
 {
 	swapChain.Reset();
 	CreateSwapChainForWindow(factory, msaa, cmdQueue);
-
-	rtvHeap = Descriptor::Heap(device, Descriptor::RenderTarget::Type, SwapChainBufferCount);
 }
 
 void SwapChainManager::Resize(ID3D12Device* device, u32 width, u32 height)

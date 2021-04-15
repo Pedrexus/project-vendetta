@@ -167,6 +167,10 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DepthStencilBuffer\DepthStencilManager.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Window.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Camera\Camera.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\BaseHeap.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\ConstantBuffer.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\DepthStencil.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\RenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />
