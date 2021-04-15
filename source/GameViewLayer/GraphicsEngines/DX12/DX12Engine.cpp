@@ -7,6 +7,7 @@
 #include "Helpers/DX12Command.h"
 #include "Helpers/DX12Shaders.h"
 #include "Helpers/DX12Window.h"
+#include "Helpers/Buffers/DefaultBuffer.h"
 
 #include <GameLogicLayer/Game.h>
 
@@ -196,11 +197,11 @@ void DX12Engine::BuildBoxGeometry()
 	ThrowIfFailed(D3DCreateBlob(ibByteSize, &m_BoxGeo->IndexBufferCPU));
 	CopyMemory(m_BoxGeo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-	m_BoxGeo->VertexBufferGPU = CreateDefaultBuffer(m_d3dDevice.Get(),
-		m_CommandList.Get(), vertices.data(), vbByteSize, m_BoxGeo->VertexBufferUploader);
+	m_BoxGeo->VertexBufferGPU = std::make_shared<DefaultBuffer>(m_d3dDevice.Get(),
+		m_CommandList.Get(), vertices.data(), vbByteSize);
 
-	m_BoxGeo->IndexBufferGPU = CreateDefaultBuffer(m_d3dDevice.Get(),
-		m_CommandList.Get(), indices.data(), ibByteSize, m_BoxGeo->IndexBufferUploader);
+	m_BoxGeo->IndexBufferGPU = std::make_shared<DefaultBuffer>(m_d3dDevice.Get(),
+		m_CommandList.Get(), indices.data(), ibByteSize);
 
 	m_BoxGeo->VertexByteStride = sizeof(Vertex);
 	m_BoxGeo->VertexBufferByteSize = vbByteSize;
