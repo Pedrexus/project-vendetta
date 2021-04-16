@@ -9,39 +9,6 @@ struct CameraConstants
 	XMMATRIX ViewProj;
 };
 
-typedef UploadBuffer<CameraConstants> CameraConstantsUploadBuffer;
-
-class CameraConstantBuffer
-{
-	friend class Camera;
-
-protected:
-	Descriptor::Heap cbvHeap;
-	CameraConstantsUploadBuffer uploadBuffer;
-
-public:
-	CameraConstantBuffer(ID3D12Device* device) : 
-		cbvHeap(device, Descriptor::ConstantBuffer::Type),
-		uploadBuffer(device, 1)
-	{
-		UINT objCBByteSize = CalcConstantBufferByteSize(sizeof(CameraConstants));
-
-		auto cbAddress = uploadBuffer.GetResource()->GetGPUVirtualAddress();
-
-		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-		cbvDesc.BufferLocation = cbAddress;
-		cbvDesc.SizeInBytes = CalcConstantBufferByteSize(sizeof(CameraConstants));
-
-		device->CreateConstantBufferView(&cbvDesc, cbvHeap.GetCPUHandle());
-	}
-
-	// Update the constant buffer with the latest worldViewProj matrix.
-	inline void Upload(XMMATRIX worldViewProj)
-	{
-		uploadBuffer.CopyToCPUBuffer(0, { worldViewProj });
-	}
-};
-
 class Camera
 {
 	inline static const auto target = XMVectorZero();

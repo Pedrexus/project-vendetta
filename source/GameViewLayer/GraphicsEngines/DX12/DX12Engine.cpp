@@ -164,6 +164,28 @@ void DX12Engine::BuildBoxGeometry()
 	m_BoxGeo->DrawArgs["box"] = submesh;
 }
 
+void DX12Engine::ShowFrameStats(milliseconds& dt)
+{
+	static auto presentCount = 0;
+	static f64 elapsedTimeSinceLastWrite = 0;
+
+	auto stats = m_SwapChain->GetFrameStatistics();
+
+	elapsedTimeSinceLastWrite += dt / 1000.0f;
+	if (elapsedTimeSinceLastWrite >= .5f)
+	{
+		auto fps = (stats.PresentCount - presentCount) / elapsedTimeSinceLastWrite;
+		auto mspf = 1.0f / fps;
+
+		// TODO: - camera: ({:.2f}, {:.2f}, {:.2f})
+		auto windowText = fmt::format(L"fps: {:.0f} mspf: {:.6f}", fps, mspf);
+		SetWindowText(Game::Get()->GetWindow()->GetMainWnd(), windowText.c_str());
+
+		elapsedTimeSinceLastWrite = 0;
+		presentCount = stats.PresentCount;
+	}
+}
+
 void DX12Engine::BuildPipelineStateObject()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
@@ -186,27 +208,7 @@ void DX12Engine::BuildPipelineStateObject()
 
 void DX12Engine::OnUpdate(milliseconds dt)
 {
-	
-	// frame stats
-	static auto presentCount = 0;
-	static f64 elapsedTimeSinceLastWrite = 0;
-
-	auto stats = m_SwapChain->GetFrameStatistics();
-
-	elapsedTimeSinceLastWrite += dt / 1000.0f;
-	if (elapsedTimeSinceLastWrite >= .5f)
-	{
-		auto fps = (stats.PresentCount - presentCount) / elapsedTimeSinceLastWrite;
-		auto mspf = 1.0f / fps;
-		
-		// TODO: - camera: ({:.2f}, {:.2f}, {:.2f})
-		auto windowText = fmt::format(L"fps: {:.0f} mspf: {:.6f}", fps, mspf);
-		SetWindowText(Game::Get()->GetWindow()->GetMainWnd(), windowText.c_str());
-
-		elapsedTimeSinceLastWrite = 0;
-		presentCount = stats.PresentCount;
-	}
-	
+	ShowFrameStats(dt);	
 }
 
 void DX12Engine::OnDraw()

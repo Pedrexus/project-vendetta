@@ -143,6 +143,8 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Command.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Shaders.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Window.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameCycle.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameResource.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\MeshGeometry.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\SubmeshGeometry.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Vertex.h" />

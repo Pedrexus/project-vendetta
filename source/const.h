@@ -48,6 +48,7 @@ constexpr auto MAXIMUM_VOLUME = 100;
 #include <d3dcommon.h>
 
 constexpr auto DXD12_MINIMUM_FEATURE_LEVEL = D3D_FEATURE_LEVEL_11_0;
+constexpr auto NUMBER_FRAME_RESOURCES = 3; // TODO: set this to 5%-10% the current fps
 
 // dependencies
 

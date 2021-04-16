@@ -2,6 +2,7 @@
 
 #include <pch.h>
 #include <types.h>
+#include <const.h>
 #include "dx12pch.h"
 
 #include "../IGraphicsEngine.h"
@@ -16,14 +17,13 @@
 #include "Helpers/Camera/Camera.h"
 #include "Helpers/RootSignature/RootSignature.h"
 #include "Helpers/Shaders/HLSLShaders.h"
+#include "Helpers/Frames/FrameResource.h"
 
 
 class DX12Engine : public IGraphicsEngine
 {
 	ComPtr<IDXGIFactory> m_dxgiFactory;
 	ComPtr<ID3D12Device> m_d3dDevice;
-
-	std::unique_ptr<FenceManager> m_fence;
 
 	ComPtr<ID3D12CommandQueue> m_CommandQueue;
 	ComPtr<ID3D12CommandAllocator> m_CmdListAlloc;
@@ -35,12 +35,13 @@ class DX12Engine : public IGraphicsEngine
 	std::unique_ptr<RootSignature> _RootSignature;
 	std::unique_ptr<HLSLShaders> _Shaders;
 
-
 	DXGI_SAMPLE_DESC m_msaa;
 	D3D12_VIEWPORT m_ScreenViewport;
 	D3D12_RECT m_ScissorRect;
 
 	// by the book
+	std::unique_ptr<FenceManager> m_fence;
+	std::array<std::unique_ptr<FrameResource>, NUMBER_FRAME_RESOURCES> _FrameResources;
 
 	std::unique_ptr<MeshGeometry> m_BoxGeo = nullptr;
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
@@ -62,6 +63,8 @@ private:
 	void CreateCommandObjects();
 	void BuildPipelineStateObject();
 	void BuildBoxGeometry();
+
+	void ShowFrameStats(milliseconds& dt);
 
 public:
 	void ExecuteCommandLists();
