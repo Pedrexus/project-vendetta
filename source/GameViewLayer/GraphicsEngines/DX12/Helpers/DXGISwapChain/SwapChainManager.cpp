@@ -29,7 +29,8 @@ void SwapChainManager::CreateRenderTargetViewsForBuffers(ID3D12Device* device)
 	auto rtvHeapHandle = rtvHeap.GetSwapChainRTVCreationHandle();
 	for (auto i = 0; i < SwapChainBufferCount; i++)
 	{
-		device->CreateRenderTargetView(GetBuffer(i), nullptr, rtvHeapHandle);
+		auto buffer = GetBuffer(i);
+		device->CreateRenderTargetView(buffer, nullptr, rtvHeapHandle);
 		rtvHeapHandle.Offset(1, rtvHeap.descriptorSize);
 	}
 }
@@ -41,11 +42,20 @@ SwapChainManager::SwapChainManager(IDXGIFactory* factory, ID3D12Device* device, 
 	CreateSwapChainForWindow(factory, msaa, cmdQueue);
 }
 
+void SwapChainManager::SetBuffersNames()
+{
+	for (int i = 0; i < SwapChainBufferCount; ++i)
+	{
+		swapChainBuffers[i]->SetName(fmt::format(L" Swap Chain Buffer {} ", i).c_str());
+	}
+}
+
 void SwapChainManager::Resize(ID3D12Device* device, u32 width, u32 height)
 {
 	ResetBuffers();
 	ResizeBuffers(width, height);
 	CreateRenderTargetViewsForBuffers(device);
+	SetBuffersNames();
 }
 
 DXGI_FRAME_STATISTICS SwapChainManager::GetFrameStatistics()

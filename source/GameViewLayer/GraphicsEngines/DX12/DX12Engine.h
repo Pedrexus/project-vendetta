@@ -40,9 +40,6 @@ class DX12Engine : public IGraphicsEngine
 	D3D12_RECT m_ScissorRect;
 
 	// by the book
-	std::unique_ptr<FenceManager> m_fence;
-	// std::array<std::unique_ptr<FrameResource>, NUMBER_FRAME_RESOURCES> _FrameResources;
-
 	std::unique_ptr<MeshGeometry> m_BoxGeo = nullptr;
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
 
@@ -72,12 +69,7 @@ public:
 	
 public:
 	inline bool IsReady() override { return m_d3dDevice && m_SwapChain->IsReady() && m_CmdListAlloc; };
-
-	inline void SetCameraPosition(CameraPosition3D pos) override
-	{
-		m_Camera->UpdateCameraView(pos);
-	};
-
+	void SetCameraPosition(CameraPosition3D pos) override;;
 	void OnUpdate(milliseconds dt) override;
 	void OnDraw() override;
 	void OnResize(u32 width = NULL, u32 height = NULL) override;

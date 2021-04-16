@@ -31,7 +31,6 @@ void DX12Engine::Initialize()
 	CheckMSAASupport();
 	CreateCommandObjects();
 	
-	m_fence = std::make_unique<FenceManager>(m_d3dDevice.Get());
 	m_SwapChain = std::make_unique<SwapChainManager>(m_dxgiFactory.Get(), m_d3dDevice.Get(), m_CommandQueue.Get(), m_msaa);
 	m_DepthStencil = std::make_unique<DepthStencilManager>(m_d3dDevice.Get());
 	m_Camera = std::make_unique<Camera>();
@@ -63,13 +62,7 @@ void DX12Engine::ExecuteCommandLists()
 
 void DX12Engine::FlushCommandQueue()
 {
-	// Add an instruction to the command queue to set a new fence point.  
-	// Set a fence from the GPU side.
-	// The new fence point won't be set until the GPU finishes
-	// processing all the commands prior to this Signal().
-	ThrowIfFailed(m_CommandQueue->Signal(m_fence->Get(), m_fence->Advance()));
-	if (!m_fence->IsSynchronized())
-		m_fence->WaitForGPU();
+	_FrameCycle->Flush(m_CommandQueue.Get());
 }
 
 void DX12Engine::CheckMSAASupport()
@@ -208,6 +201,11 @@ void DX12Engine::BuildPipelineStateObject()
 	ThrowIfFailed(m_d3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSO)));
 }
 
+void DX12Engine::SetCameraPosition(CameraPosition3D pos)
+{
+	m_Camera->UpdateCameraView(pos);
+}
+
 void DX12Engine::OnUpdate(milliseconds dt)
 {
 	ShowFrameStats(dt);	
@@ -226,14 +224,12 @@ void DX12Engine::OnDraw()
 	// Reusing the command list reuses memory.
 	ThrowIfFailed(m_CommandList->Reset(m_CmdListAlloc.Get(), m_PSO.Get()));
 
-	m_CommandList->RSSetViewports(1, &m_ScreenViewport);
-	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
-
-	const auto currentBackBuffer = m_SwapChain->GetCurrentBackBuffer();
-
 	// Indicate a state transition on the resource usage.
 	auto renderTransition = m_SwapChain->GetPresentTransition();
 	m_CommandList->ResourceBarrier(1, &renderTransition);
+
+	m_CommandList->RSSetViewports(1, &m_ScreenViewport);
+	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
 
 	const auto cbbCPUHandle = m_SwapChain->GetCurrentBackBufferCPUHandle();
 	const auto dsCPUHandle = m_DepthStencil->GetCPUHandle();

@@ -89,6 +89,7 @@ protected:
 	void ResetBuffers();
 	void ResizeBuffers(u32 width, u32 height);
 	void CreateRenderTargetViewsForBuffers(ID3D12Device* device);
+	void SetBuffersNames();
 
 public:
 	SwapChainManager(
