@@ -7,19 +7,9 @@ template<typename T>
 class ConstantBuffer : public UploadBuffer<T>
 {
 public:
-	Descriptor::ConstantBuffer::Heap cbvHeap;
-
 	inline ConstantBuffer(ID3D12Device* device, u64 elementCount) :
-		UploadBuffer<T>(device, elementCount),
-		cbvHeap(device, 1)
-	{
-		assert(elementCount < 2);
-		for (u64 i = 0; i < elementCount; i++)
-		{
-			auto cbvDesc = SpecifyConstantBufferView(i);
-			device->CreateConstantBufferView(&cbvDesc, cbvHeap.GetCPUHandle());
-		}
-	}
+		UploadBuffer<T>(device, elementCount)
+	{}
 	ConstantBuffer(const ConstantBuffer& rhs) = delete;
 	ConstantBuffer& operator=(const ConstantBuffer& rhs) = delete;
 	virtual ~ConstantBuffer() = default;
@@ -42,14 +32,14 @@ public:
 
 	inline D3D12_CONSTANT_BUFFER_VIEW_DESC SpecifyConstantBufferView(u64 elementIndex = 0) const
 	{
-		auto cbGPUAddress = UploadBuffer<T>::GetResource()->GetGPUVirtualAddress();
-		auto cbByteSize = CalcBufferByteSize();
+		static auto cbGPUAddress = UploadBuffer<T>::GetResource()->GetGPUVirtualAddress();
+		static auto cbByteSize = CalcBufferByteSize();
 
 		// Offset to the ith object constant buffer in the buffer.
-		cbGPUAddress += elementIndex * cbByteSize;
+		auto heapAddress = cbGPUAddress + elementIndex * cbByteSize;
 
 		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-		cbvDesc.BufferLocation = cbGPUAddress;
+		cbvDesc.BufferLocation = heapAddress;
 		cbvDesc.SizeInBytes = static_cast<u32>(cbByteSize);
 
 		return cbvDesc;

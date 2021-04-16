@@ -35,7 +35,7 @@ void DX12Engine::Initialize()
 	m_DepthStencil = std::make_unique<DepthStencilManager>(m_d3dDevice.Get());
 	m_Camera = std::make_unique<Camera>();
 
-	_RootSignature = std::make_unique<RootSignature>(m_d3dDevice.Get(), 1);
+	_RootSignature = std::make_unique<RootSignature>(m_d3dDevice.Get(), 2);
 	_Shaders = std::make_unique<HLSLShaders>(L"Shaders\\color.hlsl", nullptr);
 	_FrameCycle = std::make_unique<FrameCycle>(m_d3dDevice.Get(), 1);
 
@@ -213,8 +213,11 @@ void DX12Engine::OnUpdate(milliseconds dt)
 
 	ShowFrameStats(dt);	
 
+	auto currFrameRes = _FrameCycle->GetCurrentFrameResource();
+
 	auto viewProj = m_Camera->GetViewProj();
-	_FrameCycle->GetCurrentFrameResource()->UpdateMainPassConstantBuffers({ viewProj, static_cast<f32>(t) });
+	currFrameRes->UpdateMainPassConstantBuffers({ viewProj, static_cast<f32>(t) });
+	currFrameRes->UpdateObjectConstantBuffers({ XMMatrixIdentity() });
 
 	t += dt / 1000.0f;
 }
@@ -244,7 +247,9 @@ void DX12Engine::OnDraw()
 	// Specify the buffers we are going to render to.
 	m_CommandList->OMSetRenderTargets(1, &cbbCPUHandle, true, &dsCPUHandle);
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { _FrameCycle->GetCurrentFrameResource()->GetMainPassDescriptorHeap(), };
+	auto currFrameRes = _FrameCycle->GetCurrentFrameResource();
+
+	ID3D12DescriptorHeap* descriptorHeaps[] = { currFrameRes->GetDescriptorHeap(), };
 	m_CommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
@@ -256,11 +261,15 @@ void DX12Engine::OnDraw()
 	m_CommandList->IASetIndexBuffer(&boxIndexView);
 	m_CommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_CommandList->SetGraphicsRootDescriptorTable(0, _FrameCycle->GetCurrentFrameResource()->GetMainPassGPUHandle());
+	m_CommandList->SetGraphicsRootDescriptorTable(0, currFrameRes->GetGPUHandle());
 
 	m_CommandList->DrawIndexedInstanced(
 		m_BoxGeo->DrawArgs["box"].IndexCount,
 		1, 0, 0, 0);
+
+	auto gpuHandle = currFrameRes->GetGPUHandle();
+	gpuHandle.Offset(1, currFrameRes->_cbvHeap.descriptorSize);
+	m_CommandList->SetGraphicsRootDescriptorTable(1, gpuHandle);
 
 	// Indicate a state transition on the resource usage.
 	auto presentTransition = m_SwapChain->GetPresentTransition();

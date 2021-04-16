@@ -5,16 +5,16 @@
 #include "../../dx12pch.h"
 #include "../Buffers/ConstantBuffer.h"
 
-struct ObjectConstants
-{
-	XMMATRIX World = XMMatrixIdentity();
-};
-
 struct RenderPassConstants
 {
 	XMMATRIX ViewProj = XMMatrixIdentity();
 	f32 Time = .0f;
 	f64 DeltaTime = .0f;
+};
+
+struct ObjectConstants
+{
+	XMMATRIX World = XMMatrixIdentity();
 };
 
 // Stores the resources needed for the CPU to build the command lists
@@ -29,8 +29,10 @@ struct FrameResource
 
 	// We cannot update a cbuffer until the GPU is done processing the commands
 	// that reference it. So each frame needs their own cbuffers.
-	ConstantBuffer<ObjectConstants> _ObjectCB;
 	ConstantBuffer<RenderPassConstants> _PassCB;
+	ConstantBuffer<ObjectConstants> _ObjectCB;
+
+	Descriptor::ConstantBuffer::Heap _cbvHeap;
 
 protected:
 	u64 Fence = 0;
@@ -38,9 +40,11 @@ protected:
 public:
 	FrameResource(ID3D12Device* device, u32 objectCount) :
 		_PassCB(device, 1),
-		_ObjectCB(device, objectCount)
+		_ObjectCB(device, objectCount),
+		_cbvHeap(device, objectCount + 1)
 	{
 		ThrowIfFailed(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_CmdListAlloc)));
+		CreateConstantBufferViews(device, objectCount);
 	}
 
 	FrameResource(const FrameResource& rhs) = delete;
@@ -56,20 +60,35 @@ public:
 		_PassCB.CopyToCPUBuffer(0, passConstants);
 	}
 
-	std::array<ID3D12DescriptorHeap*, 2> GetDescriptorHeaps() const
+	ID3D12DescriptorHeap* GetDescriptorHeap() const
 	{
-		return { _ObjectCB.cbvHeap.heap.Get(), _PassCB.cbvHeap.heap.Get() };
+		return _cbvHeap.heap.Get();
 	}
 
-	ID3D12DescriptorHeap* GetMainPassDescriptorHeap()
+	CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUHandle()
 	{
-		return _PassCB.cbvHeap.heap.Get();
+		return _cbvHeap.GetGPUHandle();
 	}
 
-	D3D12_GPU_DESCRIPTOR_HANDLE GetMainPassGPUHandle()
+	void CreateConstantBufferViews(ID3D12Device* device, u32 objectCount)
 	{
-		return _PassCB.cbvHeap.GetGPUHandle();
-	}
+		// 1. Pass views
+		auto cbvPassDesc = _PassCB.SpecifyConstantBufferView();
+		auto cpuHandle = _cbvHeap.GetCPUHandle();
+		device->CreateConstantBufferView(&cbvPassDesc, cpuHandle);
 
+		auto passOffset = 1;
+
+		// 2. Object views
+		for (u64 i = 0; i < objectCount; i++)
+		{
+			auto cbvDesc = _ObjectCB.SpecifyConstantBufferView(i);
+
+			auto cpuHandle = _cbvHeap.GetCPUHandle();
+			cpuHandle.Offset(passOffset + i, _cbvHeap.descriptorSize);
+			
+			device->CreateConstantBufferView(&cbvDesc, cpuHandle);
+		}
+	}
 
 };
