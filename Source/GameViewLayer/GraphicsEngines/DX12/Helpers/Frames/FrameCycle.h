@@ -12,17 +12,15 @@ class FrameCycle
 	u8 _CurrFrameResourceIndex = 0;
 
 	FenceManager _Fence;
-	Descriptor::ConstantBuffer::Heap _cbvHeap;
+
+	// Descriptor::ConstantBuffer::Heap _cbvHeap; _cbvHeap(device, NUMBER_FRAME_RESOURCES* (objectCount + 1)),
 
 public:
 	FrameCycle(ID3D12Device* device, u32 objectCount) :
-		_cbvHeap(device, NUMBER_FRAME_RESOURCES * (objectCount + 1)),
 		_Fence(device)
 	{
 		for (auto i = 0; i < NUMBER_FRAME_RESOURCES; i++)
-			_FrameResources[i] = std::make_unique<FrameResource>(device, 1, objectCount);
-
-		BuildConstantBufferViews(device, objectCount);
+			_FrameResources[i] = std::make_unique<FrameResource>(device, objectCount);
 	}
 
 	inline void Advance()
@@ -52,7 +50,7 @@ public:
 
 	inline void Flush(ID3D12CommandQueue* commandQueue)
 	{
-		ThrowIfFailed(commandQueue->Signal(_Fence->Get(), _Fence->Advance()));
+		ThrowIfFailed(commandQueue->Signal(_Fence.Get(), _Fence.Advance()));
 		if (!_Fence.IsSynchronized())
 			_Fence.WaitForGPU();
 	}
@@ -64,6 +62,7 @@ public:
 		currFrame->UpdateMainPassConstantBuffers(passConstants);
 	}
 
+	/*
 	inline CD3DX12_GPU_DESCRIPTOR_HANDLE GetCurrentFrameMainPassGPUHandle(u64 numRenderItems)
 	{
 		// Save an offset to the start of the pass CBVs.  These are the last 3 descriptors.
@@ -86,6 +85,7 @@ public:
 	{
 		return _cbvHeap.Get();
 	}
+	
 
 	void BuildConstantBufferViews(ID3D12Device* device, u32 objectCount)
 	{
@@ -146,4 +146,5 @@ public:
 		ThrowIfFailed(frameCmdListAlloc->Reset());
 		return frameCmdListAlloc;
 	}
+	*/
 };

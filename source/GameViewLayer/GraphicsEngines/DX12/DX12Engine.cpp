@@ -34,9 +34,11 @@ void DX12Engine::Initialize()
 	m_fence = std::make_unique<FenceManager>(m_d3dDevice.Get());
 	m_SwapChain = std::make_unique<SwapChainManager>(m_dxgiFactory.Get(), m_d3dDevice.Get(), m_CommandQueue.Get(), m_msaa);
 	m_DepthStencil = std::make_unique<DepthStencilManager>(m_d3dDevice.Get());
-	m_Camera = std::make_unique<Camera>(m_d3dDevice.Get());
+	m_Camera = std::make_unique<Camera>();
+
 	_RootSignature = std::make_unique<RootSignature>(m_d3dDevice.Get(), 1);
 	_Shaders = std::make_unique<HLSLShaders>(L"Shaders\\color.hlsl", nullptr);
+	_FrameCycle = std::make_unique<FrameCycle>(m_d3dDevice.Get(), 1);
 
 #ifdef _DEBUG
 	Display::LogInformation(m_dxgiFactory.Get(), m_SwapChain->BackBufferFormat);
@@ -209,6 +211,9 @@ void DX12Engine::BuildPipelineStateObject()
 void DX12Engine::OnUpdate(milliseconds dt)
 {
 	ShowFrameStats(dt);	
+
+	auto viewProj = m_Camera->GetViewProj();
+	_FrameCycle->GetCurrentFrameResource()->UpdateMainPassConstantBuffers({ viewProj });
 }
 
 void DX12Engine::OnDraw()
@@ -240,7 +245,7 @@ void DX12Engine::OnDraw()
 	// Specify the buffers we are going to render to.
 	m_CommandList->OMSetRenderTargets(1, &cbbCPUHandle, true, &dsCPUHandle);
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { m_Camera->GetBufferHeap() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { _FrameCycle->GetCurrentFrameResource()->GetMainPassDescriptorHeap(), };
 	m_CommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
@@ -252,7 +257,7 @@ void DX12Engine::OnDraw()
 	m_CommandList->IASetIndexBuffer(&boxIndexView);
 	m_CommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_CommandList->SetGraphicsRootDescriptorTable(0, m_Camera->GetBufferGPUHandle());
+	m_CommandList->SetGraphicsRootDescriptorTable(0, _FrameCycle->GetCurrentFrameResource()->GetMainPassGPUHandle());
 
 	m_CommandList->DrawIndexedInstanced(
 		m_BoxGeo->DrawArgs["box"].IndexCount,

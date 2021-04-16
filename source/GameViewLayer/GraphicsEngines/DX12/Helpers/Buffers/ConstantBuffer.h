@@ -1,17 +1,17 @@
 #pragma once
 
 #include "UploadBuffer.h"
-#include "../DX12Descriptor.h"
+#include "../Descriptors/ConstantBuffer.h"
 
 template<typename T>
 class ConstantBuffer : public UploadBuffer<T>
 {
 public:
-	Descriptor::Heap cbvHeap;
+	Descriptor::ConstantBuffer::Heap cbvHeap;
 
 	inline ConstantBuffer(ID3D12Device* device, u64 elementCount) :
 		UploadBuffer<T>(device, elementCount),
-		cbvHeap(device, Descriptor::ConstantBuffer::Type)
+		cbvHeap(device, 1)
 	{
 		assert(elementCount < 2);
 		for (u64 i = 0; i < elementCount; i++)

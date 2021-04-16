@@ -111,7 +111,6 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Device.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12MSAA.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Command.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Descriptor.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Buffers.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Shaders.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12InputAssembler.h" />

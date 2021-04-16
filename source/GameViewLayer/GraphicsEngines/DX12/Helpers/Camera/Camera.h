@@ -1,13 +1,6 @@
 #pragma once
 
 #include "../../dx12pch.h"
-#include "../Buffers/UploadBuffer.h"
-#include "../Buffers/ConstantBuffer.h"
-
-struct CameraConstants
-{
-	XMMATRIX ViewProj;
-};
 
 class Camera
 {
@@ -20,18 +13,13 @@ class Camera
 	XMMATRIX _View = XMMatrixIdentity();
 	XMMATRIX _Proj = XMMatrixIdentity();
 
-	ConstantBuffer<CameraConstants> constantBuffer;
-
 public:
-	Camera(ID3D12Device* device) : constantBuffer(device, 1) {};
+	Camera() = default;
 
 	inline void UpdateCameraView(CameraPosition3D pos)
 	{
 		auto position = XMVectorSet(pos[0], pos[1], pos[2], 1.0f);
 		UpdateView(position);
-
-		// Update the constant buffer with the latest worldViewProj matrix.
-		constantBuffer.CopyToCPUBuffer(0, { GetViewProj() });
 	};
 
 	inline void UpdateView(XMVECTOR pos)
@@ -49,16 +37,6 @@ public:
 	{
 		auto aspectRatio = static_cast<f32>(width) / height;
 		_Proj = XMMatrixPerspectiveFovLH(fovAngleY, aspectRatio, nearZ, farZ);
-	}
-
-	inline ID3D12DescriptorHeap* GetBufferHeap()
-	{
-		return constantBuffer.cbvHeap.heap.Get();
-	}
-
-	inline D3D12_GPU_DESCRIPTOR_HANDLE GetBufferGPUHandle()
-	{
-		return constantBuffer.cbvHeap.GetGPUHandle();
 	}
 
 };

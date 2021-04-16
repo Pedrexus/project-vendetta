@@ -11,13 +11,12 @@
 #include "Helpers/DXGISwapChain/SwapChainManager.h"
 #include "Helpers/DX12DepthStencilBuffer/DepthStencilManager.h"
 
-#include "Helpers/DX12Descriptor.h"
 #include "Helpers/DX12Buffers.h"
 #include "Helpers/DX12InputAssembler.h"
 #include "Helpers/Camera/Camera.h"
 #include "Helpers/RootSignature/RootSignature.h"
 #include "Helpers/Shaders/HLSLShaders.h"
-#include "Helpers/Frames/FrameResource.h"
+#include "Helpers/Frames/FrameCycle.h"
 
 
 class DX12Engine : public IGraphicsEngine
@@ -34,6 +33,7 @@ class DX12Engine : public IGraphicsEngine
 	std::unique_ptr<DepthStencilManager> m_DepthStencil;
 	std::unique_ptr<RootSignature> _RootSignature;
 	std::unique_ptr<HLSLShaders> _Shaders;
+	std::unique_ptr<FrameCycle> _FrameCycle;
 
 	DXGI_SAMPLE_DESC m_msaa;
 	D3D12_VIEWPORT m_ScreenViewport;
@@ -41,7 +41,7 @@ class DX12Engine : public IGraphicsEngine
 
 	// by the book
 	std::unique_ptr<FenceManager> m_fence;
-	std::array<std::unique_ptr<FrameResource>, NUMBER_FRAME_RESOURCES> _FrameResources;
+	// std::array<std::unique_ptr<FrameResource>, NUMBER_FRAME_RESOURCES> _FrameResources;
 
 	std::unique_ptr<MeshGeometry> m_BoxGeo = nullptr;
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;

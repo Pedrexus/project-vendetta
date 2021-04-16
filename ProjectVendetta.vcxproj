@@ -134,7 +134,6 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\dx12pch.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Buffers.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Debug.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Descriptor.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Device.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DXGI.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.h" />
