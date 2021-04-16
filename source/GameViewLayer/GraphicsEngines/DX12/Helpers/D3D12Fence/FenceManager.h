@@ -10,6 +10,7 @@ class FenceManager
 {
 	ComPtr<ID3D12Fence> _Fence;
 	u64 _CurrentFence = 0;
+	u64 _Synchronizations = 0;
 
 protected:
 	static inline HANDLE CreateCPUEvent(u64 fence)
@@ -29,6 +30,10 @@ protected:
 
 public:
 	FenceManager(ID3D12Device* device);
+	~FenceManager()
+	{
+		LOG_INFO(fmt::format("Synced with GPU {} times.", _Synchronizations));
+	}
 
 	inline ID3D12Fence* Get() { return _Fence.Get(); }
 
@@ -44,6 +49,8 @@ public:
 		ThrowIfFailed(_Fence->SetEventOnCompletion(fence, CPUEventHandle));
 		WaitForSingleObject(CPUEventHandle, INFINITE);
 		CloseHandle(CPUEventHandle);
+
+		_Synchronizations++;
 	}
 	inline void WaitForGPU() { WaitForGPU(_CurrentFence); }
 

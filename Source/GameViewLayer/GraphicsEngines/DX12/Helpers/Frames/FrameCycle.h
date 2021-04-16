@@ -23,6 +23,7 @@ public:
 			_FrameResources[i] = std::make_unique<FrameResource>(device, objectCount);
 	}
 
+	// Cycle through the circular frame resource array.
 	inline void Advance()
 	{
 		_CurrFrameResourceIndex = (_CurrFrameResourceIndex + 1) % NUMBER_FRAME_RESOURCES;
@@ -33,19 +34,22 @@ public:
 		return _FrameResources[_CurrFrameResourceIndex].get();
 	}
 
-	inline void Sync(ID3D12CommandQueue* commandQueue)
+	// We check the GPU is done with the frame with a signal
+	inline void SignalCurrentFrame(ID3D12CommandQueue* commandQueue)
 	{
-		// Cycle through the circular frame resource array.
-		Advance();
-
-		// FIXME: first 3 frames are going to be slower
-		auto frameFence = GetCurrentFrameResource()->Fence;
-		if (frameFence != 0 && !_Fence.IsSynchronized())
-			_Fence.WaitForGPU();
-
 		auto currFence = _Fence.Advance();
 		GetCurrentFrameResource()->Fence = currFence;
 		ThrowIfFailed(commandQueue->Signal(_Fence.Get(), currFence));
+	}
+
+	inline ID3D12CommandAllocator* GetCurrentFrameAllocatorWhenAvailable()
+	{
+		// FIXME: first 3 frames are going to be slower
+		auto frameFence = GetCurrentFrameResource()->Fence;
+		if (frameFence != 0 && !_Fence.IsSynchronized(frameFence))
+			_Fence.WaitForGPU(frameFence);
+
+		return GetCurrentFrameResource()->_CmdListAlloc.Get();
 	}
 
 	inline void Flush(ID3D12CommandQueue* commandQueue)
@@ -55,6 +59,7 @@ public:
 			_Fence.WaitForGPU();
 	}
 
+	/*
 	inline void UpdateCurrentFrameConstantBuffers(ObjectConstants objConstants, RenderPassConstants passConstants)
 	{
 		auto currFrame = GetCurrentFrameResource();
@@ -62,7 +67,7 @@ public:
 		currFrame->UpdateMainPassConstantBuffers(passConstants);
 	}
 
-	/*
+	
 	inline CD3DX12_GPU_DESCRIPTOR_HANDLE GetCurrentFrameMainPassGPUHandle(u64 numRenderItems)
 	{
 		// Save an offset to the start of the pass CBVs.  These are the last 3 descriptors.

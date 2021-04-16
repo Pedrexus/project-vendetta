@@ -13,6 +13,8 @@ struct ObjectConstants
 struct RenderPassConstants
 {
 	XMMATRIX ViewProj = XMMatrixIdentity();
+	f32 Time = .0f;
+	f64 DeltaTime = .0f;
 };
 
 // Stores the resources needed for the CPU to build the command lists

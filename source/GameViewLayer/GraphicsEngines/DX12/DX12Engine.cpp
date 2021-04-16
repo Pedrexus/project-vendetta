@@ -82,6 +82,7 @@ void DX12Engine::CreateCommandObjects()
 	Command::CreateQueue(m_d3dDevice.Get(), m_CommandQueue.GetAddressOf());
 	Command::CreateAllocator(m_d3dDevice.Get(), m_CmdListAlloc.GetAddressOf());
 	Command::CreateList(m_d3dDevice.Get(), m_CmdListAlloc.Get(), m_CommandList.GetAddressOf());
+	m_CommandList->SetName(L"Main");
 
 	// The command list must be closed before passing it off to the GPU.
 	ThrowIfFailed(m_CommandList->Close());
@@ -208,21 +209,23 @@ void DX12Engine::SetCameraPosition(CameraPosition3D pos)
 
 void DX12Engine::OnUpdate(milliseconds dt)
 {
+	static milliseconds t = 0;
+
 	ShowFrameStats(dt);	
 
 	auto viewProj = m_Camera->GetViewProj();
-	_FrameCycle->GetCurrentFrameResource()->UpdateMainPassConstantBuffers({ viewProj });
+	_FrameCycle->GetCurrentFrameResource()->UpdateMainPassConstantBuffers({ viewProj, static_cast<f32>(t) });
+
+	t += dt / 1000.0f;
 }
 
 void DX12Engine::OnDraw()
 {
-	// Reuse the memory associated with command recording.
-	// We can only reset when the associated command lists have finished execution on the GPU.
-	ThrowIfFailed(m_CmdListAlloc->Reset());
+	auto cmdListAlloc = _FrameCycle->GetCurrentFrameAllocatorWhenAvailable();
+	
+	ThrowIfFailed(cmdListAlloc->Reset());
 
-	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
-	// Reusing the command list reuses memory.
-	ThrowIfFailed(m_CommandList->Reset(m_CmdListAlloc.Get(), m_PSO.Get()));
+	ThrowIfFailed(m_CommandList->Reset(cmdListAlloc, m_PSO.Get()));
 
 	// Indicate a state transition on the resource usage.
 	auto renderTransition = m_SwapChain->GetPresentTransition();
@@ -271,10 +274,8 @@ void DX12Engine::OnDraw()
 
 	m_SwapChain->Present();
 	
-	// Wait until frame commands are complete.  This waiting is inefficient and is
-	// done for simplicity.  Later we will show how to organize our rendering code
-	// so we do not have to wait per frame.
-	FlushCommandQueue();
+	_FrameCycle->SignalCurrentFrame(m_CommandQueue.Get());
+	_FrameCycle->Advance();
 }
 
 void DX12Engine::OnResize(u32 width, u32 height)

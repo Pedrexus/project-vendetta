@@ -110,6 +110,10 @@ Line: 88
 Function: Game::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
 Line: 14
+[INFO] Synced with GPU 406 times.
+Function: FenceManager::~FenceManager
+Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.h
+Line: 35
 [INFO] Game shutdown
 Function: Game::Shutdown
 Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
