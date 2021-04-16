@@ -41,11 +41,6 @@ D3D12_INDEX_BUFFER_VIEW MeshGeometry::GetIndexBufferView() const
 	return ibv;
 }
 
-D3D12_INPUT_LAYOUT_DESC MeshGeometry::SpecifyInputLayout()
-{
-	return { VertexInputLayout.data(), (u32) VertexInputLayout.size() };
-}
-
 // UNUSED - We can free this memory after we finish uploading to the GPU.
 void MeshGeometry::DisposeUploaders()
 {

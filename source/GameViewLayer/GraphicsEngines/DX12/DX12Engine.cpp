@@ -8,6 +8,7 @@
 #include "Helpers/DX12Shaders.h"
 #include "Helpers/DX12Window.h"
 #include "Helpers/Buffers/DefaultBuffer.h"
+#include "Helpers/InputAssembler/Vertex.h"
 
 #include <GameLogicLayer/Game.h>
 
@@ -35,6 +36,7 @@ void DX12Engine::Initialize()
 	m_DepthStencil = std::make_unique<DepthStencilManager>(m_d3dDevice.Get());
 	m_Camera = std::make_unique<Camera>(m_d3dDevice.Get());
 	_RootSignature = std::make_unique<RootSignature>(m_d3dDevice.Get(), 1);
+	_Shaders = std::make_unique<HLSLShaders>(L"Shaders\\color.hlsl", nullptr);
 
 #ifdef _DEBUG
 	Display::LogInformation(m_dxgiFactory.Get(), m_SwapChain->BackBufferFormat);
@@ -43,7 +45,6 @@ void DX12Engine::Initialize()
 	// Reset the command list to prep for initialization commands.
 	ThrowIfFailed(m_CommandList->Reset(m_CmdListAlloc.Get(), nullptr));
 
-	BuildShadersAndInputLayout();
 	BuildPipelineStateObject();
 	BuildBoxGeometry();
 
@@ -89,20 +90,6 @@ void DX12Engine::CreateCommandObjects()
 
 	// The command list must be closed before passing it off to the GPU.
 	ThrowIfFailed(m_CommandList->Close());
-}
-
-void DX12Engine::BuildShadersAndInputLayout()
-{
-	HRESULT hr = S_OK;
-
-	m_vsByteCode = CompileShader(L"Shaders\\color.hlsl", nullptr, "VS", "vs_5_0");
-	m_psByteCode = CompileShader(L"Shaders\\color.hlsl", nullptr, "PS", "ps_5_0");
-
-	m_InputLayout =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-	};
 }
 
 void DX12Engine::BuildBoxGeometry()
@@ -181,22 +168,14 @@ void DX12Engine::BuildPipelineStateObject()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = { m_InputLayout.data(), (UINT) m_InputLayout.size() };
+	psoDesc.InputLayout = SpecifyInputLayout();
 	psoDesc.pRootSignature = _RootSignature->Get();
-	psoDesc.VS =
-	{
-		reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()),
-		m_vsByteCode->GetBufferSize()
-	};
-	psoDesc.PS =
-	{
-		reinterpret_cast<BYTE*>(m_psByteCode->GetBufferPointer()),
-		m_psByteCode->GetBufferSize()
-	};
+	psoDesc.VS = _Shaders->GetVSByteCode();
+	psoDesc.PS = _Shaders->GetPSByteCode();
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	psoDesc.SampleMask = UINT_MAX;
+	psoDesc.SampleMask = UINT32_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = m_SwapChain->BackBufferFormat;

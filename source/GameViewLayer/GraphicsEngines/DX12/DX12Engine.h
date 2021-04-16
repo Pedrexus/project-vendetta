@@ -15,12 +15,7 @@
 #include "Helpers/DX12InputAssembler.h"
 #include "Helpers/Camera/Camera.h"
 #include "Helpers/RootSignature/RootSignature.h"
-
-struct Vertex
-{
-	XMFLOAT3 Pos;
-	XMFLOAT4 Color;
-};
+#include "Helpers/Shaders/HLSLShaders.h"
 
 
 class DX12Engine : public IGraphicsEngine
@@ -38,6 +33,7 @@ class DX12Engine : public IGraphicsEngine
 	std::unique_ptr<SwapChainManager> m_SwapChain;
 	std::unique_ptr<DepthStencilManager> m_DepthStencil;
 	std::unique_ptr<RootSignature> _RootSignature;
+	std::unique_ptr<HLSLShaders> _Shaders;
 
 
 	DXGI_SAMPLE_DESC m_msaa;
@@ -47,12 +43,6 @@ class DX12Engine : public IGraphicsEngine
 	// by the book
 
 	std::unique_ptr<MeshGeometry> m_BoxGeo = nullptr;
-
-	ComPtr<ID3DBlob> m_vsByteCode = nullptr;
-	ComPtr<ID3DBlob> m_psByteCode = nullptr;
-
-	std::vector<D3D12_INPUT_ELEMENT_DESC> m_InputLayout;
-
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
 
 protected:
@@ -70,7 +60,6 @@ public:
 private:
 	void CheckMSAASupport();
 	void CreateCommandObjects();
-	void BuildShadersAndInputLayout();
 	void BuildPipelineStateObject();
 	void BuildBoxGeometry();
 
