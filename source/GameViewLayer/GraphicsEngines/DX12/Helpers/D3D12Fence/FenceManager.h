@@ -8,39 +8,44 @@
 */
 class FenceManager
 {
-	ComPtr<ID3D12Fence> fence;
-	u64 currentFence = 0;
+	ComPtr<ID3D12Fence> _Fence;
+	u64 _CurrentFence = 0;
 
 protected:
-	static inline HANDLE CreateCPUEvent()
+	static inline HANDLE CreateCPUEvent(u64 fence)
 	{
-		HANDLE eventHandle = CreateEventEx(nullptr, L"Flush Command Queue Event", false, EVENT_ALL_ACCESS);
-		
+		auto name = fmt::format(L"Flush Command Queue Event ", fence);
+		HANDLE eventHandle = CreateEventEx(nullptr, name.c_str(), false, EVENT_ALL_ACCESS);
+
 		if (GetLastError() == ERROR_ALREADY_EXISTS)
-			LOG_ERROR("Flush Command Queue Event Already exists. GPU may be left on a broken state.");
-		else if(!eventHandle)
+			LOG_WARNING("Flush Command Queue Event Already exists. GPU may be left on a broken state.");
+		if (GetLastError() == ERROR_INVALID_HANDLE)
+			LOG_WARNING("Event name is already in use. GPU may be left on a broken state.");
+		else if (!eventHandle)
 			LOG_ERROR("Event Handle is null");
-		
+
 		return eventHandle;
 	}
 
 public:
 	FenceManager(ID3D12Device* device);
 
-	inline ID3D12Fence* Get() { return fence.Get(); }
+	inline ID3D12Fence* Get() { return _Fence.Get(); }
 
 	// Advance the fence value to mark commands up to this fence point.
-	inline u64 Advance() { return ++currentFence; };
+	inline u64 Advance() { return ++_CurrentFence; };
 
-	inline bool IsSynchronized() { return fence->GetCompletedValue() >= currentFence; }
+	inline bool IsSynchronized(u64 fence) { return _Fence->GetCompletedValue() >= fence; }
+	inline bool IsSynchronized() { return IsSynchronized(_CurrentFence); }
 
-	inline void WaitForGPU()
+	inline void WaitForGPU(u64 fence)
 	{
-		auto CPUEventHandle = CreateCPUEvent();
-		ThrowIfFailed(fence->SetEventOnCompletion(currentFence, CPUEventHandle));
+		auto CPUEventHandle = CreateCPUEvent(fence);
+		ThrowIfFailed(_Fence->SetEventOnCompletion(fence, CPUEventHandle));
 		WaitForSingleObject(CPUEventHandle, INFINITE);
 		CloseHandle(CPUEventHandle);
 	}
+	inline void WaitForGPU() { WaitForGPU(_CurrentFence); }
 
 
 };

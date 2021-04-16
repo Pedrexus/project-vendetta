@@ -143,6 +143,10 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Command.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Shaders.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Window.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\MeshGeometry.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\SubmeshGeometry.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Vertex.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\RootSignature\RootSignature.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\IGraphicsEngine.h" />
     <ClInclude Include="Source\GameViewLayer\InputHandlers\Controller.h" />
     <ClInclude Include="Source\GameViewLayer\Interfaces\Enums.h" />
@@ -254,6 +258,8 @@
     <ClCompile Include="Source\GameLogicLayer\Game.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\MeshGeometry.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\RootSignature\RootSignature.cpp" />
     <ClCompile Include="Source\GameViewLayer\InputHandlers\Controller.cpp" />
     <ClCompile Include="Source\GameViewLayer\OutputHandlers\WindowManager.cpp" />
     <ClCompile Include="Source\GameViewLayer\UserInterface\HumanView.cpp" />

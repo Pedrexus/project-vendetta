@@ -117,4 +117,10 @@ public:
 	void Resize(ID3D12Device* device, u32 width, u32 height);
 
 	DXGI_FRAME_STATISTICS GetFrameStatistics();
+
+	CD3DX12_RESOURCE_BARRIER GetPresentTransition();
+
+	CD3DX12_RESOURCE_BARRIER GetRenderTransition();
+
+
 };

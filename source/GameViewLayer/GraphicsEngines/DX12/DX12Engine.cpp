@@ -34,6 +34,7 @@ void DX12Engine::Initialize()
 	m_SwapChain = std::make_unique<SwapChainManager>(m_dxgiFactory.Get(), m_d3dDevice.Get(), m_CommandQueue.Get(), m_msaa);
 	m_DepthStencil = std::make_unique<DepthStencilManager>(m_d3dDevice.Get());
 	m_Camera = std::make_unique<Camera>(m_d3dDevice.Get());
+	_RootSignature = std::make_unique<RootSignature>(m_d3dDevice.Get(), 1);
 
 #ifdef _DEBUG
 	Display::LogInformation(m_dxgiFactory.Get(), m_SwapChain->BackBufferFormat);
@@ -42,7 +43,6 @@ void DX12Engine::Initialize()
 	// Reset the command list to prep for initialization commands.
 	ThrowIfFailed(m_CommandList->Reset(m_CmdListAlloc.Get(), nullptr));
 
-	BuildRootSignature();
 	BuildShadersAndInputLayout();
 	BuildPipelineStateObject();
 	BuildBoxGeometry();
@@ -89,45 +89,6 @@ void DX12Engine::CreateCommandObjects()
 
 	// The command list must be closed before passing it off to the GPU.
 	ThrowIfFailed(m_CommandList->Close());
-}
-
-void DX12Engine::BuildRootSignature()
-{
-	// Shader programs typically require resources as input (constant buffers,
-	// textures, samplers).  The root signature defines the resources the shader
-	// programs expect.  If we think of the shader programs as a function, and
-	// the input resources as function parameters, then the root signature can be
-	// thought of as defining the function signature.  
-
-	// Root parameter can be a table, root descriptor or root constants.
-	CD3DX12_ROOT_PARAMETER slotRootParameter[1];
-
-	// Create a single descriptor table of CBVs.
-	CD3DX12_DESCRIPTOR_RANGE cbvTable;
-	cbvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-	slotRootParameter[0].InitAsDescriptorTable(1, &cbvTable);
-
-	// A root signature is an array of root parameters.
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter, 0, nullptr,
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-	// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer
-	ComPtr<ID3DBlob> serializedRootSig = nullptr;
-	ComPtr<ID3DBlob> errorBlob = nullptr;
-	HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
-		serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
-
-	if (errorBlob != nullptr)
-	{
-		::OutputDebugStringA((char*) errorBlob->GetBufferPointer());
-	}
-	ThrowIfFailed(hr);
-
-	ThrowIfFailed(m_d3dDevice->CreateRootSignature(
-		0,
-		serializedRootSig->GetBufferPointer(),
-		serializedRootSig->GetBufferSize(),
-		IID_PPV_ARGS(&m_RootSignature)));
 }
 
 void DX12Engine::BuildShadersAndInputLayout()
@@ -221,7 +182,7 @@ void DX12Engine::BuildPipelineStateObject()
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	psoDesc.InputLayout = { m_InputLayout.data(), (UINT) m_InputLayout.size() };
-	psoDesc.pRootSignature = m_RootSignature.Get();
+	psoDesc.pRootSignature = _RootSignature->Get();
 	psoDesc.VS =
 	{
 		reinterpret_cast<BYTE*>(m_vsByteCode->GetBufferPointer()),
@@ -285,8 +246,7 @@ void DX12Engine::OnDraw()
 	const auto currentBackBuffer = m_SwapChain->GetCurrentBackBuffer();
 
 	// Indicate a state transition on the resource usage.
-	auto renderTransition = CD3DX12_RESOURCE_BARRIER::Transition(currentBackBuffer,
-		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	auto renderTransition = m_SwapChain->GetPresentTransition();
 	m_CommandList->ResourceBarrier(1, &renderTransition);
 
 	const auto cbbCPUHandle = m_SwapChain->GetCurrentBackBufferCPUHandle();
@@ -302,7 +262,7 @@ void DX12Engine::OnDraw()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_Camera->GetBufferHeap() };
 	m_CommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	m_CommandList->SetGraphicsRootSignature(m_RootSignature.Get());
+	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
 
 	auto boxVertexView = m_BoxGeo->VertexBufferView();
 	m_CommandList->IASetVertexBuffers(0, 1, &boxVertexView);
@@ -318,8 +278,7 @@ void DX12Engine::OnDraw()
 		1, 0, 0, 0);
 
 	// Indicate a state transition on the resource usage.
-	auto presentTransition = CD3DX12_RESOURCE_BARRIER::Transition(currentBackBuffer,
-		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	auto presentTransition = m_SwapChain->GetPresentTransition();
 	m_CommandList->ResourceBarrier(1, &presentTransition);
 
 	// Done recording commands.

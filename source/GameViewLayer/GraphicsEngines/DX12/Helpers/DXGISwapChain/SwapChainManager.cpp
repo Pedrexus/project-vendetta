@@ -54,3 +54,21 @@ DXGI_FRAME_STATISTICS SwapChainManager::GetFrameStatistics()
 	swapChain->GetFrameStatistics(&stats);
 	return stats;
 }
+
+CD3DX12_RESOURCE_BARRIER SwapChainManager::GetPresentTransition()
+{
+	return CD3DX12_RESOURCE_BARRIER::Transition(
+		GetCurrentBackBuffer(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET,
+		D3D12_RESOURCE_STATE_PRESENT
+	);
+}
+
+CD3DX12_RESOURCE_BARRIER SwapChainManager::GetRenderTransition()
+{
+	return CD3DX12_RESOURCE_BARRIER::Transition(
+		GetCurrentBackBuffer(),
+		D3D12_RESOURCE_STATE_PRESENT,
+		D3D12_RESOURCE_STATE_RENDER_TARGET
+	);
+}

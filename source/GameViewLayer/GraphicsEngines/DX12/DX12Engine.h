@@ -14,6 +14,7 @@
 #include "Helpers/DX12Buffers.h"
 #include "Helpers/DX12InputAssembler.h"
 #include "Helpers/Camera/Camera.h"
+#include "Helpers/RootSignature/RootSignature.h"
 
 struct Vertex
 {
@@ -33,16 +34,17 @@ class DX12Engine : public IGraphicsEngine
 	ComPtr<ID3D12CommandAllocator> m_CmdListAlloc;
 	ComPtr<ID3D12GraphicsCommandList> m_CommandList;
 
+	std::unique_ptr<Camera> m_Camera;
 	std::unique_ptr<SwapChainManager> m_SwapChain;
 	std::unique_ptr<DepthStencilManager> m_DepthStencil;
-	std::unique_ptr<Camera> m_Camera;
+	std::unique_ptr<RootSignature> _RootSignature;
+
 
 	DXGI_SAMPLE_DESC m_msaa;
 	D3D12_VIEWPORT m_ScreenViewport;
 	D3D12_RECT m_ScissorRect;
 
 	// by the book
-	ComPtr<ID3D12RootSignature> m_RootSignature = nullptr;
 
 	std::unique_ptr<MeshGeometry> m_BoxGeo = nullptr;
 
@@ -68,7 +70,6 @@ public:
 private:
 	void CheckMSAASupport();
 	void CreateCommandObjects();
-	void BuildRootSignature();
 	void BuildShadersAndInputLayout();
 	void BuildPipelineStateObject();
 	void BuildBoxGeometry();
