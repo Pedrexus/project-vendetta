@@ -38,57 +38,15 @@ protected:
 	u64 Fence = 0;
 
 public:
-	FrameResource(ID3D12Device* device, u32 objectCount) :
-		_PassCB(device, 1),
-		_ObjectCB(device, objectCount),
-		_cbvHeap(device, objectCount + 1)
-	{
-		ThrowIfFailed(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_CmdListAlloc)));
-		CreateConstantBufferViews(device, objectCount);
-	}
-
+	FrameResource(ID3D12Device* device, u32 objectCount);
 	FrameResource(const FrameResource& rhs) = delete;
 	FrameResource& operator=(const FrameResource& rhs) = delete;
 
-	void UpdateObjectConstantBuffers(ObjectConstants objConstants)
-	{
-		_ObjectCB.CopyToCPUBuffer(0, objConstants);
-	}
+	void UpdateObjectConstantBuffers(ObjectConstants objConstants);
+	void UpdateMainPassConstantBuffers(RenderPassConstants passConstants);
 
-	void UpdateMainPassConstantBuffers(RenderPassConstants passConstants)
-	{
-		_PassCB.CopyToCPUBuffer(0, passConstants);
-	}
+	ID3D12DescriptorHeap* GetDescriptorHeap() const;
+	CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUHandle();
 
-	ID3D12DescriptorHeap* GetDescriptorHeap() const
-	{
-		return _cbvHeap.heap.Get();
-	}
-
-	CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUHandle()
-	{
-		return _cbvHeap.GetGPUHandle();
-	}
-
-	void CreateConstantBufferViews(ID3D12Device* device, u32 objectCount)
-	{
-		// 1. Pass views
-		auto cbvPassDesc = _PassCB.SpecifyConstantBufferView();
-		auto cpuHandle = _cbvHeap.GetCPUHandle();
-		device->CreateConstantBufferView(&cbvPassDesc, cpuHandle);
-
-		auto passOffset = 1;
-
-		// 2. Object views
-		for (u64 i = 0; i < objectCount; i++)
-		{
-			auto cbvDesc = _ObjectCB.SpecifyConstantBufferView(i);
-
-			auto cpuHandle = _cbvHeap.GetCPUHandle();
-			cpuHandle.Offset(passOffset + i, _cbvHeap.descriptorSize);
-			
-			device->CreateConstantBufferView(&cbvDesc, cpuHandle);
-		}
-	}
-
+	void CreateConstantBufferViews(ID3D12Device* device, u32 objectCount);
 };

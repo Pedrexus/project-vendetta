@@ -25,7 +25,6 @@ class DX12Engine : public IGraphicsEngine
 	ComPtr<ID3D12Device> m_d3dDevice;
 
 	ComPtr<ID3D12CommandQueue> m_CommandQueue;
-	ComPtr<ID3D12CommandAllocator> m_CmdListAlloc;
 	ComPtr<ID3D12GraphicsCommandList> m_CommandList;
 
 	std::unique_ptr<Camera> m_Camera;
@@ -55,6 +54,7 @@ public:
 
 public:
 	void Initialize() override;
+
 private:
 	void CheckMSAASupport();
 	void CreateCommandObjects();
@@ -63,13 +63,15 @@ private:
 
 	void ShowFrameStats(milliseconds& dt);
 
-public:
+protected:
+	void ResetCommandList();
+	void CloseCommandList();
 	void ExecuteCommandLists();
 	void FlushCommandQueue();
 	
 public:
-	inline bool IsReady() override { return m_d3dDevice && m_SwapChain->IsReady() && m_CmdListAlloc; };
-	void SetCameraPosition(CameraPosition3D pos) override;;
+	inline bool IsReady() override { return m_d3dDevice && m_SwapChain->IsReady() && _FrameCycle; };
+	void SetCameraPosition(CameraPosition3D pos) override;
 	void OnUpdate(milliseconds dt) override;
 	void OnDraw() override;
 	void OnResize(u32 width = NULL, u32 height = NULL) override;

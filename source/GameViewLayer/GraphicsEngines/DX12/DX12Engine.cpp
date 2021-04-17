@@ -25,33 +25,43 @@ void DX12Engine::Initialize()
 	EnableDebugLayer();
 #endif
 
+	// TODO: split into Constructor and initialize ?
 	m_dxgiFactory = DXGI::Factory::CreateWithDebugLayer();
 	m_d3dDevice = CreateHardwareDeviceWithHighestPerformanceAdapterAvailable(m_dxgiFactory.Get());
+
+	m_Camera = std::make_unique<Camera>();
+
+	_RootSignature = std::make_unique<RootSignature>(m_d3dDevice.Get(), 2);
+	_Shaders = std::make_unique<HLSLShaders>(L"Shaders\\color.hlsl", nullptr);
+	_FrameCycle = std::make_unique<FrameCycle>(m_d3dDevice.Get(), 1);
 	
 	CheckMSAASupport();
 	CreateCommandObjects();
 	
 	m_SwapChain = std::make_unique<SwapChainManager>(m_dxgiFactory.Get(), m_d3dDevice.Get(), m_CommandQueue.Get(), m_msaa);
 	m_DepthStencil = std::make_unique<DepthStencilManager>(m_d3dDevice.Get());
-	m_Camera = std::make_unique<Camera>();
-
-	_RootSignature = std::make_unique<RootSignature>(m_d3dDevice.Get(), 2);
-	_Shaders = std::make_unique<HLSLShaders>(L"Shaders\\color.hlsl", nullptr);
-	_FrameCycle = std::make_unique<FrameCycle>(m_d3dDevice.Get(), 1);
 
 #ifdef _DEBUG
 	Display::LogInformation(m_dxgiFactory.Get(), m_SwapChain->BackBufferFormat);
 #endif
 
 	// Reset the command list to prep for initialization commands.
-	ThrowIfFailed(m_CommandList->Reset(m_CmdListAlloc.Get(), nullptr));
+	ResetCommandList();
 
 	BuildPipelineStateObject();
 	BuildBoxGeometry();
 
-	// Execute the initialization commands.
-	ThrowIfFailed(m_CommandList->Close());
+	CloseCommandList();
 	ExecuteCommandLists();
+}
+
+void DX12Engine::ResetCommandList()
+{
+	auto cmdListAlloc = _FrameCycle->GetCurrentFrameAllocatorWhenAvailable();
+
+	ThrowIfFailed(cmdListAlloc->Reset());
+
+	ThrowIfFailed(m_CommandList->Reset(cmdListAlloc, m_PSO.Get()));
 }
 
 void DX12Engine::ExecuteCommandLists()
@@ -80,12 +90,11 @@ void DX12Engine::CheckMSAASupport()
 void DX12Engine::CreateCommandObjects()
 {
 	Command::CreateQueue(m_d3dDevice.Get(), m_CommandQueue.GetAddressOf());
-	Command::CreateAllocator(m_d3dDevice.Get(), m_CmdListAlloc.GetAddressOf());
-	Command::CreateList(m_d3dDevice.Get(), m_CmdListAlloc.Get(), m_CommandList.GetAddressOf());
+	Command::CreateList(m_d3dDevice.Get(), _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
 	m_CommandList->SetName(L"Main");
 
 	// The command list must be closed before passing it off to the GPU.
-	ThrowIfFailed(m_CommandList->Close());
+	CloseCommandList();
 }
 
 void DX12Engine::BuildBoxGeometry()
@@ -167,14 +176,14 @@ void DX12Engine::ShowFrameStats(milliseconds& dt)
 
 	auto stats = m_SwapChain->GetFrameStatistics();
 
-	elapsedTimeSinceLastWrite += dt / 1000.0f;
-	if (elapsedTimeSinceLastWrite >= .5f)
+	elapsedTimeSinceLastWrite += dt;
+	if (elapsedTimeSinceLastWrite >= 2000)
 	{
-		auto fps = (stats.PresentCount - presentCount) / elapsedTimeSinceLastWrite;
-		auto mspf = 1.0f / fps;
+		auto fpms = (stats.PresentCount - presentCount) / elapsedTimeSinceLastWrite;
+		auto mspf = 1.0f / fpms;
 
 		// TODO: - camera: ({:.2f}, {:.2f}, {:.2f})
-		auto windowText = fmt::format(L"fps: {:.0f} mspf: {:.6f}", fps, mspf);
+		auto windowText = fmt::format(L"fps: {:.0f} mspf: {:.2f}", 1000.0f * fpms, mspf);
 		SetWindowText(Game::Get()->GetWindow()->GetMainWnd(), windowText.c_str());
 
 		elapsedTimeSinceLastWrite = 0;
@@ -224,11 +233,7 @@ void DX12Engine::OnUpdate(milliseconds dt)
 
 void DX12Engine::OnDraw()
 {
-	auto cmdListAlloc = _FrameCycle->GetCurrentFrameAllocatorWhenAvailable();
-	
-	ThrowIfFailed(cmdListAlloc->Reset());
-
-	ThrowIfFailed(m_CommandList->Reset(cmdListAlloc, m_PSO.Get()));
+	ResetCommandList();
 
 	// Indicate a state transition on the resource usage.
 	auto renderTransition = m_SwapChain->GetPresentTransition();
@@ -275,10 +280,7 @@ void DX12Engine::OnDraw()
 	auto presentTransition = m_SwapChain->GetPresentTransition();
 	m_CommandList->ResourceBarrier(1, &presentTransition);
 
-	// Done recording commands.
-	ThrowIfFailed(m_CommandList->Close());
-
-	// Add the command list to the queue for execution.
+	CloseCommandList();
 	ExecuteCommandLists();
 
 	m_SwapChain->Present();
@@ -287,16 +289,18 @@ void DX12Engine::OnDraw()
 	_FrameCycle->Advance();
 }
 
+void DX12Engine::CloseCommandList()
+{
+	ThrowIfFailed(m_CommandList->Close());
+}
+
 void DX12Engine::OnResize(u32 width, u32 height)
 {
 	if (!IsReady())
 		LOG_FATAL("Called OnResize before graphics engine was ready");
 	ASSERT(width != NULL && height != NULL);
 
-	// Flush before changing any resources.
-	FlushCommandQueue();
-
-	ThrowIfFailed(m_CommandList->Reset(m_CmdListAlloc.Get(), nullptr));
+	ResetCommandList();
 
 	// Release the previous resources we will be recreating.
 	m_SwapChain->Resize(m_d3dDevice.Get(), width, height);
@@ -305,14 +309,13 @@ void DX12Engine::OnResize(u32 width, u32 height)
 	auto dsWriteTransition = m_DepthStencil->GetWriteTransition();
 	m_CommandList->ResourceBarrier(1, &dsWriteTransition);
 
-	// Execute the resize commands.
-	ThrowIfFailed(m_CommandList->Close());
+	CloseCommandList();
 	ExecuteCommandLists();
-
-	// Wait until resize is complete.
-	FlushCommandQueue();
 
 	m_ScreenViewport = CreateViewport(width, height);
 	m_ScissorRect = CreateScissorRectangle(width, height);
 	m_Camera->Resize(width, height);
+
+	_FrameCycle->SignalCurrentFrame(m_CommandQueue.Get());
+	_FrameCycle->Advance();
 }
