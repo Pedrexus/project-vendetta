@@ -13,49 +13,9 @@ Line: 12
 [Graphics] Using MSAA with 1 samples and 1 quality levels
 Function: DX12Engine::CheckMSAASupport
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.cpp
-Line: 85
+Line: 86
 [Graphics] 
 Adapter 7200: NVIDIA GeForce GTX 1060
-Output: \\.\DISPLAY4
-Mode: 640x480	59Hz
-Mode: 640x480	60Hz
-Mode: 640x480	72Hz
-Mode: 640x480	75Hz
-Mode: 720x480	59Hz
-Mode: 720x480	60Hz
-Mode: 720x576	50Hz
-Mode: 800x600	56Hz
-Mode: 800x600	60Hz
-Mode: 800x600	72Hz
-Mode: 800x600	75Hz
-Mode: 1024x768	60Hz
-Mode: 1024x768	70Hz
-Mode: 1024x768	75Hz
-Mode: 1176x664	50Hz
-Mode: 1176x664	50Hz
-Mode: 1176x664	59Hz
-Mode: 1176x664	59Hz
-Mode: 1176x664	60Hz
-Mode: 1176x664	60Hz
-Mode: 1280x720	50Hz
-Mode: 1280x720	59Hz
-Mode: 1280x720	60Hz
-Mode: 1280x768	59Hz
-Mode: 1280x768	59Hz
-Mode: 1280x800	59Hz
-Mode: 1280x800	59Hz
-Mode: 1280x960	60Hz
-Mode: 1280x1024	60Hz
-Mode: 1280x1024	75Hz
-Mode: 1360x768	59Hz
-Mode: 1360x768	59Hz
-Mode: 1366x768	59Hz
-Mode: 1366x768	59Hz
-Mode: 1440x900	59Hz
-Mode: 1680x1050	59Hz
-Mode: 1920x1080	50Hz
-Mode: 1920x1080	60Hz
-Mode: 1920x1080	59Hz
 Adapter 22811: Intel(R) HD Graphics 630
 Output: \\.\DISPLAY1
 Mode: 320x200	60Hz
@@ -106,19 +66,3 @@ Adapter 140: Microsoft Basic Render Driver
 Function: Display::LogInformation
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DXGI.h
 Line: 88
-[INFO] Game initialized
-Function: Game::Initialize
-Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
-Line: 14
-[INFO] Synced with GPU 2730 times.
-Function: FenceManager::~FenceManager
-Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.h
-Line: 35
-[INFO] Game shutdown
-Function: Game::Shutdown
-Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
-Line: 24
-[INFO] Logger destroyed
-Function: Logger::Destroy
-Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Logger\Logger.cpp
-Line: 40

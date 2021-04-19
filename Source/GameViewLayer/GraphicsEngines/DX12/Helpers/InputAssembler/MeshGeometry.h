@@ -34,7 +34,5 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView() const;
 	D3D12_INDEX_BUFFER_VIEW GetIndexBufferView() const;
 
-	static D3D12_INPUT_LAYOUT_DESC SpecifyInputLayout();
-
 	void DisposeUploaders();
 };

@@ -9,7 +9,7 @@ class RenderItem
 {
     // Indicates object data has changed 
     // and we need to update the constant buffer
-    int NumFramesDirty = NUMBER_FRAME_RESOURCES;
+    int _NumFramesDirty = NUMBER_FRAME_RESOURCES;
 
 public:
     // Position, Orientation and Scale of object in the World;
@@ -31,10 +31,10 @@ public:
     RenderItem() = default;
     bool IsDirty()
     {
-        return NumFramesDirty > 0;
+        return _NumFramesDirty > 0;
     }
     void Clean()
     {
-        NumFramesDirty--;
+        _NumFramesDirty--;
     }
 };

@@ -182,6 +182,7 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameCycle.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameResource.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\RenderItem.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Geometry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />
@@ -282,6 +283,8 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameCycle.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameResource.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Cylinder.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Box.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Game\logging.xml" />
