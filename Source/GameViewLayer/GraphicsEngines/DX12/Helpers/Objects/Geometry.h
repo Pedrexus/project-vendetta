@@ -23,6 +23,7 @@ struct Mesh
         // assert(std::numeric_limits<T>::max() > indices.size());
 
         std::vector<T> indicesNew;
+        indicesNew.resize(Indices.size());
 
         auto caster = [] (u64 x) { return static_cast<T>(x); };
         std::transform(Indices.begin(), Indices.end(), indicesNew.begin(), caster);

@@ -45,8 +45,8 @@ namespace Cylinder
 				f32 s = sinf(j * dTheta);
 
 				vertex.Position = XMFLOAT3(r * c - center[0], y - center[1], r * s - center[2]);
+				vertex.Color = XMFLOAT4(Colors::CornflowerBlue);
 
-				/*
 				vertex.Texture.x = (float) j / sliceCount;
 				vertex.Texture.y = 1.0f - (float) i / stackCount;
 
@@ -60,7 +60,6 @@ namespace Cylinder
 				XMVECTOR B = XMLoadFloat3(&bitangent);
 				XMVECTOR N = XMVector3Normalize(XMVector3Cross(T, B));
 				XMStoreFloat3(&vertex.Normal, N);
-				*/
 
 				data.Vertices.push_back(vertex);
 			}
@@ -100,7 +99,7 @@ namespace Cylinder
 		Bottom,
 	};
 
-	void GenerateCap(Cap cap, f32 bottomRadius, f32 topRadius, f32 height, u32 sliceCount, u32 stackCount, Mesh& data)
+	void GenerateCap(Cap cap, f32 radius, f32 height, u32 sliceCount, u32 stackCount, Mesh& data)
 	{
 		auto d = cap == Cap::Top ? +1.0f : -1.0f;
 
@@ -112,22 +111,29 @@ namespace Cylinder
 		// Duplicate cap ring vertices because the texture coordinates and normals differ.
 		for (u32 i = 0; i <= sliceCount; ++i)
 		{
-			auto x = topRadius * cosf(i * dTheta);
-			auto z = topRadius * sinf(i * dTheta);
+			auto x = radius * cosf(i * dTheta);
+			auto z = radius * sinf(i * dTheta);
 
 			// Scale down by the height to try and make top cap texture coord area
 			// proportional to base.
 			auto u = x / height + 0.5f;
 			auto v = z / height + 0.5f;
 
-			data.Vertices.push_back(Vertex(x, y, z, 0.0f, d * 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, u, v));
+			auto vertex = Vertex(x, y, z, 0.0f, d * 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, u, v);
+			vertex.Color = XMFLOAT4(Colors::DodgerBlue);
+
+			data.Vertices.push_back(vertex);
 		}
 
 		// Cap center vertex.
-		data.Vertices.push_back(Vertex(0.0f, y, 0.0f, 0.0f, d * 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.5f, 0.5f));
+		auto vertex = Vertex(0.0f, y, 0.0f, 0.0f, d * 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.5f, 0.5f);
+		vertex.Color = XMFLOAT4(Colors::DodgerBlue);
+		data.Vertices.push_back(vertex);
 
 		// Index of center vertex.
 		auto centerIndex = data.Vertices.size() - 1;
+
+		auto currentSize = data.Indices.size();
 
 		for (u32 i = 0; i < sliceCount; ++i)
 		{
@@ -137,7 +143,7 @@ namespace Cylinder
 		}
 
 		if (cap == Cap::Bottom)
-			std::reverse(data.Indices.begin(), data.Indices.end());
+			std::reverse(data.Indices.begin() + currentSize, data.Indices.end());
 	}
 }
 
@@ -148,8 +154,8 @@ Mesh Geometry::CreateCylinder(f32 bottomRadius, f32 topRadius, f32 height, u32 s
 
 	Cylinder::GenerateVertices(bottomRadius, topRadius, height, sliceCount, stackCount, data);
 	Cylinder::GenerateIndices(sliceCount, stackCount, data);
-	Cylinder::GenerateCap(Cylinder::Cap::Top, bottomRadius, topRadius, height, sliceCount, stackCount, data);
-	Cylinder::GenerateCap(Cylinder::Cap::Bottom, bottomRadius, topRadius, height, sliceCount, stackCount, data);
+	Cylinder::GenerateCap(Cylinder::Cap::Top, topRadius, height, sliceCount, stackCount, data);
+	Cylinder::GenerateCap(Cylinder::Cap::Bottom, bottomRadius, height, sliceCount, stackCount, data);
 
 	return data;
 }

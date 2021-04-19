@@ -100,10 +100,9 @@ void DX12Engine::CreateCommandObjects()
 
 void DX12Engine::BuildBoxGeometry()
 {
-	auto cylinder = Geometry::CreateBox(2.0f, 2.0f, 2.0f);
-
-	auto& vertices = cylinder.Vertices;
-	auto& indices = cylinder.Indices;
+	auto geo = Geometry::CreateCylinder(1.0f, 2.0f, 2.0f, 20, 20);
+	auto& vertices = geo.Vertices;
+	auto indices = geo.GetIndices<u16>();
 
 	const UINT vbByteSize = (UINT) vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT) indices.size() * sizeof(u16);

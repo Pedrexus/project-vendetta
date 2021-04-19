@@ -18,6 +18,8 @@ INT WINAPI wWinMain(
     // always the second
     Logger::Init("logging.xml");
 
+    srand(1);
+
     auto game = Game::Get();
 
     if (!game->Initialize(hInstance, lpCmdLine, 0, nShowCmd))
