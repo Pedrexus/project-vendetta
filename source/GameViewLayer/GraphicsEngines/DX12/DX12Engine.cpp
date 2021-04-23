@@ -100,7 +100,8 @@ void DX12Engine::CreateCommandObjects()
 
 void DX12Engine::BuildBoxGeometry()
 {
-	auto geo = Geometry::CreateCylinder(1.0f, 2.0f, 2.0f, 20, 20);
+	// auto geo = Geometry::CreateCylinder(.8f, .4f, 1.0f, 20, 20);
+	auto geo = Geometry::CreateGrid(10, 10, 40, 40);
 	auto& vertices = geo.Vertices;
 	auto indices = geo.GetIndices<u16>();
 
@@ -166,6 +167,7 @@ void DX12Engine::BuildPipelineStateObject()
 	psoDesc.VS = _Shaders->GetVSByteCode();
 	psoDesc.PS = _Shaders->GetPSByteCode();
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	// psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	psoDesc.SampleMask = UINT32_MAX;

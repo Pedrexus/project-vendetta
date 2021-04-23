@@ -283,8 +283,12 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameCycle.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameResource.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Cylinder.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Box.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Geometries\Cylinder.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Geometries\Box.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Geometries\Sphere.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Geometries\Icosahedron.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Geometries\Geosphere.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Objects\Geometries\Grid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Game\logging.xml" />
