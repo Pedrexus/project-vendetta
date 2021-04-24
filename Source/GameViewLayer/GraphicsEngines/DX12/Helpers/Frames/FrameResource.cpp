@@ -9,9 +9,9 @@ FrameResource::FrameResource(ID3D12Device* device, u32 objectCount) :
 	CreateConstantBufferViews(device, objectCount);
 }
 
-void FrameResource::UpdateObjectConstantBuffers(ObjectConstants objConstants)
+void FrameResource::UpdateObjectConstantBuffers(u32 objIndex, ObjectConstants objConstants)
 {
-	_ObjectCB.CopyToCPUBuffer(0, objConstants);
+	_ObjectCB.CopyToCPUBuffer(objIndex, objConstants);
 }
 
 void FrameResource::UpdateMainPassConstantBuffers(RenderPassConstants passConstants)

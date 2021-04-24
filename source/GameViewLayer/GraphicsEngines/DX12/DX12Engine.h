@@ -11,12 +11,12 @@
 #include "Helpers/DXGISwapChain/SwapChainManager.h"
 #include "Helpers/DX12DepthStencilBuffer/DepthStencilManager.h"
 
-#include "Helpers/DX12Buffers.h"
 #include "Helpers/DX12InputAssembler.h"
 #include "Helpers/Camera/Camera.h"
 #include "Helpers/RootSignature/RootSignature.h"
 #include "Helpers/Shaders/HLSLShaders.h"
 #include "Helpers/Frames/FrameCycle.h"
+#include "Helpers/Objects/RenderItem.h"
 
 
 class DX12Engine : public IGraphicsEngine
@@ -39,7 +39,8 @@ class DX12Engine : public IGraphicsEngine
 	D3D12_RECT m_ScissorRect;
 
 	// by the book
-	std::unique_ptr<MeshGeometry> m_BoxGeo = nullptr;
+	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> _Geometries;
+	std::vector<std::unique_ptr<RenderItem>> _AllRitems;
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
 
 protected:

@@ -42,7 +42,7 @@ public:
 	FrameResource(const FrameResource& rhs) = delete;
 	FrameResource& operator=(const FrameResource& rhs) = delete;
 
-	void UpdateObjectConstantBuffers(ObjectConstants objConstants);
+	void UpdateObjectConstantBuffers(u32 objIndex, ObjectConstants objConstants);
 	void UpdateMainPassConstantBuffers(RenderPassConstants passConstants);
 
 	ID3D12DescriptorHeap* GetDescriptorHeap() const;

@@ -38,7 +38,7 @@ namespace Descriptor
 		u32 descriptorSize = 0;
 		ComPtr<ID3D12DescriptorHeap> heap = nullptr;
 
-		BaseHeap() = default;
+		// BaseHeap() = default;
 		BaseHeap(ID3D12Device* device, const D3D12_DESCRIPTOR_HEAP_TYPE heapType)
 		{
 			descriptorSize = device->GetDescriptorHandleIncrementSize(heapType);

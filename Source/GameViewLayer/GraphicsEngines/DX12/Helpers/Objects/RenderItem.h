@@ -3,7 +3,7 @@
 #include <const.h>
 
 #include "../../dx12pch.h"
-#include "../InputAssembler/MeshGeometry.h"
+#include "../DX12InputAssembler.h"
 
 class RenderItem
 {
@@ -18,7 +18,7 @@ public:
     // Index into GPU constant buffer corresponding to the ObjectCB for this render item.
     UINT ObjCBIndex = -1;
 
-    std::shared_ptr<MeshGeometry> Geo = nullptr;
+    MeshGeometry* Geo = nullptr;
 
     // Primitive topology.
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -36,5 +36,9 @@ public:
     void Clean()
     {
         _NumFramesDirty--;
+    }
+    void Reset()
+    {
+        _NumFramesDirty = NUMBER_FRAME_RESOURCES;
     }
 };

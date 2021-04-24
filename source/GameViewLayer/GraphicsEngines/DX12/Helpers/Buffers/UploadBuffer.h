@@ -7,10 +7,22 @@ class UploadBuffer
 {
     ComPtr<ID3D12Resource> _UploadBuffer = nullptr;
     u8* _MappedData = nullptr; // bytearray
+
+protected:
     u64 _ElementByteSize = 0;
 
 public:
-    inline UploadBuffer(ID3D12Device* device, u64 elementCount)
+    UploadBuffer() = default;
+    UploadBuffer(const UploadBuffer& rhs) = delete;
+    UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
+    virtual ~UploadBuffer()
+    {
+        if (_UploadBuffer != nullptr)
+            _UploadBuffer->Unmap(0, nullptr);
+        _MappedData = nullptr;
+    }
+
+    inline void Create(ID3D12Device* device, u64 elementCount)
     {
         _ElementByteSize = CalcBufferByteSize();
 
@@ -27,21 +39,9 @@ public:
         );
 
         ThrowIfFailed(_UploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&_MappedData)));
-
-        // We do not need to unmap until we are done with the resource.  However, we must not write to
-        // the resource while it is in use by the GPU (so we must use synchronization techniques).
     }
 
-    UploadBuffer(const UploadBuffer& rhs) = delete;
-    UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
-    virtual ~UploadBuffer()
-    {
-        if (_UploadBuffer != nullptr)
-            _UploadBuffer->Unmap(0, nullptr);
-        _MappedData = nullptr;
-    }
-
-    inline virtual u64 CalcBufferByteSize() const { return sizeof(T); }
+    inline virtual u64 CalcBufferByteSize() const = 0;
 
     inline ID3D12Resource* GetResource() const
     {

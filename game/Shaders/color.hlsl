@@ -31,7 +31,7 @@ VertexOut VS(VertexIn vin)
 {
 	VertexOut vout;
 
-	vin.PosL.y = 5.0f * exp(-pow(vin.PosL.x - 2.0f *sin(gTime / 2.0f), 2.0f) - pow(vin.PosL.z - 2.0f * cos(gTime / 2.0f), 2.0f));
+	vin.PosL.y += 5.0f * exp(-pow(vin.PosL.x - 2.0f *sin(gTime / 2.0f), 2.0f) - pow(vin.PosL.z - 2.0f * cos(gTime / 2.0f), 2.0f));
 
 	// Transform to homogeneous clip space.
 	float4 posW = mul(gWorld, float4(vin.PosL, 1.0f));
