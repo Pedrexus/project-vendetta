@@ -11,12 +11,12 @@
 #include "Helpers/DXGISwapChain/SwapChainManager.h"
 #include "Helpers/DX12DepthStencilBuffer/DepthStencilManager.h"
 
-#include "Helpers/DX12InputAssembler.h"
 #include "Helpers/Camera/Camera.h"
+#include "Helpers/InputAssembler/RenderObjects.h"
 #include "Helpers/RootSignature/RootSignature.h"
 #include "Helpers/Shaders/HLSLShaders.h"
 #include "Helpers/Frames/FrameCycle.h"
-#include "Helpers/Objects/RenderItem.h"
+#include "Helpers/InputAssembler/RenderItem.h"
 
 
 class DX12Engine : public IGraphicsEngine
@@ -34,18 +34,17 @@ class DX12Engine : public IGraphicsEngine
 	std::unique_ptr<HLSLShaders> _Shaders;
 	std::unique_ptr<FrameCycle> _FrameCycle;
 
-	DXGI_SAMPLE_DESC m_msaa;
+	DXGI_SAMPLE_DESC _MSAA;
 	D3D12_VIEWPORT m_ScreenViewport;
 	D3D12_RECT m_ScissorRect;
 
 	// by the book
-	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> _Geometries;
-	std::vector<std::unique_ptr<RenderItem>> _AllRitems;
+	std::unique_ptr<RenderObjects> _Objects;
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
 
 protected:
-	u32 m_MSAA_sampleCount = 1; // TODO: make it work
-	u32 m_MSAA_numQualityLevels = 0;
+	const u32 _MSAA_sampleCount = 1; // TODO: make it work
+	const u32 _MSAA_numQualityLevels = 0;
 
 public:
 	DX12Engine() = default;
@@ -60,7 +59,7 @@ private:
 	void CheckMSAASupport();
 	void CreateCommandObjects();
 	void BuildPipelineStateObject();
-	void BuildBoxGeometry();
+	void BuildGeometry();
 
 	void ShowFrameStats(milliseconds& dt);
 

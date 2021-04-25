@@ -27,4 +27,20 @@ namespace MSAA
 
 		return qualityLevels;
 	}
+
+	inline DXGI_SAMPLE_DESC Check(
+		ID3D12Device* device,
+		DXGI_FORMAT backBufferFormat,
+		u32 sampleCount,
+		u32 numQualityLevels
+	)
+	{
+		auto msaa = Specify(backBufferFormat, sampleCount, numQualityLevels);
+		ThrowIfFailed(device->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &msaa, sizeof(msaa)));
+
+		if (msaa.NumQualityLevels < 0)
+			LOG_ERROR("Unexpected MSAA quality level.");
+
+		return { msaa.SampleCount, msaa.NumQualityLevels - 1 };
+	}
 }

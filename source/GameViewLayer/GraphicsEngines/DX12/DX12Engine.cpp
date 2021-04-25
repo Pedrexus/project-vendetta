@@ -8,7 +8,7 @@
 #include "Helpers/DX12Window.h"
 #include "Helpers/Buffers/DefaultBuffer.h"
 #include "Helpers/InputAssembler/Vertex.h"
-#include "Helpers/Objects/Geometry.h"
+#include "Helpers/InputAssembler/Objects/Geometry.h"
 
 #include <GameLogicLayer/Game.h>
 
@@ -34,11 +34,13 @@ void DX12Engine::Initialize()
 	_RootSignature = std::make_unique<RootSignature>(m_d3dDevice.Get(), 2);
 	_Shaders = std::make_unique<HLSLShaders>(L"Shaders\\color.hlsl", nullptr);
 	_FrameCycle = std::make_unique<FrameCycle>(m_d3dDevice.Get(), 30);
-	
-	CheckMSAASupport();
+
+	_MSAA = MSAA::Check(m_d3dDevice.Get(), m_SwapChain->BackBufferFormat, _MSAA_sampleCount, _MSAA_numQualityLevels);
+	LOG_INFO(fmt::format("Using MSAA with {} samples and {} quality levels", _MSAA.Count, _MSAA.Quality));
+
 	CreateCommandObjects();
-	
-	m_SwapChain = std::make_unique<SwapChainManager>(m_dxgiFactory.Get(), m_d3dDevice.Get(), m_CommandQueue.Get(), m_msaa);
+
+	m_SwapChain = std::make_unique<SwapChainManager>(m_dxgiFactory.Get(), m_d3dDevice.Get(), m_CommandQueue.Get(), _MSAA);
 	m_DepthStencil = std::make_unique<DepthStencilManager>(m_d3dDevice.Get());
 
 #ifdef _DEBUG
@@ -49,7 +51,7 @@ void DX12Engine::Initialize()
 	ResetCommandList();
 
 	BuildPipelineStateObject();
-	BuildBoxGeometry();
+	BuildGeometry();
 
 	CloseCommandList();
 	ExecuteCommandLists();
@@ -75,18 +77,6 @@ void DX12Engine::FlushCommandQueue()
 	_FrameCycle->Flush(m_CommandQueue.Get());
 }
 
-void DX12Engine::CheckMSAASupport()
-{
-	auto msaa = MSAA::Specify(m_SwapChain->BackBufferFormat, m_MSAA_sampleCount, m_MSAA_numQualityLevels);
-	ThrowIfFailed(m_d3dDevice->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &msaa, sizeof(msaa)));
-
-	if (msaa.NumQualityLevels < 0)
-		LOG_ERROR("Unexpected MSAA quality level.");
-	LOG("Graphics", fmt::format("Using MSAA with {} samples and {} quality levels", msaa.SampleCount, msaa.NumQualityLevels));
-
-	m_msaa = { msaa.SampleCount, msaa.NumQualityLevels - 1 };
-}
-
 void DX12Engine::CreateCommandObjects()
 {
 	Command::CreateQueue(m_d3dDevice.Get(), m_CommandQueue.GetAddressOf());
@@ -97,174 +87,32 @@ void DX12Engine::CreateCommandObjects()
 	CloseCommandList();
 }
 
-void DX12Engine::BuildBoxGeometry()
+void DX12Engine::BuildGeometry()
 {
 	auto box = Geometry::CreateBox(0, 0, 0);
 	auto grid = Geometry::CreateGrid(10, 10, 40, 40);
-	auto sphere = Geometry::CreateGeosphere(.8f, 3);
+	auto sphere = Geometry::CreateGeosphere(2.0f, 3);
 	auto cylinder = Geometry::CreateCylinder(.8f, .4f, 1.0f, 20, 20);
 
-	// Cache the vertex offsets to each object in the concatenated vertex buffer.
-	UINT boxVertexOffset = 0;
-	UINT gridVertexOffset = (UINT) box.Vertices.size();
-	UINT sphereVertexOffset = gridVertexOffset + (UINT) grid.Vertices.size();
-	UINT cylinderVertexOffset = sphereVertexOffset + (UINT) sphere.Vertices.size();
+	std::map<std::string, Mesh*> meshes = {
+		{ "box", &box },
+		{ "grid", &grid },
+		{ "sphere", &sphere },
+		{ "cylinder", &cylinder },
+	};
 
-	// Cache the starting index for each object in the concatenated index buffer.
-	UINT boxIndexOffset = 0;
-	UINT gridIndexOffset = (UINT) box.Indices.size();
-	UINT sphereIndexOffset = gridIndexOffset + (UINT) grid.Indices.size();
-	UINT cylinderIndexOffset = sphereIndexOffset + (UINT) sphere.Indices.size();
+	std::vector<std::pair<std::string, XMMATRIX>> items = {
+		{ "box", XMMatrixTranslation(.0f, .5f, .0f) },
+		{ "grid", XMMatrixIdentity() },
 
-	// Define the SubmeshGeometry that cover different 
-	// regions of the vertex/index buffers.
+		{ "sphere", XMMatrixTranslation(-5.0f, 3.5f, -5.0f) },
+		{ "cylinder", XMMatrixTranslation(-5.0f, 1.5f, -5.0f) },
 
-	SubmeshGeometry boxSubmesh;
-	boxSubmesh.IndexCount = (UINT) box.Indices.size();
-	boxSubmesh.StartIndexLocation = boxIndexOffset;
-	boxSubmesh.BaseVertexLocation = boxVertexOffset;
-
-	SubmeshGeometry gridSubmesh;
-	gridSubmesh.IndexCount = (UINT) grid.Indices.size();
-	gridSubmesh.StartIndexLocation = gridIndexOffset;
-	gridSubmesh.BaseVertexLocation = gridVertexOffset;
-
-	SubmeshGeometry sphereSubmesh;
-	sphereSubmesh.IndexCount = (UINT) sphere.Indices.size();
-	sphereSubmesh.StartIndexLocation = sphereIndexOffset;
-	sphereSubmesh.BaseVertexLocation = sphereVertexOffset;
-
-	SubmeshGeometry cylinderSubmesh;
-	cylinderSubmesh.IndexCount = (UINT) cylinder.Indices.size();
-	cylinderSubmesh.StartIndexLocation = cylinderIndexOffset;
-	cylinderSubmesh.BaseVertexLocation = cylinderVertexOffset;
-
-	//
-	// Extract the vertex elements we are interested in and pack the
-	// vertices of all the meshes into one vertex buffer.
-	//
-
-	auto totalVertexCount = box.Vertices.size() + grid.Vertices.size() + sphere.Vertices.size() + cylinder.Vertices.size();
-	auto totalIndexCount = box.Indices.size() + grid.Indices.size() + sphere.Indices.size() + cylinder.Indices.size();;
-	std::vector<Mesh> meshArray = { box, grid, sphere, cylinder };
+		{ "sphere", XMMatrixTranslation(+5.0f, 3.5f, -5.0f) },
+		{ "cylinder", XMMatrixTranslation(+5.0f, 1.5f, -5.0f) },
+	};
 	
-	std::vector<Vertex> vertices;
-	vertices.reserve(totalVertexCount);
-	std::vector<u16> indices;
-	indices.reserve(totalIndexCount);
-
-	std::for_each(meshArray.begin(), meshArray.end(),
-		[&vertices, &indices] (Mesh mesh) {
-			vertices.insert(vertices.end(), std::make_move_iterator(mesh.Vertices.begin()), std::make_move_iterator(mesh.Vertices.end()));
-
-			auto meshIndices = mesh.GetIndices<u16>();
-			indices.insert(indices.end(), std::make_move_iterator(meshIndices.begin()), std::make_move_iterator(meshIndices.end()));
-		}
-	);
-
-	const UINT vbByteSize = (UINT) vertices.size() * sizeof(Vertex);
-	const UINT ibByteSize = (UINT) indices.size() * sizeof(u16);
-
-	auto geo = std::make_unique<MeshGeometry>();
-	geo->Name = "shapeGeo";
-
-	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
-	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
-	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-	geo->VertexBufferGPU = std::make_shared<DefaultBuffer>(m_d3dDevice.Get(),
-		m_CommandList.Get(), vertices.data(), vbByteSize);
-
-	geo->IndexBufferGPU = std::make_shared<DefaultBuffer>(m_d3dDevice.Get(),
-		m_CommandList.Get(), indices.data(), ibByteSize);
-
-	geo->VertexByteStride = sizeof(Vertex);
-	geo->VertexBufferByteSize = vbByteSize;
-	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
-	geo->IndexBufferByteSize = ibByteSize;
-
-	geo->DrawArgs["box"] = boxSubmesh;
-	geo->DrawArgs["grid"] = gridSubmesh;
-	geo->DrawArgs["sphere"] = sphereSubmesh;
-	geo->DrawArgs["cylinder"] = cylinderSubmesh;
-
-	_Geometries[geo->Name] = std::move(geo);
-
-	// Build Render Items
-
-	auto boxRitem = std::make_unique<RenderItem>();
-	boxRitem->World = XMMatrixTranslation(1.0f, 0.5f, 1.0f);
-	boxRitem->ObjCBIndex = 0;
-	boxRitem->Geo = _Geometries["shapeGeo"].get();
-	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
-	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["box"].StartIndexLocation;
-	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["box"].BaseVertexLocation;
-	_AllRitems.push_back(std::move(boxRitem));
-
-	auto gridRitem = std::make_unique<RenderItem>();
-	gridRitem->World = XMMatrixIdentity();
-	gridRitem->ObjCBIndex = 1;
-	gridRitem->Geo = _Geometries["shapeGeo"].get();
-	gridRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	gridRitem->IndexCount = gridRitem->Geo->DrawArgs["grid"].IndexCount;
-	gridRitem->StartIndexLocation = gridRitem->Geo->DrawArgs["grid"].StartIndexLocation;
-	gridRitem->BaseVertexLocation = gridRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
-	_AllRitems.push_back(std::move(gridRitem));
-
-	UINT objCBIndex = 2;
-	for (int i = 0; i < 5; ++i)
-	{
-		auto leftCylRitem = std::make_unique<RenderItem>();
-		auto rightCylRitem = std::make_unique<RenderItem>();
-		auto leftSphereRitem = std::make_unique<RenderItem>();
-		auto rightSphereRitem = std::make_unique<RenderItem>();
-
-		XMMATRIX leftCylWorld = XMMatrixTranslation(-5.0f, 1.5f, -10.0f + i * 5.0f);
-		XMMATRIX rightCylWorld = XMMatrixTranslation(+5.0f, 1.5f, -10.0f + i * 5.0f);
-
-		XMMATRIX leftSphereWorld = XMMatrixTranslation(-5.0f, 3.5f, -10.0f + i * 5.0f);
-		XMMATRIX rightSphereWorld = XMMatrixTranslation(+5.0f, 3.5f, -10.0f + i * 5.0f);
-
-		leftCylRitem->World = rightCylWorld;
-		leftCylRitem->ObjCBIndex = objCBIndex++;
-		leftCylRitem->Geo = _Geometries["shapeGeo"].get();
-		leftCylRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		leftCylRitem->IndexCount = leftCylRitem->Geo->DrawArgs["cylinder"].IndexCount;
-		leftCylRitem->StartIndexLocation = leftCylRitem->Geo->DrawArgs["cylinder"].StartIndexLocation;
-		leftCylRitem->BaseVertexLocation = leftCylRitem->Geo->DrawArgs["cylinder"].BaseVertexLocation;
-
-		rightCylRitem->World = leftCylWorld;
-		rightCylRitem->ObjCBIndex = objCBIndex++;
-		rightCylRitem->Geo = _Geometries["shapeGeo"].get();
-		rightCylRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		rightCylRitem->IndexCount = rightCylRitem->Geo->DrawArgs["cylinder"].IndexCount;
-		rightCylRitem->StartIndexLocation = rightCylRitem->Geo->DrawArgs["cylinder"].StartIndexLocation;
-		rightCylRitem->BaseVertexLocation = rightCylRitem->Geo->DrawArgs["cylinder"].BaseVertexLocation;
-
-		leftSphereRitem->World = leftSphereWorld;
-		leftSphereRitem->ObjCBIndex = objCBIndex++;
-		leftSphereRitem->Geo = _Geometries["shapeGeo"].get();
-		leftSphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		leftSphereRitem->IndexCount = leftSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
-		leftSphereRitem->StartIndexLocation = leftSphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
-		leftSphereRitem->BaseVertexLocation = leftSphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
-
-		rightSphereRitem->World = rightSphereWorld;
-		rightSphereRitem->ObjCBIndex = objCBIndex++;
-		rightSphereRitem->Geo = _Geometries["shapeGeo"].get();
-		rightSphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		rightSphereRitem->IndexCount = rightSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
-		rightSphereRitem->StartIndexLocation = rightSphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
-		rightSphereRitem->BaseVertexLocation = rightSphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
-
-		_AllRitems.push_back(std::move(leftCylRitem));
-		_AllRitems.push_back(std::move(rightCylRitem));
-		_AllRitems.push_back(std::move(leftSphereRitem));
-		_AllRitems.push_back(std::move(rightSphereRitem));
-	}
+	_Objects = std::make_unique<RenderObjects>(meshes, items, m_d3dDevice.Get(), m_CommandList.Get());
 }
 
 void DX12Engine::ShowFrameStats(milliseconds& dt)
@@ -305,7 +153,7 @@ void DX12Engine::BuildPipelineStateObject()
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = m_SwapChain->BackBufferFormat;
-	psoDesc.SampleDesc = m_msaa;
+	psoDesc.SampleDesc = _MSAA;
 	psoDesc.DSVFormat = m_DepthStencil->depthStencilFormat;
 	ThrowIfFailed(m_d3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSO)));
 }
@@ -331,13 +179,13 @@ void DX12Engine::OnUpdate(milliseconds dt)
 	t += dt / 1000.0f;
 
 	// update render items
-	
-	for (auto& e : _AllRitems)
+
+	for (auto& obj : _Objects->items())
 	{
-		if (e->IsDirty())
+		if (obj.IsDirty())
 		{
-			currFrameRes->UpdateObjectConstantBuffers(e->ObjCBIndex, { e->World });
-			e->Clean();
+			currFrameRes->UpdateObjectConstantBuffers(obj.CBIndex, { obj.World });
+			obj.Clean();
 		}
 	}
 }
@@ -373,19 +221,17 @@ void DX12Engine::OnDraw()
 	auto gpuHandle = currFrameRes->GetGPUHandle();
 	m_CommandList->SetGraphicsRootDescriptorTable(0, currFrameRes->GetGPUHandle());
 
-	for (auto& e: _AllRitems)
+	for (auto& obj : _Objects->items())
 	{
-		auto vertexView = e->Geo->VertexBufferView();
-		auto indexView = e->Geo->IndexBufferView();
+		m_CommandList->IASetVertexBuffers(0, 1, &_Objects->VertexBufferView);
+		m_CommandList->IASetIndexBuffer(&_Objects->IndexBufferView);
+		m_CommandList->IASetPrimitiveTopology(obj.PrimitiveType);
 
-		m_CommandList->IASetVertexBuffers(0, 1, &vertexView);
-		m_CommandList->IASetIndexBuffer(&indexView);
-		m_CommandList->IASetPrimitiveTopology(e->PrimitiveType);
-
-		gpuHandle.Offset(1, currFrameRes->_cbvHeap.descriptorSize); // objCBIndex is unnecessary
+		// this sets the world matrix in the cbuffer
+		gpuHandle.Offset(1, currFrameRes->_cbvHeap.descriptorSize);
 		m_CommandList->SetGraphicsRootDescriptorTable(1, gpuHandle);
 
-		m_CommandList->DrawIndexedInstanced(e->IndexCount, 1, e->StartIndexLocation, e->BaseVertexLocation, 0);
+		m_CommandList->DrawIndexedInstanced(obj.Submesh->IndexCount, 1, obj.Submesh->StartIndexLocation, obj.Submesh->BaseVertexLocation, 0);
 	}
 
 	// Indicate a state transition on the resource usage.
@@ -396,7 +242,7 @@ void DX12Engine::OnDraw()
 	ExecuteCommandLists();
 
 	m_SwapChain->Present();
-	
+
 	_FrameCycle->SignalCurrentFrame(m_CommandQueue.Get());
 	_FrameCycle->Advance();
 }
@@ -416,7 +262,7 @@ void DX12Engine::OnResize(u32 width, u32 height)
 
 	// Release the previous resources we will be recreating.
 	m_SwapChain->Resize(m_d3dDevice.Get(), width, height);
-	m_DepthStencil->Resize(m_d3dDevice.Get(), width, height, m_msaa);
+	m_DepthStencil->Resize(m_d3dDevice.Get(), width, height, _MSAA);
 
 	auto dsWriteTransition = m_DepthStencil->GetWriteTransition();
 	m_CommandList->ResourceBarrier(1, &dsWriteTransition);

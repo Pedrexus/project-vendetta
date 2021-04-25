@@ -45,7 +45,6 @@ namespace Factory
 	}
 }
 
-
 namespace COM
 {
 

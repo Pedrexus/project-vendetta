@@ -14,7 +14,7 @@ struct RenderPassConstants
 
 struct ObjectConstants
 {
-	XMMATRIX World = XMMatrixIdentity();
+	XMFLOAT4X4 World;
 };
 
 // Stores the resources needed for the CPU to build the command lists

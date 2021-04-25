@@ -55,7 +55,6 @@ DefaultBuffer::DefaultBuffer(ID3D12Device* device, ID3D12GraphicsCommandList* cm
     _DefaultBuffer = CreateDefaultBuffer(device, byteSize);
     _IntermediateBuffer = CreateIntermediateBuffer(device, byteSize);
 
-
     auto copyTransition = GetCopyTransition();
     cmdList->ResourceBarrier(1, &copyTransition);
 
