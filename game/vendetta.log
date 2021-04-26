@@ -10,10 +10,10 @@ Line: 33
 Function: HadSuccessCreatingDevice
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Device.h
 Line: 12
-[INFO] Using MSAA with 1 samples and 0 quality levels
+[INFO] Using MSAA with 4 samples and 0 quality levels
 Function: DX12Engine::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.cpp
-Line: 39
+Line: 47
 [Graphics] 
 Adapter 7200: NVIDIA GeForce GTX 1060
 Output: \\.\DISPLAY4
@@ -110,7 +110,7 @@ Line: 88
 Function: Game::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
 Line: 14
-[INFO] Synced with GPU 238 times.
+[INFO] Synced with GPU 254 times.
 Function: FenceManager::~FenceManager
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.h
 Line: 35

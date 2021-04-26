@@ -35,11 +35,11 @@ void SwapChainManager::CreateRenderTargetViewsForBuffers(ID3D12Device* device)
 	}
 }
 
-SwapChainManager::SwapChainManager(IDXGIFactory* factory, ID3D12Device* device, ID3D12CommandQueue* cmdQueue, DXGI_SAMPLE_DESC msaa) :
+SwapChainManager::SwapChainManager(IDXGIFactory* factory, ID3D12Device* device, ID3D12CommandQueue* cmdQueue) :
 	rtvHeap(device, SwapChainBufferCount)
 {
 	swapChain.Reset();
-	CreateSwapChainForWindow(factory, msaa, cmdQueue);
+	CreateSwapChainForWindow(factory, cmdQueue);
 }
 
 void SwapChainManager::SetBuffersNames()
@@ -65,20 +65,24 @@ DXGI_FRAME_STATISTICS SwapChainManager::GetFrameStatistics()
 	return stats;
 }
 
-CD3DX12_RESOURCE_BARRIER SwapChainManager::GetPresentTransition()
+CD3DX12_RESOURCE_BARRIER* SwapChainManager::GetPresentTransition()
 {
-	return CD3DX12_RESOURCE_BARRIER::Transition(
+	Transition = CD3DX12_RESOURCE_BARRIER::Transition(
 		GetCurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		D3D12_RESOURCE_STATE_PRESENT
 	);
+
+	return &Transition;
 }
 
-CD3DX12_RESOURCE_BARRIER SwapChainManager::GetRenderTransition()
+CD3DX12_RESOURCE_BARRIER* SwapChainManager::GetRenderTransition()
 {
-	return CD3DX12_RESOURCE_BARRIER::Transition(
+	Transition = CD3DX12_RESOURCE_BARRIER::Transition(
 		GetCurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_PRESENT,
 		D3D12_RESOURCE_STATE_RENDER_TARGET
 	);
+
+	return &Transition;
 }

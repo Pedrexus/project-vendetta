@@ -21,30 +21,26 @@
 
 class DX12Engine : public IGraphicsEngine
 {
-	ComPtr<IDXGIFactory> m_dxgiFactory;
-	ComPtr<ID3D12Device> m_d3dDevice;
+	ComPtr<IDXGIFactory> _Factory;
+	ComPtr<ID3D12Device> _Device;
 
 	ComPtr<ID3D12CommandQueue> m_CommandQueue;
 	ComPtr<ID3D12GraphicsCommandList> m_CommandList;
 
-	std::unique_ptr<Camera> m_Camera;
-	std::unique_ptr<SwapChainManager> m_SwapChain;
-	std::unique_ptr<DepthStencilManager> m_DepthStencil;
+	std::unique_ptr<Camera> _Camera;
+	std::unique_ptr<SwapChainManager> _SwapChain;
+	std::unique_ptr<DepthStencilManager> _DepthStencil;
 	std::unique_ptr<RootSignature> _RootSignature;
 	std::unique_ptr<HLSLShaders> _Shaders;
 	std::unique_ptr<FrameCycle> _FrameCycle;
 
-	DXGI_SAMPLE_DESC _MSAA;
-	D3D12_VIEWPORT m_ScreenViewport;
-	D3D12_RECT m_ScissorRect;
+	DXGI_SAMPLE_DESC _MSAA = { 4, 0 }; // This is the default - TODO: make it work with count > 1
+	D3D12_VIEWPORT _ScreenViewport;
+	D3D12_RECT _ScissorRect;
 
 	// by the book
 	std::unique_ptr<RenderObjects> _Objects;
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
-
-protected:
-	const u32 _MSAA_sampleCount = 1; // TODO: make it work
-	const u32 _MSAA_numQualityLevels = 0;
 
 public:
 	DX12Engine() = default;
@@ -56,21 +52,20 @@ public:
 	void Initialize() override;
 
 private:
-	void CheckMSAASupport();
-	void CreateCommandObjects();
 	void BuildPipelineStateObject();
 	void BuildGeometry();
 
 	void ShowFrameStats(milliseconds& dt);
 
 protected:
+	void FlushCommandQueue();
 	void ResetCommandList();
 	void CloseCommandList();
 	void ExecuteCommandLists();
-	void FlushCommandQueue();
+	void SignalFrameAndAdvance();
 	
 public:
-	inline bool IsReady() override { return m_d3dDevice && m_SwapChain->IsReady() && _FrameCycle; };
+	inline bool IsReady() override { return _Device && _SwapChain->IsReady() && _FrameCycle; };
 	void SetCameraPosition(CameraPosition3D pos) override;
 	void OnUpdate(milliseconds dt) override;
 	void OnDraw() override;

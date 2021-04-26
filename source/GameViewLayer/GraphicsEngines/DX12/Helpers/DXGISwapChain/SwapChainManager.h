@@ -24,6 +24,8 @@ class SwapChainManager
 
 	Descriptor::RenderTarget::Heap rtvHeap;
 
+	CD3DX12_RESOURCE_BARRIER Transition;
+
 public:
 	static constexpr auto BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 
@@ -32,8 +34,7 @@ protected:
 		u32 width,
 		u32 height,
 		u32 swapChainBufferCount,
-		DXGI_FORMAT backBufferFormat,
-		DXGI_SAMPLE_DESC msaa
+		DXGI_FORMAT backBufferFormat
 	)
 	{
 		DXGI_SWAP_CHAIN_DESC1 sd = {};
@@ -41,7 +42,7 @@ protected:
 		sd.Height = height;
 		sd.Format = backBufferFormat;
 		sd.Stereo = false;
-		sd.SampleDesc = msaa;
+		sd.SampleDesc = { 1, 0 }; // In D3D12, only DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL and DXGI_SWAP_EFFECT_FLIP_DISCARD are supported, and the bitblt models are not. Because of this, multisampling a back buffer is not supported in D3D12, and you must manually perform multisampling in the app using ID3D12GraphicsCommandList::ResolveSubresource or ID3D12GraphicsCommandList1::ResolveSubresourceRegion.
 		sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		sd.BufferCount = swapChainBufferCount;
 		sd.Scaling = DXGI_SCALING_NONE;
@@ -66,13 +67,13 @@ protected:
 		return sd;
 	}
 
-	void CreateSwapChainForWindow(IDXGIFactory* factory, const DXGI_SAMPLE_DESC& msaa, ID3D12CommandQueue* cmdQueue)
+	void CreateSwapChainForWindow(IDXGIFactory* factory, ID3D12CommandQueue* cmdQueue)
 	{
 		auto pfactory2 = static_cast<IDXGIFactory2*>(factory);
 		auto ppSwapChain1 = (IDXGISwapChain1**)swapChain.GetAddressOf();
 
 		auto window = Game::Get()->GetWindow();
-		auto swapChainDesc = Specify(NULL, NULL, SwapChainBufferCount, BackBufferFormat, msaa);
+		auto swapChainDesc = Specify(NULL, NULL, SwapChainBufferCount, BackBufferFormat);
 		auto fsSwapChainDesc = SpecifyFullscreen(SCREEN_REFRESH_RATE);
 
 		ThrowIfFailed(pfactory2->CreateSwapChainForHwnd(
@@ -95,8 +96,7 @@ public:
 	SwapChainManager(
 		IDXGIFactory* factory,
 		ID3D12Device* device,
-		ID3D12CommandQueue* cmdQueue,
-		DXGI_SAMPLE_DESC msaa
+		ID3D12CommandQueue* cmdQueue
 	);
 
 	inline bool IsReady() { return swapChain; }
@@ -119,9 +119,6 @@ public:
 
 	DXGI_FRAME_STATISTICS GetFrameStatistics();
 
-	CD3DX12_RESOURCE_BARRIER GetPresentTransition();
-
-	CD3DX12_RESOURCE_BARRIER GetRenderTransition();
-
-
+	CD3DX12_RESOURCE_BARRIER* GetPresentTransition();
+	CD3DX12_RESOURCE_BARRIER* GetRenderTransition();
 };

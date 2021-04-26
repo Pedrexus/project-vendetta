@@ -15,7 +15,7 @@
 
 DX12Engine::~DX12Engine()
 {
-	if (m_d3dDevice)
+	if (_Device)
 		FlushCommandQueue();
 }
 
@@ -26,35 +26,39 @@ void DX12Engine::Initialize()
 #endif
 
 	// TODO: split into Constructor and initialize ?
-	m_dxgiFactory = DXGI::Factory::CreateWithDebugLayer();
-	m_d3dDevice = CreateHardwareDeviceWithHighestPerformanceAdapterAvailable(m_dxgiFactory.Get());
+	_Factory = DXGI::Factory::CreateWithDebugLayer();
+	_Device = CreateHardwareDeviceWithHighestPerformanceAdapterAvailable(_Factory.Get());
 
-	m_Camera = std::make_unique<Camera>();
+	_Camera = std::make_unique<Camera>();
 
-	_RootSignature = std::make_unique<RootSignature>(m_d3dDevice.Get(), 2);
+	Command::CreateQueue(_Device.Get(), m_CommandQueue.GetAddressOf());
+
+	_SwapChain = std::make_unique<SwapChainManager>(_Factory.Get(), _Device.Get(), m_CommandQueue.Get());
+	_DepthStencil = std::make_unique<DepthStencilManager>(_Device.Get());
+
+	_RootSignature = std::make_unique<RootSignature>(_Device.Get(), 2);
 	_Shaders = std::make_unique<HLSLShaders>(L"Shaders\\color.hlsl", nullptr);
-	_FrameCycle = std::make_unique<FrameCycle>(m_d3dDevice.Get(), 30);
+	_FrameCycle = std::make_unique<FrameCycle>(_Device.Get(), 30);
 
-	_MSAA = MSAA::Check(m_d3dDevice.Get(), m_SwapChain->BackBufferFormat, _MSAA_sampleCount, _MSAA_numQualityLevels);
+	Command::CreateList(_Device.Get(), _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
+	m_CommandList->SetName(L"Main");
+	
+	_MSAA = MSAA::Check(_Device.Get(), _SwapChain->BackBufferFormat, _MSAA.Count, _MSAA.Quality);
 	LOG_INFO(fmt::format("Using MSAA with {} samples and {} quality levels", _MSAA.Count, _MSAA.Quality));
 
-	CreateCommandObjects();
-
-	m_SwapChain = std::make_unique<SwapChainManager>(m_dxgiFactory.Get(), m_d3dDevice.Get(), m_CommandQueue.Get(), _MSAA);
-	m_DepthStencil = std::make_unique<DepthStencilManager>(m_d3dDevice.Get());
-
 #ifdef _DEBUG
-	Display::LogInformation(m_dxgiFactory.Get(), m_SwapChain->BackBufferFormat);
+	Display::LogInformation(_Factory.Get(), _SwapChain->BackBufferFormat);
 #endif
 
-	// Reset the command list to prep for initialization commands.
-	ResetCommandList();
+	CloseCommandList(); // The command list must be closed before passing it off to the GPU.
+	ResetCommandList(); // Reset the command list to prep for initialization commands.
 
 	BuildPipelineStateObject();
 	BuildGeometry();
 
 	CloseCommandList();
 	ExecuteCommandLists();
+	SignalFrameAndAdvance();
 }
 
 void DX12Engine::ResetCommandList()
@@ -75,16 +79,6 @@ void DX12Engine::ExecuteCommandLists()
 void DX12Engine::FlushCommandQueue()
 {
 	_FrameCycle->Flush(m_CommandQueue.Get());
-}
-
-void DX12Engine::CreateCommandObjects()
-{
-	Command::CreateQueue(m_d3dDevice.Get(), m_CommandQueue.GetAddressOf());
-	Command::CreateList(m_d3dDevice.Get(), _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
-	m_CommandList->SetName(L"Main");
-
-	// The command list must be closed before passing it off to the GPU.
-	CloseCommandList();
 }
 
 void DX12Engine::BuildGeometry()
@@ -112,7 +106,7 @@ void DX12Engine::BuildGeometry()
 		{ "cylinder", XMMatrixTranslation(+5.0f, 1.5f, -5.0f) },
 	};
 	
-	_Objects = std::make_unique<RenderObjects>(meshes, items, m_d3dDevice.Get(), m_CommandList.Get());
+	_Objects = std::make_unique<RenderObjects>(meshes, items, _Device.Get(), m_CommandList.Get());
 }
 
 void DX12Engine::ShowFrameStats(milliseconds& dt)
@@ -120,7 +114,7 @@ void DX12Engine::ShowFrameStats(milliseconds& dt)
 	static auto presentCount = 0;
 	static f64 elapsedTimeSinceLastWrite = 0;
 
-	auto stats = m_SwapChain->GetFrameStatistics();
+	auto stats = _SwapChain->GetFrameStatistics();
 
 	elapsedTimeSinceLastWrite += dt;
 	if (elapsedTimeSinceLastWrite >= 2000)
@@ -152,20 +146,21 @@ void DX12Engine::BuildPipelineStateObject()
 	psoDesc.SampleMask = UINT32_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	psoDesc.NumRenderTargets = 1;
-	psoDesc.RTVFormats[0] = m_SwapChain->BackBufferFormat;
-	psoDesc.SampleDesc = _MSAA;
-	psoDesc.DSVFormat = m_DepthStencil->depthStencilFormat;
-	ThrowIfFailed(m_d3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSO)));
+	psoDesc.RTVFormats[0] = _SwapChain->BackBufferFormat;
+	psoDesc.SampleDesc = { 1, 0 };
+	psoDesc.DSVFormat = _DepthStencil->depthStencilFormat;
+	ThrowIfFailed(_Device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSO)));
 }
 
 void DX12Engine::SetCameraPosition(CameraPosition3D pos)
 {
-	m_Camera->UpdateCameraView(pos);
+	_Camera->UpdateCameraView(pos);
 }
 
 void DX12Engine::OnUpdate(milliseconds dt)
 {
 	static milliseconds t = 0;
+	t += dt / 1000.0f;
 
 	ShowFrameStats(dt);
 
@@ -173,10 +168,8 @@ void DX12Engine::OnUpdate(milliseconds dt)
 
 	// update main pass
 
-	auto viewProj = m_Camera->GetViewProj();
+	auto viewProj = _Camera->GetViewProj();
 	currFrameRes->UpdateMainPassConstantBuffers({ viewProj, static_cast<f32>(t) });
-
-	t += dt / 1000.0f;
 
 	// update render items
 
@@ -195,14 +188,13 @@ void DX12Engine::OnDraw()
 	ResetCommandList();
 
 	// Indicate a state transition on the resource usage.
-	auto renderTransition = m_SwapChain->GetPresentTransition();
-	m_CommandList->ResourceBarrier(1, &renderTransition);
+	m_CommandList->ResourceBarrier(1, _SwapChain->GetRenderTransition());
 
-	m_CommandList->RSSetViewports(1, &m_ScreenViewport);
-	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
+	m_CommandList->RSSetViewports(1, &_ScreenViewport);
+	m_CommandList->RSSetScissorRects(1, &_ScissorRect);
 
-	const auto cbbCPUHandle = m_SwapChain->GetCurrentBackBufferCPUHandle();
-	const auto dsCPUHandle = m_DepthStencil->GetCPUHandle();
+	const auto cbbCPUHandle = _SwapChain->GetCurrentBackBufferCPUHandle();
+	const auto dsCPUHandle = _DepthStencil->GetCPUHandle();
 
 	// Clear the back buffer and depth buffer.
 	m_CommandList->ClearRenderTargetView(cbbCPUHandle, Colors::LightSteelBlue, 0, nullptr);
@@ -219,7 +211,7 @@ void DX12Engine::OnDraw()
 	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
 
 	auto gpuHandle = currFrameRes->GetGPUHandle();
-	m_CommandList->SetGraphicsRootDescriptorTable(0, currFrameRes->GetGPUHandle());
+	m_CommandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
 
 	for (auto& obj : _Objects->items())
 	{
@@ -235,16 +227,14 @@ void DX12Engine::OnDraw()
 	}
 
 	// Indicate a state transition on the resource usage.
-	auto presentTransition = m_SwapChain->GetPresentTransition();
-	m_CommandList->ResourceBarrier(1, &presentTransition);
+	m_CommandList->ResourceBarrier(1, _SwapChain->GetPresentTransition());
 
 	CloseCommandList();
 	ExecuteCommandLists();
 
-	m_SwapChain->Present();
+	_SwapChain->Present();
 
-	_FrameCycle->SignalCurrentFrame(m_CommandQueue.Get());
-	_FrameCycle->Advance();
+	SignalFrameAndAdvance();
 }
 
 void DX12Engine::CloseCommandList()
@@ -258,22 +248,26 @@ void DX12Engine::OnResize(u32 width, u32 height)
 		LOG_FATAL("Called OnResize before graphics engine was ready");
 	ASSERT(width != NULL && height != NULL);
 
+	// Release the previous resources we will be recreating.
+	_SwapChain->Resize(_Device.Get(), width, height);
+	_DepthStencil->Resize(_Device.Get(), width, height);
+
 	ResetCommandList();
 
-	// Release the previous resources we will be recreating.
-	m_SwapChain->Resize(m_d3dDevice.Get(), width, height);
-	m_DepthStencil->Resize(m_d3dDevice.Get(), width, height, _MSAA);
-
-	auto dsWriteTransition = m_DepthStencil->GetWriteTransition();
-	m_CommandList->ResourceBarrier(1, &dsWriteTransition);
+	m_CommandList->ResourceBarrier(1, _DepthStencil->GetWriteTransition());
 
 	CloseCommandList();
 	ExecuteCommandLists();
 
-	m_ScreenViewport = CreateViewport(width, height);
-	m_ScissorRect = CreateScissorRectangle(width, height);
-	m_Camera->Resize(width, height);
+	_ScreenViewport = CreateViewport(width, height);
+	_ScissorRect = CreateScissorRectangle(width, height);
+	_Camera->Resize(width, height);
 
+	SignalFrameAndAdvance();
+}
+
+void DX12Engine::SignalFrameAndAdvance()
+{
 	_FrameCycle->SignalCurrentFrame(m_CommandQueue.Get());
 	_FrameCycle->Advance();
 }
