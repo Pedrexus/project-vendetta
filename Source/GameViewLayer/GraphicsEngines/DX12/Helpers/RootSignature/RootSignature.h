@@ -15,10 +15,7 @@ class RootSignature
 
 protected:
 	ComPtr<ID3DBlob> SpecifyAndSerialize(u32 numConstantBuffers);
-	ComPtr<ID3DBlob> Serialize(D3D12_VERSIONED_ROOT_SIGNATURE_DESC rsDesc);
 	void Create(ID3D12Device* device, ID3DBlob* serializedRootSig);
-
-	CD3DX12_DESCRIPTOR_RANGE1 SpecifyCBVTable(u32 baseShaderRegister);
 
 public:
 	RootSignature(ID3D12Device* device, u32 numConstantBuffers);

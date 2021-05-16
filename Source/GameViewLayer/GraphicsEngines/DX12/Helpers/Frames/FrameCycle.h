@@ -22,6 +22,7 @@ public:
 	// Cycle through the circular frame resource array
 	void Advance();
 
+	u8 GetCurrentFrameResourceIndex() const { return _CurrFrameResourceIndex; }
 	FrameResource* GetCurrentFrameResource();
 
 	// We check the GPU is done with the frame with a signal

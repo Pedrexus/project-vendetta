@@ -1,44 +1,92 @@
 #include "RenderObjects.h"
 
-RenderObjects::RenderObjects(MeshMap& meshes, WorldMap& table, ID3D12Device* device, ID3D12GraphicsCommandList* cmdList)
+u32 GetTotalSize(RenderObjects::MeshMap& meshes, std::function<u32(RenderObjects::MeshMapItem)> lambda)
 {
-	_Vertices.reserve(GetTotalVertexCount(meshes));
-	BuildPackedVertexVector(meshes);
+	return std::transform_reduce(LOOP_EXECUTION_POLICY, meshes.begin(), meshes.end(), 0u, std::plus<u32>{}, lambda);
+}
 
-	_Indices.reserve(GetTotalIndexCount(meshes));
-	BuildPackedIndexVector(meshes);
+u32 GetTotalVertexCount(RenderObjects::MeshMap& meshes)
+{
+	return GetTotalSize(meshes, [] (RenderObjects::MeshMapItem i) { return (u32) i.second->Vertices.size(); });
+};
 
-	_Submeshes.reserve(meshes.size());
-	CreateSubmeshes(meshes);
+u32 GetTotalIndexCount(RenderObjects::MeshMap& meshes)
+{
+	return GetTotalSize(meshes, [] (RenderObjects::MeshMapItem i) { return (u32) i.second->Indices.size(); });
+};
 
-	_Objects.reserve(table.size());
+std::vector<Vertex> BuildPackedVertexVector(RenderObjects::MeshMap& meshes)
+{
+	std::vector<Vertex> vertices;
+	vertices.reserve(GetTotalVertexCount(meshes));
+
+	for (auto& [_, mesh] : meshes)
+	{
+		auto begin = std::make_move_iterator(mesh->Vertices.begin());
+		auto end = std::make_move_iterator(mesh->Vertices.end());
+		vertices.insert(vertices.end(), begin, end);
+	}
+
+	return vertices;
+}
+
+std::vector<u64> BuildPackedIndexVector(RenderObjects::MeshMap& meshes)
+{
+	std::vector<u64> indices;
+	indices.reserve(GetTotalIndexCount(meshes));
+
+	for (auto& [_, mesh] : meshes)
+	{
+		auto meshIndices = mesh->GetIndices<u64>();
+		auto begin = std::make_move_iterator(meshIndices.begin());
+		auto end = std::make_move_iterator(meshIndices.end());
+		indices.insert(indices.end(), begin, end);
+	}
+
+	return indices;
+}
+
+RenderObjects::RenderObjects(MeshMap& staticMeshes, MeshMap& dynamicMeshes, WorldMap& table, ID3D12Device* device, ID3D12GraphicsCommandList* cmdList)
+{
+	CreateSubmeshes(staticMeshes);
+	auto vertices = BuildPackedVertexVector(staticMeshes);
+	auto indices = BuildPackedIndexVector(staticMeshes);
+
+	Mesh mesh = { vertices, indices };
+	_StaticMeshBuffer.Upload(device, cmdList, &mesh);
+
+	for (auto& [name, mesh] : dynamicMeshes)
+		for (auto i = 0; i < NUMBER_FRAME_RESOURCES; i++)
+			_DynamicMeshBuffers[name][i].Upload(device, mesh);
+
 	CreateObjects(table);
-
-	_MeshGeometryGroup = std::make_unique<MeshGeometry>(_Vertices, _Indices, device, cmdList);
-
-	VertexBufferView = _MeshGeometryGroup->GetVertexBufferView();
-	IndexBufferView = _MeshGeometryGroup->GetIndexBufferView();
 }
 
 void RenderObjects::CreateObjects(RenderObjects::WorldMap& table)
 {
-	u32 index = 0;
+	_RenderItems.reserve(table.size());
+
 	for (auto& [name, world] : table)
-		_Objects.push_back({ index++, world, _Submeshes[name] });
+	{
+		if (_Submeshes.contains(name))
+			_RenderItems.push_back({ name, world, &_Submeshes[name], &_StaticMeshBuffer });
+		else
+		{
+			auto& buffer = _DynamicMeshBuffers[name][0];
+			_RenderItems.push_back({ name, world, &buffer, buffer.IndicesCount });
+		}
+	}
 }
 
 std::vector<RenderItem>& RenderObjects::items()
 {
-	return _Objects;
-}
-
-RenderObjects::~RenderObjects()
-{
-	_MeshGeometryGroup->DisposeUploaders();
+	return _RenderItems;
 }
 
 void RenderObjects::CreateSubmeshes(MeshMap& meshes)
 {
+	_Submeshes.reserve(meshes.size());
+
 	u32 vertexOffset = 0;
 	u32 indexOffset = 0;
 	for (auto& [name, mesh] : meshes)
@@ -54,38 +102,14 @@ void RenderObjects::CreateSubmeshes(MeshMap& meshes)
 	}
 }
 
-u32 GetTotalSize(RenderObjects::MeshMap& meshes, std::function<u32(RenderObjects::MeshMapItem)> lambda)
+void RenderObjects::UpdateMesh(MeshName name, u8 frameIndex, Mesh* newMesh)
 {
-	return std::transform_reduce(LOOP_EXECUTION_POLICY, meshes.begin(), meshes.end(), 0u, std::plus<u32>{}, lambda);
-}
+	auto& buffer = _DynamicMeshBuffers[name][frameIndex];
 
-u32 RenderObjects::GetTotalVertexCount(MeshMap& meshes)
-{
-	return GetTotalSize(meshes, [] (MeshMapItem i) { return (u32) i.second->Vertices.size(); });
-};
+	if(newMesh)
+		buffer.Update(newMesh);
 
-u32 RenderObjects::GetTotalIndexCount(MeshMap& meshes)
-{
-	return GetTotalSize(meshes, [] (MeshMapItem i) { return (u32) i.second->Indices.size(); });
-}
-
-void RenderObjects::BuildPackedVertexVector(MeshMap& meshes)
-{
-	for (auto& [_, mesh] : meshes)
-	{
-		auto begin = std::make_move_iterator(mesh->Vertices.begin());
-		auto end = std::make_move_iterator(mesh->Vertices.end());
-		_Vertices.insert(_Vertices.end(), begin, end);
-	}
-}
-
-void RenderObjects::BuildPackedIndexVector(MeshMap& meshes)
-{
-	for (auto& [_, mesh] : meshes)
-	{
-		auto meshIndices = mesh->GetIndices<u16>();
-		auto begin = std::make_move_iterator(meshIndices.begin());
-		auto end = std::make_move_iterator(meshIndices.end());
-		_Indices.insert(_Indices.end(), begin, end);
-	}
+	for (auto& obj : _RenderItems)
+		if (obj.Name == name)
+			obj.Buffer = &buffer;
 }

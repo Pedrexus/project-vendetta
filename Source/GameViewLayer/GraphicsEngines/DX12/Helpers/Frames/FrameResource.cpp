@@ -1,9 +1,10 @@
 #include "FrameResource.h"
 
-FrameResource::FrameResource(ID3D12Device* device, u32 objectCount) :
+FrameResource::FrameResource(ID3D12Device* device, u32 objectCount, u8 index) :
 	_PassCB(device, 1),
 	_ObjectCB(device, objectCount),
-	_cbvHeap(device, objectCount + 1)
+	_cbvHeap(device, objectCount + 1),
+	Index(index)
 {
 	ThrowIfFailed(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_CmdListAlloc)));
 	CreateConstantBufferViews(device, objectCount);

@@ -42,6 +42,8 @@ class DX12Engine : public IGraphicsEngine
 	std::unique_ptr<RenderObjects> _Objects;
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
 
+	Mesh _Sphere;
+
 public:
 	DX12Engine() = default;
 	DX12Engine(const DX12Engine & rhs) = delete;

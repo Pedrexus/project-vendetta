@@ -6,7 +6,6 @@
 #include "Helpers/DX12MSAA.h"
 #include "Helpers/DX12Command.h"
 #include "Helpers/DX12Window.h"
-#include "Helpers/Buffers/DefaultBuffer.h"
 #include "Helpers/InputAssembler/Vertex.h"
 #include "Helpers/InputAssembler/Objects/Geometry.h"
 
@@ -42,7 +41,7 @@ void DX12Engine::Initialize()
 
 	Command::CreateList(_Device.Get(), _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
 	m_CommandList->SetName(L"Main");
-	
+
 	_MSAA = MSAA::Check(_Device.Get(), _SwapChain->BackBufferFormat, _MSAA.Count, _MSAA.Quality);
 	LOG_INFO(fmt::format("Using MSAA with {} samples and {} quality levels", _MSAA.Count, _MSAA.Quality));
 
@@ -83,30 +82,24 @@ void DX12Engine::FlushCommandQueue()
 
 void DX12Engine::BuildGeometry()
 {
-	auto box = Geometry::CreateBox(0, 0, 0);
-	auto grid = Geometry::CreateGrid(10, 10, 40, 40);
-	auto sphere = Geometry::CreateGeosphere(2.0f, 3);
-	auto cylinder = Geometry::CreateCylinder(.8f, .4f, 1.0f, 20, 20);
+	auto land = Geometry::Special::CreateLandGrid(160, 160, 50, 50);
+	auto waves = Geometry::CreateGrid(128, 128, 50, 50);
+	_Sphere = Geometry::CreateIcosahedron();
 
-	std::map<std::string, Mesh*> meshes = {
-		{ "box", &box },
-		{ "grid", &grid },
-		{ "sphere", &sphere },
-		{ "cylinder", &cylinder },
+	RenderObjects::MeshMap staticMeshes = {
+		{ "land", &land },
 	};
 
-	std::vector<std::pair<std::string, XMMATRIX>> items = {
-		{ "box", XMMatrixTranslation(.0f, .5f, .0f) },
-		{ "grid", XMMatrixIdentity() },
-
-		{ "sphere", XMMatrixTranslation(-5.0f, 3.5f, -5.0f) },
-		{ "cylinder", XMMatrixTranslation(-5.0f, 1.5f, -5.0f) },
-
-		{ "sphere", XMMatrixTranslation(+5.0f, 3.5f, -5.0f) },
-		{ "cylinder", XMMatrixTranslation(+5.0f, 1.5f, -5.0f) },
+	RenderObjects::MeshMap dynamicMeshes = {
+		{ "sphere", &_Sphere }
 	};
-	
-	_Objects = std::make_unique<RenderObjects>(meshes, items, _Device.Get(), m_CommandList.Get());
+
+	RenderObjects::WorldMap positions = {
+		// { "land", XMMatrixIdentity() },
+		{ "sphere", XMMatrixIdentity() },
+	};
+
+	_Objects = std::make_unique<RenderObjects>(staticMeshes, dynamicMeshes, positions, _Device.Get(), m_CommandList.Get());
 }
 
 void DX12Engine::ShowFrameStats(milliseconds& dt)
@@ -173,14 +166,27 @@ void DX12Engine::OnUpdate(milliseconds dt)
 
 	// update render items
 
-	for (auto& obj : _Objects->items())
+	auto& items = _Objects->items();
+	for (auto i = 0; i < items.size(); i++)
 	{
+		auto& obj = items[i];
 		if (obj.IsDirty())
 		{
-			currFrameRes->UpdateObjectConstantBuffers(obj.CBIndex, { obj.World });
+			currFrameRes->UpdateObjectConstantBuffers(i, { obj.World });
 			obj.Clean();
 		}
 	}
+
+	// auto newMesh = wavesActor.Update(dt);
+	auto dv = (1 + 0.9 * sin(t));
+	Mesh newMesh = _Sphere;
+	for (auto& v : newMesh.Vertices)
+	{
+		auto newPos = XMLoadFloat3(&v.Position) * dv;
+		XMStoreFloat3(&v.Position, newPos);
+	}
+
+	_Objects->UpdateMesh("sphere", currFrameRes->Index, &newMesh);
 }
 
 void DX12Engine::OnDraw()
@@ -210,21 +216,25 @@ void DX12Engine::OnDraw()
 
 	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
 
-	auto gpuHandle = currFrameRes->GetGPUHandle();
-	m_CommandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
-
+	auto objCBAddress = currFrameRes->_ObjectCB.GetResource()->GetGPUVirtualAddress();
+	auto objCBByteSize = currFrameRes->_ObjectCB.CalcBufferByteSize();
 	for (auto& obj : _Objects->items())
 	{
-		m_CommandList->IASetVertexBuffers(0, 1, &_Objects->VertexBufferView);
-		m_CommandList->IASetIndexBuffer(&_Objects->IndexBufferView);
-		m_CommandList->IASetPrimitiveTopology(obj.PrimitiveType);
-
 		// this sets the world matrix in the cbuffer
-		gpuHandle.Offset(1, currFrameRes->_cbvHeap.descriptorSize);
-		m_CommandList->SetGraphicsRootDescriptorTable(1, gpuHandle);
+		m_CommandList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+		objCBAddress += objCBByteSize;
 
-		m_CommandList->DrawIndexedInstanced(obj.Submesh->IndexCount, 1, obj.Submesh->StartIndexLocation, obj.Submesh->BaseVertexLocation, 0);
+		auto vbv = obj.GetVertexBufferView();
+		m_CommandList->IASetVertexBuffers(0, 1, &vbv);
+
+		auto ibv = obj.GetIndexBufferView();
+		m_CommandList->IASetIndexBuffer(&ibv);
+
+		m_CommandList->IASetPrimitiveTopology(obj.PrimitiveType);
+		m_CommandList->DrawIndexedInstanced(obj.Submesh.IndexCount, 1, obj.Submesh.StartIndexLocation, obj.Submesh.BaseVertexLocation, 0);
 	}
+
+	m_CommandList->SetGraphicsRootConstantBufferView(1, currFrameRes->_PassCB.GetResource()->GetGPUVirtualAddress());
 
 	// Indicate a state transition on the resource usage.
 	m_CommandList->ResourceBarrier(1, _SwapChain->GetPresentTransition());

@@ -4,7 +4,7 @@ FrameCycle::FrameCycle(ID3D12Device* device, u32 objectCount) :
 	_Fence(device)
 {
 	for (auto i = 0; i < NUMBER_FRAME_RESOURCES; i++)
-		_FrameResources[i] = std::make_unique<FrameResource>(device, objectCount);
+		_FrameResources[i] = std::make_unique<FrameResource>(device, objectCount, i);
 }
 
 void FrameCycle::SyncFrameResource(u64 frameFence)

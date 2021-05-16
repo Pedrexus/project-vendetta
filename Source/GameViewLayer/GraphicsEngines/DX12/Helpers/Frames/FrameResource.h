@@ -4,6 +4,7 @@
 
 #include "../../dx12pch.h"
 #include "../Buffers/ConstantBuffer.h"
+#include "../Buffers/InputAssembler/DynamicMeshBuffer.h"
 
 struct RenderPassConstants
 {
@@ -38,7 +39,9 @@ protected:
 	u64 Fence = 0;
 
 public:
-	FrameResource(ID3D12Device* device, u32 objectCount);
+	const u8 Index;
+
+	FrameResource(ID3D12Device* device, u32 objectCount, u8 index);
 	FrameResource(const FrameResource& rhs) = delete;
 	FrameResource& operator=(const FrameResource& rhs) = delete;
 

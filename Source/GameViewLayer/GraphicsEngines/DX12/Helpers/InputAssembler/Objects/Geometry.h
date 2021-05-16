@@ -13,11 +13,17 @@ concept UnsignedIntegral = Integral<T> && !SignedIntegral<T>;
 
 struct Mesh
 {
+    enum BufferType
+    {
+        Static,
+        Dynamic,
+    };
+
     std::vector<Vertex> Vertices;
     std::vector<u64> Indices;
 
     template<UnsignedIntegral T>
-    std::vector<T> GetIndices()
+    std::vector<T> GetIndices() const
     {
         assert((std::numeric_limits<T>::max)() > Indices.size());
 
@@ -29,6 +35,17 @@ struct Mesh
 
         return indicesNew;
     }
+
+    u64 GetVerticesByteSize() const
+    {
+        return Vertices.size() * sizeof(Vertex);
+    }
+
+    template<UnsignedIntegral T>
+    u64 GetIndicesByteSize() const
+    {
+        return Indices.size() * sizeof(T);
+    }
 };
 
 namespace Geometry
@@ -39,6 +56,11 @@ namespace Geometry
     Mesh CreateIcosahedron();
     Mesh CreateGeosphere(f32 radius, u32 numSubdivisions);
     Mesh CreateGrid(f32 width, f32 depth, u32 m, u32 n);
+
+    namespace Special
+    {
+        Mesh CreateLandGrid(f32 width, f32 depth, u32 m, u32 n);
+    }
 
     void Subdivide(Mesh& data);
     Vertex CreateMidpoint(const Vertex& v0, const Vertex& v1);

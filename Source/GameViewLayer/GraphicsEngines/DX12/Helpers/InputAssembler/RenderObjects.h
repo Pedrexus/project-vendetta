@@ -1,44 +1,48 @@
 #pragma once
 
-#include <numeric>
+#include <const.h>
+
+#include "../Buffers/InputAssembler/StaticMeshBuffer.h"
+#include "../Buffers/InputAssembler/DynamicMeshBuffer.h"
 
 #include "Objects/Geometry.h"
-#include "MeshGeometry.h"
+#include "SubmeshGeometry.h"
 #include "RenderItem.h"
 
 class RenderObjects
 {
 public:
-	using WorldMap = std::vector<std::pair<std::string, XMMATRIX>>;
-	using MeshMap = std::map<std::string, Mesh*>;
-	using MeshMapItem = std::pair<const std::string, Mesh*>;
+	using MeshName = const std::string;
+	using MeshData = std::pair<Mesh*, Mesh::BufferType>;
+
+	using WorldMap = std::vector<std::pair<MeshName, XMMATRIX>>;
+
+	using MeshMap = std::map<MeshName, Mesh*>;
+	using MeshMapItem = MeshMap::iterator::value_type;
+
+	using FrameDynamicBuffer = std::array<DynamicMeshBuffer, NUMBER_FRAME_RESOURCES>;
 
 private:
 	void CreateObjects(WorldMap& table);
 	void CreateSubmeshes(MeshMap& meshes);
 
-	u32 GetTotalVertexCount(MeshMap& meshes);
-	u32 GetTotalIndexCount(MeshMap& meshes);
-
-	void BuildPackedVertexVector(MeshMap& meshes);
-	void BuildPackedIndexVector(MeshMap& meshes);
-
 protected:
+	std::vector<RenderItem> _RenderItems;
+
+	// static meshes
 	std::unordered_map<std::string, SubmeshGeometry> _Submeshes;
-	std::vector<Vertex> _Vertices;
-	std::vector<u16> _Indices;
-	std::vector<RenderItem> _Objects;
-	std::unique_ptr<MeshGeometry> _MeshGeometryGroup;
+	StaticMeshBuffer _StaticMeshBuffer;
+
+	// dynamic meshes
+	std::unordered_map<std::string, FrameDynamicBuffer> _DynamicMeshBuffers;
+
 
 public:
-	D3D12_VERTEX_BUFFER_VIEW VertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW IndexBufferView;
-
-public:
-	RenderObjects(MeshMap& meshes, WorldMap& table, ID3D12Device* device, ID3D12GraphicsCommandList* cmdList);
+	RenderObjects(MeshMap& staticMeshes, MeshMap& dynamicMeshes, WorldMap& table, ID3D12Device* device, ID3D12GraphicsCommandList* cmdList);
 	RenderObjects(RenderObjects& rhs) = delete;
 	RenderObjects operator=(RenderObjects& rhs) = delete;
-	~RenderObjects();
+
+	void UpdateMesh(MeshName name, u8 frameIndex, Mesh* mesh);
 
 	std::vector<RenderItem>& items();
 };

@@ -2,6 +2,7 @@
 
 #include "../../dx12pch.h"
 
+// TODO: rename to dynamic buffer
 template<typename T>
 class UploadBuffer
 {
@@ -41,7 +42,7 @@ public:
         ThrowIfFailed(_UploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&_MappedData)));
     }
 
-    inline virtual u64 CalcBufferByteSize() const = 0;
+    inline virtual u64 CalcBufferByteSize() const { return sizeof(T); };
 
     inline ID3D12Resource* GetResource() const
     {
@@ -53,4 +54,6 @@ public:
         // we copy the data to the pointer ->Map() has given us
         memcpy(&_MappedData[elementIndex * _ElementByteSize], &data, _ElementByteSize);
     }
+
+    inline D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const { return _UploadBuffer->GetGPUVirtualAddress(); }
 };

@@ -32,7 +32,7 @@ void Controller::OnPointerMove(const Point& pos, const int radius)
 	else if (IsRightPointerDown())
 	{
 		m_Radius += CalcDeltaZoomInLengthUnits(dx, dy);
-		m_Radius = Threshold<f32>(m_Radius, 3.0f, 15.0f);
+		m_Radius = Threshold<f32>(m_Radius, 3.0f, 150.0f); // TODO: move with keyboard
 	}
 
 	m_lastMousePos = pos;

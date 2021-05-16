@@ -1,13 +1,24 @@
 #include "RootSignature.h"
 
 
-// A root signature is an array of root parameters.
-
-CD3DX12_DESCRIPTOR_RANGE1 RootSignature::SpecifyCBVTable(u32 baseShaderRegister)
+ComPtr<ID3DBlob> Serialize(D3D12_VERSIONED_ROOT_SIGNATURE_DESC& rsDesc)
 {
-	CD3DX12_DESCRIPTOR_RANGE1 cbvTable = {};
-	cbvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, baseShaderRegister);
-	return cbvTable;
+	ComPtr<ID3DBlob> serializedRootSig = nullptr;
+	ComPtr<ID3DBlob> errorBlob = nullptr;
+	auto hr = D3D12SerializeVersionedRootSignature(&rsDesc, &serializedRootSig, &errorBlob);
+
+	if (errorBlob)
+		LOG_ERROR((char*) errorBlob->GetBufferPointer());
+	ThrowIfFailed(hr);
+
+	return serializedRootSig;
+}
+
+CD3DX12_DESCRIPTOR_RANGE1 SpecifyCBVRange(u32 baseShaderRegister)
+{
+	// TODO: I want to understand how to use a single range
+	//  technically, I could use numDescriptors = numConstantBuffers
+	return CD3DX12_DESCRIPTOR_RANGE1(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, baseShaderRegister);
 }
 
 ComPtr<ID3DBlob> RootSignature::SpecifyAndSerialize(u32 numConstantBuffers)
@@ -19,17 +30,13 @@ ComPtr<ID3DBlob> RootSignature::SpecifyAndSerialize(u32 numConstantBuffers)
 
 	// Root parameter can be a table, root descriptor or root constants.
 	std::vector<CD3DX12_ROOT_PARAMETER1> slotRootParameters(numParams);
-	std::vector<CD3DX12_DESCRIPTOR_RANGE1> cbvTableArray(numParams);
 
 	for (u32 i = 0; i < numConstantBuffers; i++)
-	{
-		cbvTableArray[i] = SpecifyCBVTable(i);
-		slotRootParameters[i].InitAsDescriptorTable(1, &cbvTableArray[i]);
-	}
+		slotRootParameters[i].InitAsConstantBufferView(i); // specify cbuffer(b{i})
 
 	// A root signature is an array of root parameters.
 	auto rsDesc = CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC(
-		numConstantBuffers, slotRootParameters.data(), 0, nullptr,
+		slotRootParameters.size(), slotRootParameters.data(), 0, nullptr,
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
 	);
 
@@ -40,19 +47,6 @@ RootSignature::RootSignature(ID3D12Device* device, u32 numConstantBuffers)
 {
 	auto serializedRootSig = SpecifyAndSerialize(numConstantBuffers);
 	Create(device, serializedRootSig.Get());
-}
-
-ComPtr<ID3DBlob> RootSignature::Serialize(D3D12_VERSIONED_ROOT_SIGNATURE_DESC rsDesc)
-{
-	ComPtr<ID3DBlob> serializedRootSig = nullptr;
-	ComPtr<ID3DBlob> errorBlob = nullptr;
-	auto hr = D3D12SerializeVersionedRootSignature(&rsDesc, &serializedRootSig, &errorBlob);
-
-	if (errorBlob)
-		LOG_ERROR((char*) errorBlob->GetBufferPointer());
-	ThrowIfFailed(hr);
-
-	return serializedRootSig;
 }
 
 void RootSignature::Create(ID3D12Device* device, ID3DBlob* serializedRootSig)

@@ -18,7 +18,7 @@ class Controller : public IPointerHandler // TODO: public IKeyboardHandler
 
 	f32 m_Theta = 0;
 	f32 m_Phi = 1;
-	f32 m_Radius = 5;
+	f32 m_Radius = 10;
 
 protected:
 	bool IsLeftPointerDown() { return m_btnState == MK_LBUTTON; }

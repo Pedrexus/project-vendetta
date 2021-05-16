@@ -2,32 +2,47 @@
 
 #include <const.h>
 
-#include "../../dx12pch.h"
+#include "../Buffers/InputAssembler/IMeshBuffer.h"
 #include "Objects/Geometry.h"
 
 class RenderItem
 {
     // Indicates object data has changed 
     // and we need to update the constant buffer
-    int _NumFramesDirty = NUMBER_FRAME_RESOURCES;
+    u32 _NumFramesDirty = NUMBER_FRAME_RESOURCES;
+
+    D3D12_VERTEX_BUFFER_VIEW _VertexBufferView = {};
+    D3D12_INDEX_BUFFER_VIEW _IndexBufferView = {};
+
 public:
-    // Position, Orientation and Scale of object in the World;
-    u32 CBIndex;
+    std::string Name;
     XMFLOAT4X4 World;
-    SubmeshGeometry* Submesh;
 
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+    
+    // RenderItem can use a Static Mesh Buffer or a Dynamic Mesh Buffer
+    IMeshBuffer* Buffer;
+    SubmeshGeometry Submesh;
 
     
 public:
-    RenderItem(u32 index, XMMATRIX world, SubmeshGeometry& submesh) :
-        CBIndex(index),
-        Submesh(&submesh)
+    RenderItem(std::string name, XMMATRIX world, SubmeshGeometry* submesh, IMeshBuffer* buffer) :
+        Name(name),
+        Submesh(*submesh),
+        Buffer(buffer)
     {
         XMStoreFloat4x4(&World, world);
     };
 
-    bool IsDirty()
+    RenderItem(std::string name, XMMATRIX world, IMeshBuffer* buffer, u64 indexCount) :
+        Name(name),
+        Submesh({ (u32) indexCount }),
+        Buffer(buffer)
+    {
+        XMStoreFloat4x4(&World, world);
+    };
+
+    bool IsDirty() const
     {
         return _NumFramesDirty > 0;
     }
@@ -40,5 +55,13 @@ public:
         _NumFramesDirty = NUMBER_FRAME_RESOURCES;
     }
 
-    // ObjectConstants GetConstants();
+    inline D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView() const
+    {
+        return Buffer->GetVertexBufferView();
+    }
+
+    inline D3D12_INDEX_BUFFER_VIEW GetIndexBufferView() const
+    {
+        return Buffer->GetIndexBufferView();
+    }
 };

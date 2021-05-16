@@ -167,10 +167,10 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\ConstantBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\DepthStencil.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\RenderTarget.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\DefaultBuffer.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\StaticBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\ConstantBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\UploadBuffer.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\MeshGeometry.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\InputAssembler\StaticMeshBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\SubmeshGeometry.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Vertex.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\RootSignature\RootSignature.h" />
@@ -181,6 +181,10 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\RenderItem.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometry.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\RenderObjects.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\InputAssembler\DynamicMeshBuffer.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\InputAssembler\IMeshBuffer.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\IBuffer.h" />
+    <ClInclude Include="Source\dx12pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />
@@ -275,8 +279,8 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DXGISwapChain\SwapChainManager.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DepthStencilBuffer\DepthStencilManager.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\DefaultBuffer.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\MeshGeometry.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\StaticBuffer.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\InputAssembler\StaticMeshBuffer.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\RootSignature\RootSignature.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameCycle.cpp" />
