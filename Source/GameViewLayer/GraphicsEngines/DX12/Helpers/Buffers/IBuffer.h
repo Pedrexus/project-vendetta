@@ -9,10 +9,7 @@ protected:
 	u64 _ByteSize;
 
 public:
-	virtual void Create(ID3D12Device* device, u64 byteSize) = 0;
-	virtual void Upload(ID3D12GraphicsCommandList* cmdList, const void* data) = 0;
-
-	inline ID3D12Resource* operator->()
+	inline ID3D12Resource* operator->() const
 	{
 		return _MainBuffer.Get();
 	}

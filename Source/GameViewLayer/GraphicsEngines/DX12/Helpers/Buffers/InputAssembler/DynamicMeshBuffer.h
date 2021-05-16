@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IMeshBuffer.h"
-#include "../UploadBuffer.h"
+#include "../DynamicBuffer.h"
 #include "../../InputAssembler/Vertex.h"
 #include "../../InputAssembler/Objects/Geometry.h"
 
@@ -10,8 +10,8 @@ class DynamicMeshBuffer : public IMeshBuffer
 {
 	using Index = u16;
 
-	using VertexBufferGPU = UploadBuffer<Vertex>;
-	using IndexBufferGPU = UploadBuffer<Index>;
+	using VertexBufferGPU = DynamicBuffer<Vertex>;
+	using IndexBufferGPU = DynamicBuffer<Index>;
 
 	VertexBufferGPU _VB;
 	IndexBufferGPU _IB;
@@ -38,26 +38,26 @@ public:
 	// TODO: create method to update specific vertices
 	void Update(const Mesh* mesh)
 	{
-		for (auto i = 0; i < VerticesCount; i++)
-			_VB.CopyToCPUBuffer(i, mesh->Vertices[i]);
-
-		auto indices = mesh->GetIndices<Index>();
-		for (auto i = 0; i < IndicesCount; i++)
-			_IB.CopyToCPUBuffer(i, indices[i]);
+		_VB.Upload(mesh->Vertices.data());
+		_IB.Upload(mesh->GetIndices<Index>().data());
 	}
 
 	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView() const override { 
+		auto view = _VB.GetBufferView();
+
 		D3D12_VERTEX_BUFFER_VIEW vbv = {};
-		vbv.BufferLocation = _VB.GetGPUVirtualAddress();
-		vbv.SizeInBytes = (u32) VerticesCount * sizeof(Vertex);
-		vbv.StrideInBytes = sizeof(Vertex);
+		vbv.BufferLocation = view.BufferLocation;
+		vbv.SizeInBytes = view.TotalByteSize;
+		vbv.StrideInBytes = view.ElementByteSize;
 
 		return vbv;
 	};
 	D3D12_INDEX_BUFFER_VIEW GetIndexBufferView() const override { 
+		auto view = _IB.GetBufferView();
+
 		D3D12_INDEX_BUFFER_VIEW ibv = {};
-		ibv.BufferLocation = _IB.GetGPUVirtualAddress();
-		ibv.SizeInBytes = (u32) IndicesCount * sizeof(u16);
+		ibv.BufferLocation = view.BufferLocation;
+		ibv.SizeInBytes = view.TotalByteSize;
 		ibv.Format = DXGI_FORMAT_R16_UINT;
 
 		return ibv;

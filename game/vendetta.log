@@ -70,7 +70,7 @@ Line: 88
 Function: Game::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
 Line: 14
-[INFO] Synced with GPU 1628 times.
+[INFO] Synced with GPU 1534 times.
 Function: FenceManager::~FenceManager
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.h
 Line: 35

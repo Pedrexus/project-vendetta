@@ -216,13 +216,12 @@ void DX12Engine::OnDraw()
 
 	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
 
-	auto objCBAddress = currFrameRes->_ObjectCB.GetResource()->GetGPUVirtualAddress();
-	auto objCBByteSize = currFrameRes->_ObjectCB.CalcBufferByteSize();
+	auto objCBV = currFrameRes->_ObjectCB.GetBufferView();
 	for (auto& obj : _Objects->items())
 	{
 		// this sets the world matrix in the cbuffer
-		m_CommandList->SetGraphicsRootConstantBufferView(0, objCBAddress);
-		objCBAddress += objCBByteSize;
+		m_CommandList->SetGraphicsRootConstantBufferView(0, objCBV.BufferLocation);
+		objCBV.BufferLocation += objCBV.ElementByteSize;
 
 		auto vbv = obj.GetVertexBufferView();
 		m_CommandList->IASetVertexBuffers(0, 1, &vbv);
@@ -234,7 +233,7 @@ void DX12Engine::OnDraw()
 		m_CommandList->DrawIndexedInstanced(obj.Submesh.IndexCount, 1, obj.Submesh.StartIndexLocation, obj.Submesh.BaseVertexLocation, 0);
 	}
 
-	m_CommandList->SetGraphicsRootConstantBufferView(1, currFrameRes->_PassCB.GetResource()->GetGPUVirtualAddress());
+	m_CommandList->SetGraphicsRootConstantBufferView(1, currFrameRes->_PassCB.GetBufferView().BufferLocation);
 
 	// Indicate a state transition on the resource usage.
 	m_CommandList->ResourceBarrier(1, _SwapChain->GetPresentTransition());

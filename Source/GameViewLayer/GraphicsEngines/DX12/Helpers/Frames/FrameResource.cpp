@@ -10,14 +10,14 @@ FrameResource::FrameResource(ID3D12Device* device, u32 objectCount, u8 index) :
 	CreateConstantBufferViews(device, objectCount);
 }
 
-void FrameResource::UpdateObjectConstantBuffers(u32 objIndex, ObjectConstants objConstants)
+void FrameResource::UpdateObjectConstantBuffers(u32 objIndex, const ObjectConstants& objConstants)
 {
-	_ObjectCB.CopyToCPUBuffer(objIndex, objConstants);
+	_ObjectCB.Upload(objIndex, objConstants);
 }
 
-void FrameResource::UpdateMainPassConstantBuffers(RenderPassConstants passConstants)
+void FrameResource::UpdateMainPassConstantBuffers(const RenderPassConstants& passConstants)
 {
-	_PassCB.CopyToCPUBuffer(0, passConstants);
+	_PassCB.Upload(&passConstants);
 }
 
 ID3D12DescriptorHeap* FrameResource::GetDescriptorHeap() const

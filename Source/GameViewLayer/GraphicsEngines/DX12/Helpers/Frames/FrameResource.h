@@ -4,7 +4,6 @@
 
 #include "../../dx12pch.h"
 #include "../Buffers/ConstantBuffer.h"
-#include "../Buffers/InputAssembler/DynamicMeshBuffer.h"
 
 struct RenderPassConstants
 {
@@ -45,8 +44,8 @@ public:
 	FrameResource(const FrameResource& rhs) = delete;
 	FrameResource& operator=(const FrameResource& rhs) = delete;
 
-	void UpdateObjectConstantBuffers(u32 objIndex, ObjectConstants objConstants);
-	void UpdateMainPassConstantBuffers(RenderPassConstants passConstants);
+	void UpdateObjectConstantBuffers(u32 objIndex, const ObjectConstants& objConstants);
+	void UpdateMainPassConstantBuffers(const RenderPassConstants& passConstants);
 
 	ID3D12DescriptorHeap* GetDescriptorHeap() const;
 	CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUHandle();
