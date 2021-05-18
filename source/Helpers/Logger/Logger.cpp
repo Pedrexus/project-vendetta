@@ -4,7 +4,7 @@
 #include <macros.h>
 
 // singleton
-static LoggingManager* LogMgrSingleton = NULL;
+static LoggingManager* LogMgrSingleton = nullptr;
 
 Logger::ErrorMessenger::ErrorMessenger(void)
 {
@@ -22,36 +22,67 @@ void Logger::ErrorMessenger::Show(const std::string& errorMessage, bool isFatal,
 	}
 }
 
+void LogSync(
+	const std::string tag,
+	const std::string message,
+	const std::string funcName = "",
+	const std::string sourceFile = "",
+	unsigned int lineNum = 0
+)
+{
+	LogMgrSingleton->Log(tag, message, funcName, sourceFile, lineNum);
+}
+
+void FailSync(
+	const std::string errorMessage,
+	bool isFatal,
+	const std::string funcName,
+	const std::string sourceFile,
+	unsigned int lineNum
+)
+{
+	static Logger::ErrorMessenger em;
+	em.Show(errorMessage, isFatal, funcName.c_str(), sourceFile.c_str(), lineNum);
+}
+
 namespace Logger
 {
-	void Init(const char* loggingConfigFilename)
+	void Init()
 	{
 		if (!LogMgrSingleton)
 		{
 			LogMgrSingleton = NEW LoggingManager;
-			LogMgrSingleton->Init(loggingConfigFilename);
-
-			LOG_INFO("Logger initialized");
+			LogMgrSingleton->Init();
 		}
+		LOG_INFO("Logger initialized");
 	}
 
-	void Destroy(void)
+	void Destroy()
 	{
-		LOG_INFO("Logger destroyed");
-
-		delete LogMgrSingleton;
-		LogMgrSingleton = NULL;
+		LogSync("INFO", "Logger destroyed");
+		SAFE_DELETE(LogMgrSingleton);
 	}
 
 	void Log(
-		const std::string& tag, 
-		const std::string& message, 
+		const std::string tag,
+		const std::string message,
+		const std::string funcName,
+		const std::string sourceFile,
+		unsigned int lineNum
+	)
+	{
+		std::thread(LogSync, tag, message, funcName, sourceFile, lineNum).detach();
+	}
+
+	void Fail(
+		const std::string& errorMessage,
+		bool isFatal, 
 		const char* funcName, 
 		const char* sourceFile, 
 		unsigned int lineNum
 	)
 	{
-		LogMgrSingleton->Log(tag, message, funcName, sourceFile, lineNum);
+		std::thread(FailSync, errorMessage, isFatal, funcName, sourceFile, lineNum).detach();
 	}
 
 }

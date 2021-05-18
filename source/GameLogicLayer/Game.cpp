@@ -1,13 +1,16 @@
 #include "Game.h"
+#include <Helpers/Functions.h>
 
 Game* Game::instance = nullptr;
 std::mutex Game::mutex = {};
 
 bool Game::Initialize(HINSTANCE hInstance, LPWSTR lpCmdLine, HWND hWnd, INT nCmdShow)
 {
+	COM::Initialize();
+	
 	// if (!GameApp::Initialize(hInstance, lpCmdLine, hWnd, nCmdShow))
 	// 		LOG_FATAL("Failed to initialized Game Application Layer");
-
+	
 	m_humanView = NEW HumanView(hInstance);
 	m_humanView->Initialize();
 
@@ -20,6 +23,7 @@ void Game::Shutdown()
 {
 	// GameApp::Shutdown();
 	SAFE_DELETE(m_humanView);
+	COM::Shutdown();
 
 	LOG_INFO("Game shutdown");
 }

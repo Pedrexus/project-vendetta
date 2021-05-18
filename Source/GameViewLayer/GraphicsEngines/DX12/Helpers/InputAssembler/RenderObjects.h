@@ -1,6 +1,6 @@
 #pragma once
 
-#include <const.h>
+
 
 #include "../Buffers/InputAssembler/StaticMeshBuffer.h"
 #include "../Buffers/InputAssembler/DynamicMeshBuffer.h"
@@ -20,7 +20,7 @@ public:
 	using MeshMap = std::map<MeshName, Mesh*>;
 	using MeshMapItem = MeshMap::iterator::value_type;
 
-	using FrameDynamicBuffer = std::array<DynamicMeshBuffer, NUMBER_FRAME_RESOURCES>;
+	using FrameDynamicBuffer = std::vector<DynamicMeshBuffer>;
 
 private:
 	void CreateObjects(WorldMap& table);

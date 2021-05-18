@@ -95,7 +95,6 @@ void DX12Engine::BuildGeometry()
 	};
 
 	RenderObjects::WorldMap positions = {
-		// { "land", XMMatrixIdentity() },
 		{ "sphere", XMMatrixIdentity() },
 	};
 
@@ -178,11 +177,11 @@ void DX12Engine::OnUpdate(milliseconds dt)
 	}
 
 	// auto newMesh = wavesActor.Update(dt);
-	auto dv = (1 + 0.9 * sin(t));
+	auto dp = sin(t);
 	Mesh newMesh = _Sphere;
 	for (auto& v : newMesh.Vertices)
 	{
-		auto newPos = XMLoadFloat3(&v.Position) * dv;
+		auto newPos = XMLoadFloat3(&v.Position) + XMVectorSet(0, dp, 0, 0);
 		XMStoreFloat3(&v.Position, newPos);
 	}
 

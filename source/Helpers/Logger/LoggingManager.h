@@ -10,7 +10,7 @@ class LoggingManager
 	// log helpers
 	void OutputFinalBufferToLogs(const std::string& finalBuffer, unsigned char flags);
 	void WriteToLogFile(const std::string& data);
-	void GetOutputBuffer(std::string& outOutputBuffer, const std::string& tag, const std::string& message, const char* funcName, const char* sourceFile, unsigned int lineNum);
+	void GetOutputBuffer(std::string& outOutputBuffer, const std::string& tag, const std::string& message, const std::string& funcName, const std::string& sourceFile, unsigned int lineNum);
 
 public:
 	enum class ErrorDialogResult
@@ -30,10 +30,12 @@ public:
 	CriticalSection m_tagCriticalSection;
 	CriticalSection m_messengerCriticalSection;
 
+	std::string _Output;
+
 	// construction
-	LoggingManager(void) = default;
-	~LoggingManager(void);
-	void Init(const char* loggingConfigFilename);
+	LoggingManager() = default;
+	~LoggingManager();
+	void Init();
 
 	// conditions
 	inline bool MustLogEverything() { return m_tags.find("INFO") != m_tags.end(); }
@@ -41,7 +43,7 @@ public:
 	// logs
 	// TODO: add timestamp
 	void SetDisplayFlags(const std::string& tag, unsigned char flags);
-	void Log(const std::string& tag, const std::string& message, const char* funcName, const char* sourceFile, unsigned int lineNum);
+	void Log(const std::string tag, const std::string message, const std::string funcName, const std::string sourceFile, unsigned int lineNum);
 
 	// error messengers
 	void AddErrorMessenger(Logger::ErrorMessenger* pMessenger);

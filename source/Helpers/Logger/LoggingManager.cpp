@@ -1,8 +1,7 @@
 #include "LoggingManager.h"
 
-#include <const.h>
-#include <macros.h>
 #include <Helpers/Functions.h>
+#include <Helpers/Settings/Settings.h>
 
 constexpr auto LOGFLAG_WRITE_TO_LOG_FILE = 1 << 0;
 constexpr auto LOGFLAG_WRITE_TO_DEBUGGER = 1 << 1;
@@ -12,48 +11,36 @@ LoggingManager::~LoggingManager(void)
 	m_messengerCriticalSection.Lock();
 
 	for (auto messenger : m_errorMessengers)
-		delete messenger;  // TODO: SAFE_DELETE?
+		delete messenger;
 	m_errorMessengers.clear();
 
 	m_messengerCriticalSection.Unlock();
 }
 
-void LoggingManager::Init(const char* loggingConfigFilename)
+void LoggingManager::Init()
 {
-	if (loggingConfigFilename)
+	auto root = Settings::Tag("Logging");
+
+	// set display flags for each tag
+	for (auto node = root->FirstChildElement(); node; node = node->NextSiblingElement())
 	{
-		tinyxml2::XMLDocument document{};
-		if (document.LoadFile(loggingConfigFilename) != tinyxml2::XML_SUCCESS)
-			LOG_FATAL("Unable to load logging config file");
+		unsigned char flags = 0;
+		std::string tag = node->Attribute("tag");
 
-		auto root = document.RootElement();
-		if (!root)
-			return; // no config
+		if (node->Attribute("debugger", "1"))
+			flags |= LOGFLAG_WRITE_TO_DEBUGGER;
 
-		// set display flags for each tag
-		for (auto node = root->FirstChildElement(); node; node = node->NextSiblingElement())
-		{
-			unsigned char flags = 0;
-			std::string tag = node->Attribute("tag");
+		if (node->Attribute("file", "1"))
+			flags |= LOGFLAG_WRITE_TO_LOG_FILE;
 
-			if (node->Attribute("debugger", "1"))
-				flags |= LOGFLAG_WRITE_TO_DEBUGGER;
-
-			if (node->Attribute("file", "1"))
-				flags |= LOGFLAG_WRITE_TO_LOG_FILE;
-
-			SetDisplayFlags(tag, flags);
-		}
-
+		SetDisplayFlags(tag, flags);
 	}
-	else
-	{
-		LOG_FATAL("Invalid logging config filename");
-	}
+
+	_Output = root->Attribute("output");
 
 	// init output file - either keep data (a+) or reset it (w+)
-	if (LOGGING_MODE == "clear")
-		ClearFile(LOGGING_OUTPUT_FILENAME);
+	if (root->Attribute("mode", "clear"))
+		ClearFile(_Output.c_str());
 }
 
 void LoggingManager::SetDisplayFlags(const std::string& tag, unsigned char flags)
@@ -82,10 +69,10 @@ void LoggingManager::SetDisplayFlags(const std::string& tag, unsigned char flags
 // This function builds up the log string and outputs it to various places based on the display flags (m_displayFlags).
 //------------------------------------------------------------------------------------------------------------------------------------
 void LoggingManager::Log(
-	const std::string& tag,
-	const std::string& message,
-	const char* funcName,
-	const char* sourceFile,
+	const std::string tag,
+	const std::string message,
+	const std::string funcName,
+	const std::string sourceFile,
 	unsigned int lineNum
 )
 {
@@ -112,8 +99,8 @@ void LoggingManager::GetOutputBuffer(
 	std::string& outOutputBuffer,
 	const std::string& tag,
 	const std::string& message,
-	const char* funcName,
-	const char* sourceFile,
+	const std::string& funcName,
+	const std::string& sourceFile,
 	unsigned int lineNum
 )
 {
@@ -122,11 +109,11 @@ void LoggingManager::GetOutputBuffer(
 	else
 		outOutputBuffer = message;
 
-	if (funcName != NULL)
-		outOutputBuffer += "\nFunction: " + std::string(funcName);
+	if (funcName != "")
+		outOutputBuffer += "\nFunction: " + funcName;
 
-	if (sourceFile != NULL)
-		outOutputBuffer += "\nFunction: " + std::string(sourceFile);
+	if (sourceFile != "")
+		outOutputBuffer += "\nFunction: " + sourceFile;
 
 	if (lineNum != 0)
 		outOutputBuffer += "\nLine: " + std::to_string(lineNum);
@@ -152,7 +139,7 @@ void LoggingManager::OutputFinalBufferToLogs(const std::string& finalBuffer, uns
 void LoggingManager::WriteToLogFile(const std::string& data)
 {
 	FILE* pLogFile = NULL;
-	fopen_s(&pLogFile, LOGGING_OUTPUT_FILENAME, "a+");
+	fopen_s(&pLogFile, _Output.c_str(), "a+");
 
 	if (!pLogFile)
 		return;  // can't write to the log file for some reason

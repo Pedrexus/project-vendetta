@@ -2,7 +2,7 @@
 
 float RescaleVolume(i32 volume)
 {
-	return (float) volume / (MAXIMUM_VOLUME - MINIMUM_VOLUME);
+	return (float) volume / (Settings::GetInt("sound-volume-max") - Settings::GetInt("sound-volume-min"));
 }
 
 void* XAudioBuffer::Get()
@@ -38,9 +38,9 @@ bool XAudioBuffer::Play(i32 volume, bool looping)
 	HRESULT hr;
 
 	if (FAILED(hr = voice->SubmitSourceBuffer(buffer)))
-		LOG_ERROR("Failed to add buffer into Source Voice for " + m_soundData->GetName());
+		LOG_ERROR("Failed to add buffer into Source Voice for {}", m_soundData->GetName());
 	else if (FAILED(hr = voice->Start(0)))
-		LOG_ERROR("Failed to start Source Voice for " + m_soundData->GetName());
+		LOG_ERROR("Failed to start Source Voice for {}", m_soundData->GetName());
 	
 	return hr == S_OK;
 }
@@ -96,8 +96,10 @@ bool XAudioBuffer::IsPlaying()
 
 void XAudioBuffer::SetVolume(i32 volume)
 {
-	if(volume < MINIMUM_VOLUME || volume > MAXIMUM_VOLUME)
-		LOG_ERROR("Volume must be a number between " + std::to_string(MINIMUM_VOLUME) + " and " + std::to_string(MAXIMUM_VOLUME));
+	auto minVolume = Settings::GetInt("sound-volume-min");
+	auto maxVolume = Settings::GetInt("sound-volume-max");
+	if(volume < minVolume || volume > maxVolume)
+		LOG_ERROR("Volume must be a number between " + std::to_string(minVolume) + " and " + std::to_string(maxVolume));
 
 	auto voice = (IXAudio2SourceVoice*) Get();
 	if (FAILED(voice->SetVolume(RescaleVolume(volume))))

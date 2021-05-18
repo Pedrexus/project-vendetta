@@ -39,6 +39,7 @@
 #include <XAudio2.h>
 
 #include <wrl/client.h>
+#include <comdef.h>
 #include <crtdbg.h>
 #include <tchar.h>
 #include <direct.h>

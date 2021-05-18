@@ -1,6 +1,6 @@
 #pragma once
 
-#include <const.h>
+#include <Helpers/Settings/Settings.h>
 
 #include "../IAudioBuffer.h"
 #include "../SoundResource/ResourceData/SoundResourceData.h"
@@ -19,7 +19,7 @@ public:
 		IAudioBuffer(soundData),
 		m_voice(voice)
 	{
-		m_voice->SetSourceSampleRate(PRIMARY_SAMPLE_RATE);
+		m_voice->SetSourceSampleRate(Settings::GetInt("sound-sample-rate"));
 	};
 	inline ~XAudioBuffer() { m_voice->DestroyVoice(); }
 

@@ -9,12 +9,12 @@ inline bool HadSuccessCreatingDevice(HRESULT createDeviceResult, IDXGIAdapter4* 
 
 	if (SUCCEEDED(createDeviceResult))
 	{
-		LOG("Graphics", "D3D12Device created with " + Convert::wide2str(adapterDesc.Description));
+		LOG("Graphics", "D3D12Device created with {}", _bstr_t(adapterDesc.Description));
 		return true;
 	}
 	else
 	{
-		LOG_WARNING("Failure at D3D12CreateDevice with " + Convert::wide2str(adapterDesc.Description));
+		LOG_WARNING("Failure at D3D12CreateDevice with {}", _bstr_t(adapterDesc.Description));
 		return false;
 	}
 }

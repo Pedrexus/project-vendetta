@@ -1,6 +1,6 @@
-#include "EventManager.h"
-
 #include <const.h>
+
+#include "EventManager.h"
 
 bool EventManager::AddListener(const EventListener::Pair& eventPair, const EventType& type)
 {
@@ -132,7 +132,7 @@ bool EventManager::AbortEvent(const EventType& type, bool abortAllOfType)
 bool EventManager::Update(milliseconds timeout)
 {
 	u64 currentTime = GetTickCount64();
-	u64 maxTime = (timeout == INFINITE_TIME) ? INFINITE_TIME : (currentTime + timeout);
+	u64 maxTime = ((u64) timeout == INFINITE_TIME) ? INFINITE_TIME : (currentTime + (u64) timeout);
 
 	// This section added to handle events from other threads.  Check out Chapter 20.
 	std::shared_ptr<IEventData> pRealtimeEvent;

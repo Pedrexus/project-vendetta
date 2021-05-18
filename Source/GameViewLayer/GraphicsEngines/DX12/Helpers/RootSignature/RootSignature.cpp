@@ -36,7 +36,7 @@ ComPtr<ID3DBlob> RootSignature::SpecifyAndSerialize(u32 numConstantBuffers)
 
 	// A root signature is an array of root parameters.
 	auto rsDesc = CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC(
-		slotRootParameters.size(), slotRootParameters.data(), 0, nullptr,
+		(u32) slotRootParameters.size(), slotRootParameters.data(), 0, nullptr,
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
 	);
 

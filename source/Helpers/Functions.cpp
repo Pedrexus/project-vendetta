@@ -25,11 +25,10 @@ namespace Convert
 
 		return r;
 	}
-	std::string wide2str(std::wstring const& wstr)
+
+	const std::string wide2str(const wchar_t* wstr)
 	{
-		// This only works if all the characters are single byte, i.e. ASCII or ISO-8859-1. 
-		std::string wsTmp(wstr.begin(), wstr.end());
-		return wsTmp;
+		return (char*) _bstr_t(wstr);
 	}
 
 	const wchar_t* str2wide(const char* str)
@@ -40,6 +39,7 @@ namespace Convert
 		MultiByteToWideChar(CP_UTF8, 0, str, -1, wstr, wchars_num);
 		return wstr;
 	}
+
 	std::string int2hex(i64 number)
 	{
 		std::stringstream sstream;

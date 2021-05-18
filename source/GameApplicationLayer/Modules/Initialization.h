@@ -1,7 +1,7 @@
 #pragma once
 
 #include <pch.h>
-#include <const.h>
+
 #include <macros.h>
 
 extern bool IsOnlyInstance(LPCWSTR gameTitle);

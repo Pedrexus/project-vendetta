@@ -1,13 +1,13 @@
 #pragma once
 
-#include <const.h>
+
 
 #include "FrameResource.h"
 #include "../D3D12Fence/FenceManager.h"
 
 class FrameCycle
 {
-	std::array<std::unique_ptr<FrameResource>, NUMBER_FRAME_RESOURCES> _FrameResources;
+	std::vector<std::unique_ptr<FrameResource>> _FrameResources;
 	u8 _CurrFrameResourceIndex = 0;
 
 	FenceManager _Fence;

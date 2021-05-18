@@ -1,7 +1,6 @@
 #include "ResourceCache.h"
 #include "ResourceLoaders/DefaultResourceLoader.h"
 
-#include <const.h>
 #include <macros.h>
 #include <Helpers/Functions.h>
 

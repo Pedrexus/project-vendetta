@@ -2,6 +2,7 @@
 #include "GameApp.h"
 
 #include <Helpers/Functions.h>
+#include <Helpers/Settings/Settings.h>
 
 bool GameApp::Initialize(
 	HINSTANCE hInstance,
@@ -10,31 +11,30 @@ bool GameApp::Initialize(
 	INT nCmdShow
 )
 {
-	COM::Initialize();
 
 	// Check for existing instance of the same window
 	// TODO: create a splash screen to help minimize this problem
-	if (!IsOnlyInstance(GAME_TITLE))
+	if (!IsOnlyInstance(Settings::Get("title")))
 		return false;
 
 	// We don't need a mouse cursor by default, let the game turn it on
 	SetCursor(NULL);
 
-	if (!CheckStorage(DISK_SPACE))
+	if (!CheckStorage(Settings::GetInt("disk-space") * MEGABYTE))
 		return false;
 
-	if (!CheckMemory(PHYSICAL_RAM, VIRTUAL_RAM))
+	if (!CheckMemory(Settings::GetInt("memory-physical") * MEGABYTE, Settings::GetInt("memory-virtual") * MEGABYTE))
 		return false;
 
-	if (!CheckCPUSpeed(CPU_SPEED))
+	if (!CheckCPUSpeed(Settings::GetInt("cpu-speed")))
 		return false;
 
 	// resets and starts the game clock
 	m_timer.Reset();
 
 	// TODO: development editor resource cache initialization - chapter 22
-	IResourceFile* zipFile = NEW ResourceZipFile(RESOURCES_ZIPFILE);
-	m_ResCache = NEW ResourceCache(RESOURCES_SIZE, zipFile);
+	IResourceFile* zipFile = NEW ResourceZipFile((LPCWSTR)Settings::Get("resources-filename"));
+	m_ResCache = NEW ResourceCache(Settings::GetInt("resources-filesize") * MEGABYTE, zipFile);
 
 	if (!m_ResCache->Init())
 		return false;
@@ -54,7 +54,7 @@ bool GameApp::Initialize(
 	// m_ResCache->RegisterLoader(CreateScriptResourceLoader());
 
 	// Load strings with the XML Resource Loader
-	LoadStrings(GAME_LANGUAGE);
+	LoadStrings((char*)Settings::Get("language"));
 
 	// TODO: event manager and event registering - Chapter 11
 	auto m_EventManager = EventManager::Get();
@@ -65,7 +65,7 @@ bool GameApp::Initialize(
 	// TODO: create game logic & view - Chapter 21
 
 	// copy the string ptr
-	_tcscpy_s(m_saveGameDirectory, GetSaveGameDirectory(SAVE_GAME_DIR));
+	_tcscpy_s(m_saveGameDirectory, GetSaveGameDirectory(Settings::Get("saves-directory")));
 
 	// now that all the major systems are initialized, preload resources - Chapter 8
 
@@ -92,7 +92,6 @@ void GameApp::Shutdown()
 	// ScriptExports::Unregister();
 	LuaStateManager::Destroy();
 	SAFE_DELETE(m_ResCache);
-	COM::Shutdown();
 }
 
 void GameApp::Run()

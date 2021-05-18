@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../dx12pch.h"
+#include <dx12pch.h>
 
 /*
 	Shader programs typically require resources as input (constant buffers,

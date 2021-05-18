@@ -20,11 +20,12 @@ namespace Logger
 		void Show(const std::string& errorMessage, bool isFatal, const char* funcName, const char* sourceFile, unsigned int lineNum);
 	};
 
-	// construction; must be called at the beginning and end of the program
-	void Init(const char* loggingConfigFilename);
-	void Destroy(void);
+	// construction; must be called at the beginning the program
+	void Init();
+	void Destroy();
 
 	// logging functions
-	void Log(const std::string& tag, const std::string& message, const char* funcName, const char* sourceFile, unsigned int lineNum);
+	void Log(const std::string tag, const std::string message, const std::string funcName, const std::string sourceFile, unsigned int lineNum);
+	void Fail(const std::string& errorMessage, bool isFatal, const char* funcName, const char* sourceFile, unsigned int lineNum);
 	// void SetDisplayFlags(const std::string& tag, unsigned char flags);
 }

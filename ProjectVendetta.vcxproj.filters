@@ -185,6 +185,7 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\IBuffer.h" />
     <ClInclude Include="Source\dx12pch.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\DynamicBuffer.h" />
+    <ClInclude Include="Source\Helpers\Settings\Settings.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />
@@ -294,10 +295,7 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\RenderObjects.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="Game\logging.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Game\vendetta.log" />
+    <Xml Include="Game\settings.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -314,5 +312,8 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Game\Shaders\color.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Game\vendeta.log" />
   </ItemGroup>
 </Project>

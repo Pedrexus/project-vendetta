@@ -62,7 +62,7 @@ public:
 	// event system
 	static u64 RegisterEventListener(EventListener::Id listenerId, EventType eventType, LuaPlus::LuaObject callbackFunction)
 	{
-		ASSERT(s_pScriptEventListenerMgr);
+		assert(s_pScriptEventListenerMgr);
 
 		if (callbackFunction.IsFunction())
 		{

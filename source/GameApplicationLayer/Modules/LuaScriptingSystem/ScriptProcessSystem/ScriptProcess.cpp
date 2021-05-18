@@ -58,7 +58,7 @@ void ScriptProcess::OnInit(void)
 
 void ScriptProcess::OnUpdate(milliseconds dt)
 {
-	m_time += dt;
+	m_time += (u64) dt;
 	if (m_time >= m_frequency)
 	{
 		LuaPlus::LuaFunction<void*> UpdateFunc{ m_scriptUpdateFunction };

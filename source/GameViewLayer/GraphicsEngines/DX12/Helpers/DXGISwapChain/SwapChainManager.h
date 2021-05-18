@@ -74,7 +74,7 @@ protected:
 
 		auto window = Game::Get()->GetWindow();
 		auto swapChainDesc = Specify(NULL, NULL, SwapChainBufferCount, BackBufferFormat);
-		auto fsSwapChainDesc = SpecifyFullscreen(SCREEN_REFRESH_RATE);
+		auto fsSwapChainDesc = SpecifyFullscreen(Settings::GetInt("window-refresh-rate"));
 
 		ThrowIfFailed(pfactory2->CreateSwapChainForHwnd(
 			cmdQueue, window->GetMainWnd(),

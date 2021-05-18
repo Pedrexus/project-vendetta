@@ -1,9 +1,12 @@
 #include "FrameCycle.h"
+#include <Helpers/Settings/Settings.h>
 
 FrameCycle::FrameCycle(ID3D12Device* device, u32 objectCount) :
 	_Fence(device)
 {
-	for (auto i = 0; i < NUMBER_FRAME_RESOURCES; i++)
+	auto numFrameResources = Settings::GetInt("graphics-frame-resources");
+	_FrameResources.resize(numFrameResources);
+	for (auto i = 0; i < numFrameResources; i++)
 		_FrameResources[i] = std::make_unique<FrameResource>(device, objectCount, i);
 }
 
@@ -24,7 +27,7 @@ void FrameCycle::SignalCurrentFrame(ID3D12CommandQueue* commandQueue)
 
 void FrameCycle::Advance()
 {
-	_CurrFrameResourceIndex = (_CurrFrameResourceIndex + 1) % NUMBER_FRAME_RESOURCES;
+	_CurrFrameResourceIndex = (_CurrFrameResourceIndex + 1) % Settings::GetInt("graphics-frame-resources");
 }
 
 FrameResource* FrameCycle::GetCurrentFrameResource()

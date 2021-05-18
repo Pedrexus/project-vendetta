@@ -1,0 +1,36 @@
+<Settings>
+	<Logging output="vendeta.log" mode="clear">
+		<!-- Default flags -->
+		<Log tag="INFO"  debugger="1" file="1"/>
+		<Log tag="WARNING"  debugger="1" file="1"/>
+		<Log tag="ERROR"  debugger="0" file="1"/>
+		<Log tag="FATAL"  debugger="0" file="1"/>
+		<!-- Tool specific flags -->
+		<Log tag="Actor" debugger="0" file="1"/>
+		<Log tag="Events" debugger="0" file="1"/>
+		<Log tag="Lua" debugger="0" file="1"/>
+		<Log tag="Graphics" debugger="0" file="1"/>
+	</Logging>
+	<Config
+		title="Project Vendetta"
+		language="english"
+		window-width="960"
+		window-height="540"
+		window-refresh-rate="60"
+		memory-physical="512"
+		memory-virtual="1024"
+		disk-space="10"
+		disk-speed=""
+		cpu-speed="1300"
+		sound-channels="32"
+		sound-sample-rate="44100"
+		sound-bitrate="16"
+		sound-volume-min="0"
+		sound-volume-max="100"
+		resources-filename="assets.zip"
+		resources-filesize="50"
+		saves-directory="ProjectVendetta"
+		saves-filename=""
+		graphics-frame-resources="3"
+	/>
+</Settings>

@@ -26,22 +26,17 @@
 // logging
 #ifdef _DEBUG
 
-#define LOG(tag, str) Logger::Log(tag, std::string(str),  __FUNCTION__, __FILE__, __LINE__)
-#define LOG_INFO(str) LOG("INFO", str)
-#define LOG_WARNING(str) LOG("WARNING", str)
+// TODO: set LOG to work like fmt::format and use _bstr_t_ to convert everything to str
+#define LOG(tag, ...) Logger::Log(tag, fmt::format(##__VA_ARGS__),  __FUNCTION__, __FILE__, __LINE__)
+#define LOG_INFO(...) LOG("INFO", ##__VA_ARGS__)
+#define LOG_WARNING(...) LOG("WARNING", ##__VA_ARGS__)
 
-#define ERRORBOX(str, isFatal) \
-	do \
-	{ \
-		static auto msger = NEW Logger::ErrorMessenger; \
-		msger->Show(std::string(str), isFatal, __FUNCTION__, __FILE__, __LINE__); \
-	} \
-	while(0) \
+#define ERRORBOX(isFatal, ...) Logger::Fail(fmt::format(##__VA_ARGS__), isFatal, __FUNCTION__, __FILE__, __LINE__)
 
-#define LOG_ERROR(str) ERRORBOX(str, false)
-#define LOG_FATAL(str) ERRORBOX(str, true)
+#define LOG_ERROR(...) ERRORBOX(false, ##__VA_ARGS__)
+#define LOG_FATAL(...) ERRORBOX(true, ##__VA_ARGS__)
 
-#define ASSERT(expr) if (!(expr)) ERRORBOX(#expr, false);
+#define ASSERT(expr) if (!(expr)) ERRORBOX(false, #expr)
 
 #else
 

@@ -1,4 +1,3 @@
-
 #include "Game.h"
 #include <Helpers/Functions.h>
 
@@ -16,7 +15,7 @@ INT WINAPI wWinMain(
     SetMemoryChecks();
 
     // always the second
-    Logger::Init("logging.xml");
+    Logger::Init();
 
     srand(1);
 

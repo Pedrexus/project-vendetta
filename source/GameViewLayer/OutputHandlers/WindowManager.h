@@ -1,6 +1,8 @@
 #pragma once
 
-#include <const.h>
+#include <types.h>
+
+#include <Helpers/Settings/Settings.h>
 
 class WindowManager
 {
@@ -17,8 +19,8 @@ protected:
 	HINSTANCE m_hInstance = nullptr;
 	HWND      m_hWnd = nullptr;
 
-	u32		  m_ClientWidth = WINDOW_WIDTH;
-	u32		  m_ClientHeight = WINDOW_HEIGHT;
+	u32		  m_ClientWidth = Settings::GetInt("window-width");
+	u32		  m_ClientHeight = Settings::GetInt("window-height");
 
 	WindowState m_state = COMMON;
 

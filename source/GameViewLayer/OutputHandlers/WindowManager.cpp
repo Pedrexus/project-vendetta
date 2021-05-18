@@ -1,5 +1,6 @@
 #include "WindowManager.h"
 
+#include <const.h>
 #include <macros.h>
 #include <Helpers/Functions.h>
 
@@ -15,7 +16,7 @@ void WindowManager::RegisterWindowClass()
 	wc.hCursor = LoadCursor(m_hInstance, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH) GetStockObject(DKGRAY_BRUSH);
 	wc.lpszMenuName = 0;
-	wc.lpszClassName = WINDOW_CLASS_NAME;
+	wc.lpszClassName = Settings::Get("title");
 
 	if (!RegisterClass(&wc))
 		LOG_FATAL("Failed to register extended window class");
@@ -50,10 +51,8 @@ std::tuple<INT, INT> GetWindowDimensions(INT screenWidth, INT screenHeight)
 
 HWND CreateOverlappedWindow(HINSTANCE hInstance, INT screenWidth, INT screenHeight)
 {
-	return CreateWindow(
-		WINDOW_CLASS_NAME, WINDOW_TITLE_NAME, WINDOW_STYLE,
-		CW_USEDEFAULT, CW_USEDEFAULT, screenWidth, screenHeight, NULL, NULL, hInstance, NULL
-	);
+	auto title = Settings::Get("title");
+	return CreateWindow(title, title, WINDOW_STYLE, CW_USEDEFAULT, CW_USEDEFAULT, screenWidth, screenHeight, NULL, NULL, hInstance, NULL);
 }
 
 void WindowManager::Initialize()

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <const.h>
+#include <Helpers/Settings/Settings.h>
 
 #include "../Buffers/InputAssembler/IMeshBuffer.h"
 #include "Objects/Geometry.h"
@@ -9,7 +9,7 @@ class RenderItem
 {
     // Indicates object data has changed 
     // and we need to update the constant buffer
-    u32 _NumFramesDirty = NUMBER_FRAME_RESOURCES;
+    u32 _NumFramesDirty = Settings::GetInt("graphics-frame-resources");
 
     D3D12_VERTEX_BUFFER_VIEW _VertexBufferView = {};
     D3D12_INDEX_BUFFER_VIEW _IndexBufferView = {};
@@ -52,7 +52,7 @@ public:
     }
     void Reset()
     {
-        _NumFramesDirty = NUMBER_FRAME_RESOURCES;
+        _NumFramesDirty = Settings::GetInt("graphics-frame-resources");
     }
 
     inline D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView() const

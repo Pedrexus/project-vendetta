@@ -43,7 +43,7 @@ void Actor::AddComponent(std::shared_ptr<ActorComponent> component)
 	const auto& [it, success] = m_componentMap.insert({ component->GetName(), component });
 
 	if (success)
-		LOG("Actor", "Added Component " + component->GetName() + " to Actor " + std::to_string(m_id));
+		LOG("Actor", "Added Component {} to Actor {}", component->GetName(), m_id);
 	else
-		LOG_ERROR("Unable to add Component " + component->GetName() + " to Actor " + std::to_string(m_id));
+		LOG_ERROR("Unable to add Component {} to Actor {}", component->GetName(), m_id);
 }

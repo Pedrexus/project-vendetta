@@ -1,6 +1,5 @@
 #include "HumanView.h"
 
-#include <const.h>
 #include <DirectXMath.h>
 
 #include "../InputHandlers/Controller.h"

@@ -2,7 +2,7 @@
 
 #include <pch.h>
 #include <types.h>
-#include <const.h>
+
 #include <macros.h>
 
 namespace Convert
@@ -10,11 +10,14 @@ namespace Convert
 	std::string StringToLower(std::string s);
 	std::wstring ANSIToUNICODE(const char* source, const unsigned int length);
 
-	std::string wide2str(std::wstring const& wstr);
+	const std::string wide2str(const wchar_t* wstr);
 	const wchar_t* str2wide(const char* str);
 
 	std::string int2hex(i64 number);
 }
+
+static auto w2s = Convert::wide2str;
+static auto s2w = Convert::str2wide;
 
 namespace Mem
 {

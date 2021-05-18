@@ -56,8 +56,12 @@ RenderObjects::RenderObjects(MeshMap& staticMeshes, MeshMap& dynamicMeshes, Worl
 	_StaticMeshBuffer.Upload(device, cmdList, &mesh);
 
 	for (auto& [name, mesh] : dynamicMeshes)
-		for (auto i = 0; i < NUMBER_FRAME_RESOURCES; i++)
-			_DynamicMeshBuffers[name][i].Upload(device, mesh);
+	{
+		auto buffers = std::vector<DynamicMeshBuffer>(Settings::GetInt("graphics-frame-resources"));
+		for (auto& buf : buffers)
+			buf.Upload(device, mesh);
+		_DynamicMeshBuffers[name] = std::move(buffers);
+	}
 
 	CreateObjects(table);
 }
@@ -106,7 +110,7 @@ void RenderObjects::UpdateMesh(MeshName name, u8 frameIndex, Mesh* newMesh)
 {
 	auto& buffer = _DynamicMeshBuffers[name][frameIndex];
 
-	if(newMesh)
+	if (newMesh)
 		buffer.Update(newMesh);
 
 	for (auto& obj : _RenderItems)
