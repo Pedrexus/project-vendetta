@@ -162,6 +162,7 @@
     <ClInclude Include="Source\GameViewLayer\OutputHandlers\WindowManager.h" />
     <ClInclude Include="Source\GameViewLayer\UserInterface\Console.h" />
     <ClInclude Include="Source\GameViewLayer\UserInterface\HumanView.h" />
+    <ClInclude Include="Source\Helpers\Concurrency\Asynchronous.h" />
     <ClInclude Include="Source\Helpers\Geometry\Point.h" />
     <ClInclude Include="Source\Helpers\Settings\Settings.h" />
     <ClInclude Include="Source\Helpers\Timer\SystemTime.h" />

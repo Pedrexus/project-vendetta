@@ -186,6 +186,7 @@
     <ClInclude Include="Source\dx12pch.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\DynamicBuffer.h" />
     <ClInclude Include="Source\Helpers\Settings\Settings.h" />
+    <ClInclude Include="Source\Helpers\Concurrency\Asynchronous.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />

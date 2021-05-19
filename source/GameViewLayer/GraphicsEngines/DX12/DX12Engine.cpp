@@ -177,7 +177,7 @@ void DX12Engine::OnUpdate(milliseconds dt)
 	}
 
 	// auto newMesh = wavesActor.Update(dt);
-	auto dp = sin(t);
+	auto dp = sin(10 * t);
 	Mesh newMesh = _Sphere;
 	for (auto& v : newMesh.Vertices)
 	{

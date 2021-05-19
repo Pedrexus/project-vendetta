@@ -27,8 +27,15 @@ void HumanView::Initialize()
 
 void HumanView::OnUpdate(milliseconds dt)
 {
-	m_graphicsEngine->SetCameraPosition(m_PointerHandler->GetCameraPosition());
-	m_graphicsEngine->OnUpdate(dt);
+	auto engine = dynamic_cast<DX12Engine*>(m_graphicsEngine.get());
+
+	// TODO: put this on specific methods and use names explicitly async
+	std::thread(&DX12Engine::SetCameraPosition, engine, m_PointerHandler->GetCameraPosition()).detach();
+	std::thread(&DX12Engine::OnUpdate, engine, dt).detach();
+	
+	// m_graphicsEngine->SetCameraPosition(m_PointerHandler->GetCameraPosition());
+	// m_graphicsEngine->OnUpdate(dt);
+	
 	m_graphicsEngine->OnDraw();
 }
 

@@ -28,9 +28,19 @@ void Game::Shutdown()
 	LOG_INFO("Game shutdown");
 }
 
+void Game::DispatchWindowMessage(MSG& msg)
+{
+	auto isWindowMessage = PeekMessage(&msg, 0, 0, 0, PM_REMOVE);
+	if (isWindowMessage)
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+}
+
 void Game::DispatchGameMessage(MSG& msg)
 {
-	m_humanView->OnMessage(msg);
+	std::thread(&HumanView::OnMessage, m_humanView, msg).detach();
 }
 
 void Game::OnUpdate(milliseconds dt)
@@ -47,16 +57,8 @@ void Game::Run()
 	{
 		m_timer.Tick();
 
-		auto isWindowMessage = PeekMessage(&msg, 0, 0, 0, PM_REMOVE);
-		if (isWindowMessage)
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		else
-		{
-			DispatchGameMessage(msg);
-			OnUpdate(m_timer.GetDeltaMilliseconds());
-		}
+		DispatchWindowMessage(msg);
+		DispatchGameMessage(msg);
+		OnUpdate(m_timer.GetDeltaMilliseconds());
 	}
 }

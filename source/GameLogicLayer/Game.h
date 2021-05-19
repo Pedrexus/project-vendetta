@@ -53,6 +53,7 @@ public:
 	void Run();
 
 protected:
+	void DispatchWindowMessage(MSG& msg);
 	void DispatchGameMessage(MSG& msg);
 	void OnUpdate(milliseconds dt);
 };
