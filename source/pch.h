@@ -30,21 +30,6 @@
 
 #include <cmath>
 
-// Windows headers
-#include <Windows.h>
-#include <Shlobj.h>
-#include <Knownfolders.h>
-
-// DirectX Headers
-#include <XAudio2.h>
-
-#include <wrl/client.h>
-#include <comdef.h>
-#include <crtdbg.h>
-#include <tchar.h>
-#include <direct.h>
-#include <shlwapi.h>
-#include <concurrent_queue.h>
 
 /*
 	Third Party libraries
@@ -61,5 +46,24 @@
 #include <vorbis/vorbisfile.h>	// libvorbis:x64-windows
 #include <fmt/core.h> // fmt:x64-windows
 #include <fmt/format.h> // fmt:x64-windows
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
+
+// Windows headers
+#include <Windows.h>
+#include <Shlobj.h>
+#include <Knownfolders.h>
+
+// DirectX Headers
+#include <XAudio2.h>
+
+#include <wrl/client.h>
+#include <comdef.h>
+#include <crtdbg.h>
+#include <tchar.h>
+#include <direct.h>
+#include <shlwapi.h>
+#include <concurrent_queue.h>
 
 #include <Dependencies/LuaPlus/LuaPlus/LuaPlus.h>  // TODO: learn how include the build of this... (there are no headers)

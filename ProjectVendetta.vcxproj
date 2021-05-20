@@ -295,9 +295,11 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DXGISwapChain\SwapChainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\Artes\Blender\mug.dae" />
     <None Include=".gitignore" />
     <None Include="cpp.hint" />
     <None Include="CppProperties.json" />
+    <None Include="Game\mug.dae" />
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaCall.inl" />
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaObject.inl" />
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaStackObject.inl" />

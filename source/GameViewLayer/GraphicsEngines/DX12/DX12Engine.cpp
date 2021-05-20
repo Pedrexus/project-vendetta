@@ -11,6 +11,11 @@
 
 #include <GameLogicLayer/Game.h>
 
+#include <vector>
+#include <assimp/Importer.hpp> 
+#include <assimp/scene.h>      
+#include <assimp/postprocess.h>
+
 
 DX12Engine::~DX12Engine()
 {
@@ -82,20 +87,43 @@ void DX12Engine::FlushCommandQueue()
 
 void DX12Engine::BuildGeometry()
 {
-	auto land = Geometry::Special::CreateLandGrid(160, 160, 50, 50);
-	auto waves = Geometry::CreateGrid(128, 128, 50, 50);
+	Assimp::Importer importer;
+
+	const aiScene* scene = importer.ReadFile("mug.dae",
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType |
+		aiProcess_MakeLeftHanded
+	);
+
+	if (!scene)
+		LOG_ERROR(importer.GetErrorString());
+
+	LOG_INFO("number of meshes: {}", scene->mNumMeshes);
+
+	Mesh mug = {};
+
+	mug.Vertices.resize(scene->mMeshes[0]->mNumVertices);
+	auto vBegin = std::make_move_iterator(scene->mMeshes[0]->mVertices);
+	auto vEnd = std::make_move_iterator(scene->mMeshes[0]->mVertices + scene->mMeshes[0]->mNumVertices);
+	std::transform(vBegin, vEnd, mug.Vertices.begin(), [] (aiVector3D v) { return Vertex(v); });
+
+	for (auto i = 0; i < scene->mMeshes[0]->mNumFaces; i++)
+		for (auto j = 0; j < 3; j++)
+			mug.Indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
+
 	_Sphere = Geometry::CreateIcosahedron();
 
 	RenderObjects::MeshMap staticMeshes = {
-		{ "land", &land },
+		{ "mug", &mug },
 	};
 
 	RenderObjects::MeshMap dynamicMeshes = {
-		{ "sphere", &_Sphere }
+		// { "sphere", &_Sphere }
 	};
 
 	RenderObjects::WorldMap positions = {
-		{ "sphere", XMMatrixIdentity() },
+		{ "mug", XMMatrixIdentity() },
 	};
 
 	_Objects = std::make_unique<RenderObjects>(staticMeshes, dynamicMeshes, positions, _Device.Get(), m_CommandList.Get());
@@ -177,6 +205,7 @@ void DX12Engine::OnUpdate(milliseconds dt)
 	}
 
 	// auto newMesh = wavesActor.Update(dt);
+	/*
 	auto dp = sin(10 * t);
 	Mesh newMesh = _Sphere;
 	for (auto& v : newMesh.Vertices)
@@ -186,6 +215,7 @@ void DX12Engine::OnUpdate(milliseconds dt)
 	}
 
 	_Objects->UpdateMesh("sphere", currFrameRes->Index, &newMesh);
+	*/
 }
 
 void DX12Engine::OnDraw()

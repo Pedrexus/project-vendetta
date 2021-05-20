@@ -27,7 +27,7 @@ void HumanView::Initialize()
 
 void HumanView::OnUpdate(milliseconds dt)
 {
-	auto engine = dynamic_cast<DX12Engine*>(m_graphicsEngine.get());
+	static auto engine = dynamic_cast<DX12Engine*>(m_graphicsEngine.get());
 
 	// TODO: put this on specific methods and use names explicitly async
 	std::thread(&DX12Engine::SetCameraPosition, engine, m_PointerHandler->GetCameraPosition()).detach();
@@ -36,6 +36,8 @@ void HumanView::OnUpdate(milliseconds dt)
 	// m_graphicsEngine->SetCameraPosition(m_PointerHandler->GetCameraPosition());
 	// m_graphicsEngine->OnUpdate(dt);
 	
+	// not thread safe, messes with the commands to be executed by the queue;
+	// not necessary btw
 	m_graphicsEngine->OnDraw();
 }
 

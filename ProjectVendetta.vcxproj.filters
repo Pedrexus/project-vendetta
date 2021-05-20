@@ -310,6 +310,8 @@
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaState.inl" />
     <None Include="cpp.hint" />
     <None Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.inl" />
+    <None Include="..\..\..\Artes\Blender\mug.dae" />
+    <None Include="Game\mug.dae" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Game\Shaders\color.hlsl" />

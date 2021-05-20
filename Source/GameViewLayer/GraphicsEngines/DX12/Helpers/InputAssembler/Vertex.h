@@ -1,6 +1,8 @@
 #pragma once
 
-#include "../../dx12pch.h"
+#include <dx12pch.h>
+
+#include <assimp/scene.h>      
 
 struct Vertex
 {
@@ -17,6 +19,9 @@ struct Vertex
         Tangent{},
         Texture{}
     {}
+
+    Vertex(aiVector3D* v) : Position(v->x, v->y, v->z) {}
+    Vertex(aiVector3D& v) : Position(v.x, v.y, v.z) {}
 
     Vertex(
         const DirectX::XMFLOAT3& p, 
