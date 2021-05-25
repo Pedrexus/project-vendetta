@@ -2,8 +2,6 @@
 
 #include "IMeshBuffer.h"
 #include "../DynamicBuffer.h"
-#include "../../InputAssembler/Vertex.h"
-#include "../../InputAssembler/Objects/Geometry.h"
 
 
 class DynamicMeshBuffer : public IMeshBuffer

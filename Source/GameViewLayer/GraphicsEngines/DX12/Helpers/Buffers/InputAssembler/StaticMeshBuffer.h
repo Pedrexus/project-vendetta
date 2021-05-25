@@ -3,8 +3,6 @@
 #include "IMeshBuffer.h"
 #include "../StaticBuffer.h"
 
-#include "../../InputAssembler/Vertex.h"
-
 /*
 	Groups a vertex and index buffer together to
 	define a group of geometry

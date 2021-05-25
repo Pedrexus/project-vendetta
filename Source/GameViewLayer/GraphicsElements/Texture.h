@@ -1,10 +1,9 @@
 #pragma once
 
-#include <dx12pch.h>
+#include "IRendered.h"
 
-struct Texture
+struct Texture: public IRendered
 {
-	std::string Name;
 	std::wstring Filename; // .dds only
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;

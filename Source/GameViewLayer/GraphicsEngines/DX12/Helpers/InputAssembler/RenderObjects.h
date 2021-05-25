@@ -13,7 +13,6 @@ class RenderObjects
 {
 public:
 	using MeshName = const std::string;
-	using MeshData = std::pair<Mesh*, Mesh::BufferType>;
 
 	using WorldMap = std::vector<std::pair<MeshName, XMMATRIX>>;
 

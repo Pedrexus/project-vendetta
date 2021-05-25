@@ -1,52 +1,6 @@
 #pragma once
 
-#include <concepts>
-
-#include "../Vertex.h"
-
-template <class T>
-concept Integral = std::is_integral<T>::value;
-template <class T>
-concept SignedIntegral = Integral<T> && std::is_signed<T>::value;
-template <class T>
-concept UnsignedIntegral = Integral<T> && !SignedIntegral<T>;
-
-struct Mesh
-{
-    enum BufferType
-    {
-        Static,
-        Dynamic,
-    };
-
-    std::vector<Vertex> Vertices;
-    std::vector<u64> Indices;
-
-    template<UnsignedIntegral T>
-    std::vector<T> GetIndices() const
-    {
-        assert((std::numeric_limits<T>::max)() > Indices.size());
-
-        std::vector<T> indicesNew;
-        indicesNew.resize(Indices.size());
-
-        auto caster = [] (u64 x) { return static_cast<T>(x); };
-        std::transform(Indices.begin(), Indices.end(), indicesNew.begin(), caster);
-
-        return indicesNew;
-    }
-
-    u64 GetVerticesByteSize() const
-    {
-        return Vertices.size() * sizeof(Vertex);
-    }
-
-    template<UnsignedIntegral T>
-    u64 GetIndicesByteSize() const
-    {
-        return Indices.size() * sizeof(T);
-    }
-};
+#include <GameViewLayer/GraphicsElements/Mesh.h>
 
 namespace Geometry
 {

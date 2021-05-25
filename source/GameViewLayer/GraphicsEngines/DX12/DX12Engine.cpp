@@ -6,8 +6,6 @@
 #include "Helpers/DX12MSAA.h"
 #include "Helpers/DX12Command.h"
 #include "Helpers/DX12Window.h"
-#include "Helpers/InputAssembler/Vertex.h"
-#include "Helpers/InputAssembler/Objects/Geometry.h"
 
 #include <GameLogicLayer/Game.h>
 
@@ -15,6 +13,7 @@
 #include <assimp/Importer.hpp> 
 #include <assimp/scene.h>      
 #include <assimp/postprocess.h>
+#include <GameViewLayer/GraphicsElements/Material.h>
 
 
 DX12Engine::~DX12Engine()
@@ -111,6 +110,14 @@ void DX12Engine::BuildGeometry()
 	//	for (u32 j = 0; j < 3; j++)
 	//		mug.Indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
 
+	Material wirefence;
+	wirefence.Name = "wirefence";
+	wirefence.MatCBIndex = 0;
+	wirefence.DiffuseSRVHeapIndex = 0;
+	wirefence.DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	wirefence.FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	wirefence.Roughness = 0.25f;
+
 	auto box = Geometry::CreateBox(4, 4, 4);
 
 	RenderObjects::MeshMap staticMeshes = {
@@ -156,7 +163,7 @@ void DX12Engine::BuildPipelineStateObject()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = SpecifyInputLayout();
+	psoDesc.InputLayout = Vertex::SpecifyInputLayout();
 	psoDesc.pRootSignature = _RootSignature->Get();
 	psoDesc.VS = _Shaders->GetVSByteCode();
 	psoDesc.PS = _Shaders->GetPSByteCode();
