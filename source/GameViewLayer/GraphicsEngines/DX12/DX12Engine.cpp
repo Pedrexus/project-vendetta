@@ -41,7 +41,7 @@ void DX12Engine::Initialize()
 	_DepthStencil = std::make_unique<DepthStencilManager>(_Device.Get());
 
 	_RootSignature = std::make_unique<RootSignature>(_Device.Get(), 2);
-	_Shaders = std::make_unique<HLSLShaders>(L"Shaders\\color.hlsl", nullptr);
+	_Shaders = std::make_unique<HLSLShaders>((wchar_t*)Settings::Get("graphics-shader-entypoint"), nullptr);
 	_FrameCycle = std::make_unique<FrameCycle>(_Device.Get(), 30);
 
 	Command::CreateList(_Device.Get(), _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
@@ -87,43 +87,44 @@ void DX12Engine::FlushCommandQueue()
 
 void DX12Engine::BuildGeometry()
 {
-	Assimp::Importer importer;
+	// TODO: after learning materials and lights, make a proper importer in the GameApp resource loader
+	//Assimp::Importer importer;
 
-	const aiScene* scene = importer.ReadFile("mug.dae",
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType |
-		aiProcess_MakeLeftHanded
-	);
+	//const aiScene* scene = importer.ReadFile("mug.dae",
+	//	aiProcess_Triangulate |
+	//	aiProcess_JoinIdenticalVertices |
+	//	aiProcess_SortByPType
+	//	// aiProcess_MakeLeftHanded
+	//);
 
-	if (!scene)
-		LOG_ERROR(importer.GetErrorString());
+	//if (!scene)
+	//	LOG_ERROR(importer.GetErrorString());
 
-	LOG_INFO("number of meshes: {}", scene->mNumMeshes);
+	//Mesh mug = {};
 
-	Mesh mug = {};
+	//mug.Vertices.resize(scene->mMeshes[0]->mNumVertices);
+	//auto vBegin = std::make_move_iterator(scene->mMeshes[0]->mVertices);
+	//auto vEnd = std::make_move_iterator(scene->mMeshes[0]->mVertices + scene->mMeshes[0]->mNumVertices);
+	//std::transform(vBegin, vEnd, mug.Vertices.begin(), [] (aiVector3D v) { return Vertex(v); });
 
-	mug.Vertices.resize(scene->mMeshes[0]->mNumVertices);
-	auto vBegin = std::make_move_iterator(scene->mMeshes[0]->mVertices);
-	auto vEnd = std::make_move_iterator(scene->mMeshes[0]->mVertices + scene->mMeshes[0]->mNumVertices);
-	std::transform(vBegin, vEnd, mug.Vertices.begin(), [] (aiVector3D v) { return Vertex(v); });
+	//for (u32 i = 0; i < scene->mMeshes[0]->mNumFaces; i++)
+	//	for (u32 j = 0; j < 3; j++)
+	//		mug.Indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
 
-	for (auto i = 0; i < scene->mMeshes[0]->mNumFaces; i++)
-		for (auto j = 0; j < 3; j++)
-			mug.Indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
-
-	_Sphere = Geometry::CreateIcosahedron();
+	auto box = Geometry::CreateBox(4, 4, 4);
 
 	RenderObjects::MeshMap staticMeshes = {
-		{ "mug", &mug },
+		{ "box", &box }, // TODO: fix empty static mesh breaking
 	};
 
 	RenderObjects::MeshMap dynamicMeshes = {
 		// { "sphere", &_Sphere }
 	};
 
+	// TODO: rename to transforms or worlds
 	RenderObjects::WorldMap positions = {
-		{ "mug", XMMatrixIdentity() },
+		// { "mug", XMMatrixIdentity() },
+		{ "box", XMMatrixIdentity() },
 	};
 
 	_Objects = std::make_unique<RenderObjects>(staticMeshes, dynamicMeshes, positions, _Device.Get(), m_CommandList.Get());
@@ -205,8 +206,8 @@ void DX12Engine::OnUpdate(milliseconds dt)
 	}
 
 	// auto newMesh = wavesActor.Update(dt);
-	/*
-	auto dp = sin(10 * t);
+	
+	/*auto dp = sin(10 * t);
 	Mesh newMesh = _Sphere;
 	for (auto& v : newMesh.Vertices)
 	{
@@ -214,8 +215,8 @@ void DX12Engine::OnUpdate(milliseconds dt)
 		XMStoreFloat3(&v.Position, newPos);
 	}
 
-	_Objects->UpdateMesh("sphere", currFrameRes->Index, &newMesh);
-	*/
+	_Objects->UpdateMesh("sphere", currFrameRes->Index, &newMesh);*/
+	
 }
 
 void DX12Engine::OnDraw()

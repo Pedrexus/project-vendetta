@@ -40,7 +40,7 @@ void Game::DispatchWindowMessage(MSG& msg)
 
 void Game::DispatchGameMessage(MSG& msg)
 {
-	std::thread(&HumanView::OnMessage, m_humanView, msg).detach();
+	m_humanView->OnMessage(msg);
 }
 
 void Game::OnUpdate(milliseconds dt)

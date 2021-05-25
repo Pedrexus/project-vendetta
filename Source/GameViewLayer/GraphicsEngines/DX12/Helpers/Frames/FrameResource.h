@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "../../dx12pch.h"
+#include <dx12pch.h>
+
 #include "../Buffers/ConstantBuffer.h"
 
 struct RenderPassConstants

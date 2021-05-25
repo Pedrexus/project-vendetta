@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../dx12pch.h"
+#include <dx12pch.h>
 
 // Direct3D will enable extra debugging and send debug messages to the VC++ output window
 inline void EnableDebugLayer()

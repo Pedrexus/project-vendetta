@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../dx12pch.h"
+#include <dx12pch.h>
 
 class Camera
 {

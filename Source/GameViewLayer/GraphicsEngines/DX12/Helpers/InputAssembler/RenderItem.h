@@ -10,10 +10,6 @@ class RenderItem
     // Indicates object data has changed 
     // and we need to update the constant buffer
     u32 _NumFramesDirty = Settings::GetInt("graphics-frame-resources");
-
-    D3D12_VERTEX_BUFFER_VIEW _VertexBufferView = {};
-    D3D12_INDEX_BUFFER_VIEW _IndexBufferView = {};
-
 public:
     std::string Name;
     XMFLOAT4X4 World;

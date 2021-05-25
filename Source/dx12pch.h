@@ -7,9 +7,12 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 
+#include <pch.h>
 #include <macros.h>
 #include <Helpers/Functions.h>
+
 #include <Dependencies/DirectX12/d3dx12.h>
+#include <Dependencies/DirectX12/DDSTextureLoader12.h>
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -23,4 +26,4 @@
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
-#define ThrowIfFailed(hr) if(FAILED(hr)) { LOG_FATAL("DirectX has failed with HRESULT " + Convert::int2hex(hr)); }
+#define ThrowIfFailed(hr) if(FAILED(hr)) { LOG_FATAL("DirectX has failed with HRESULT ", Convert::int2hex(hr)); }

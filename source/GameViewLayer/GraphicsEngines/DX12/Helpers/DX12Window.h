@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../dx12pch.h"
+#include <dx12pch.h>
 
 D3D12_VIEWPORT CreateViewport(u32 width, u32 height)
 {

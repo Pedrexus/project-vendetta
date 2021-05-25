@@ -3,7 +3,7 @@
 #include <pch.h>
 #include <types.h>
 
-#include "dx12pch.h"
+#include <dx12pch.h>
 
 #include "../IGraphicsEngine.h"
 

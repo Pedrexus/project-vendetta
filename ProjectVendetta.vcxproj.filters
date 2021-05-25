@@ -105,7 +105,6 @@
     <ClInclude Include="Source\GameViewLayer\InputHandlers\Controller.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\IGraphicsEngine.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\dx12pch.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Debug.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DXGI.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Device.h" />
@@ -171,7 +170,6 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\ConstantBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\InputAssembler\StaticMeshBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\SubmeshGeometry.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Vertex.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\RootSignature\RootSignature.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\HLSLShaders.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.h" />
@@ -187,6 +185,16 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\DynamicBuffer.h" />
     <ClInclude Include="Source\Helpers\Settings\Settings.h" />
     <ClInclude Include="Source\Helpers\Concurrency\Asynchronous.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Vertex.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Mesh.h" />
+    <ClInclude Include="Source\Helpers\Concepts\concepts.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Material.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Object.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsElements\IRendered.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Light.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsElements\World.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Texture.h" />
+    <ClInclude Include="Source\Dependencies\DirectX12\DDSTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />
@@ -294,6 +302,7 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Geosphere.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Grid.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\RenderObjects.cpp" />
+    <ClCompile Include="Source\Dependencies\DirectX12\DDSTextureLoader12.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Game\settings.xml" />
@@ -312,9 +321,10 @@
     <None Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.inl" />
     <None Include="..\..\..\Artes\Blender\mug.dae" />
     <None Include="Game\mug.dae" />
+    <None Include="Game\Shaders\lighting.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Game\Shaders\color.hlsl" />
+    <FxCompile Include="Game\Shaders\main.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Game\vendeta.log" />
