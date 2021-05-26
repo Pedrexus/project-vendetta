@@ -10,6 +10,7 @@ class Camera
 	inline static const auto nearZ = 1.0f;
 	inline static const auto farZ = 1000.0f;
 	
+	XMFLOAT3 _Pos = {};
 	XMMATRIX _View = XMMatrixIdentity();
 	XMMATRIX _Proj = XMMatrixIdentity();
 
@@ -18,18 +19,20 @@ public:
 
 	inline void UpdateCameraView(CameraPosition3D pos)
 	{
-		auto position = XMVectorSet(pos[0], pos[1], pos[2], 1.0f);
-		UpdateView(position);
-	};
+		_Pos = { pos[0], pos[1], pos[2] };
 
-	inline void UpdateView(XMVECTOR pos)
-	{
-		_View = XMMatrixLookAtLH(pos, target, up);
-	}
+		auto eye = XMLoadFloat3(&_Pos);
+		_View = XMMatrixLookAtLH(eye, target, up);
+	};
 
 	inline XMMATRIX GetViewProj()
 	{
 		return _View * _Proj;
+	}
+
+	inline XMFLOAT3& GetEyePosition()
+	{
+		return _Pos;
 	}
 
 	// The window resized, so update the aspect ratio and recompute the projection matrix.

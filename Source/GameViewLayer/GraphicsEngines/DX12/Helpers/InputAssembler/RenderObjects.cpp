@@ -46,7 +46,7 @@ std::vector<u64> BuildPackedIndexVector(RenderObjects::MeshMap& meshes)
 	return indices;
 }
 
-RenderObjects::RenderObjects(MeshMap& staticMeshes, MeshMap& dynamicMeshes, WorldMap& table, ID3D12Device* device, ID3D12GraphicsCommandList* cmdList)
+RenderObjects::RenderObjects(MeshMap& staticMeshes, MeshMap& dynamicMeshes, Objects& table, ID3D12Device* device, ID3D12GraphicsCommandList* cmdList)
 {
 	CreateSubmeshes(staticMeshes);
 	auto vertices = BuildPackedVertexVector(staticMeshes);
@@ -66,18 +66,19 @@ RenderObjects::RenderObjects(MeshMap& staticMeshes, MeshMap& dynamicMeshes, Worl
 	CreateObjects(table);
 }
 
-void RenderObjects::CreateObjects(RenderObjects::WorldMap& table)
+void RenderObjects::CreateObjects(Objects& objects)
 {
-	_RenderItems.reserve(table.size());
+	_RenderItems.reserve(objects.size());
 
-	for (auto& [name, world] : table)
+	for (auto& obj : objects)
 	{
+		auto& name = obj.Name;
 		if (_Submeshes.contains(name))
-			_RenderItems.push_back({ name, world, &_Submeshes[name], &_StaticMeshBuffer });
+			_RenderItems.push_back({ obj, &_Submeshes[name], &_StaticMeshBuffer });
 		else
 		{
 			auto& buffer = _DynamicMeshBuffers[name][0];
-			_RenderItems.push_back({ name, world, &buffer, buffer.IndicesCount });
+			_RenderItems.push_back({ obj, &buffer, buffer.IndicesCount });
 		}
 	}
 }

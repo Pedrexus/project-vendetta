@@ -13,7 +13,7 @@ class FrameCycle
 	FenceManager _Fence;
 
 public:
-	FrameCycle(ID3D12Device* device, u32 objectCount);
+	FrameCycle(ID3D12Device* device, u32 objectCount, u32 materialCount);
 
 protected:
 	void SyncFrameResource(u64 frameFence);

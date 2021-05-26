@@ -1,9 +1,10 @@
 #include "FrameResource.h"
 
-FrameResource::FrameResource(ID3D12Device* device, u32 objectCount, u8 index) :
+FrameResource::FrameResource(ID3D12Device* device, u32 objectCount, u32 materialCount, u8 index) :
 	_PassCB(device, 1),
 	_ObjectCB(device, objectCount),
-	_cbvHeap(device, objectCount + 1),
+	_MaterialCB(device, objectCount),
+	_cbvHeap(device, objectCount + 1), // TODO: using views now, not needed anymore
 	Index(index)
 {
 	ThrowIfFailed(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_CmdListAlloc)));
@@ -13,6 +14,11 @@ FrameResource::FrameResource(ID3D12Device* device, u32 objectCount, u8 index) :
 void FrameResource::UpdateObjectConstantBuffers(u32 objIndex, const ObjectConstants& objConstants)
 {
 	_ObjectCB.Upload(objIndex, objConstants);
+}
+
+void FrameResource::UpdateMaterialConstantBuffers(u32 index, const MaterialConstants& matConstants)
+{
+	_MaterialCB.Upload(index, matConstants);
 }
 
 void FrameResource::UpdateMainPassConstantBuffers(const RenderPassConstants& passConstants)

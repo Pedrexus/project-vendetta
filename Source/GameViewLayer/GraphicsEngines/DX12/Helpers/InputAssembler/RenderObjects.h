@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #include "../Buffers/InputAssembler/StaticMeshBuffer.h"
 #include "../Buffers/InputAssembler/DynamicMeshBuffer.h"
 
@@ -14,7 +12,7 @@ class RenderObjects
 public:
 	using MeshName = const std::string;
 
-	using WorldMap = std::vector<std::pair<MeshName, XMMATRIX>>;
+	using Objects = std::vector<Object>;
 
 	using MeshMap = std::map<MeshName, Mesh*>;
 	using MeshMapItem = MeshMap::iterator::value_type;
@@ -22,7 +20,7 @@ public:
 	using FrameDynamicBuffer = std::vector<DynamicMeshBuffer>;
 
 private:
-	void CreateObjects(WorldMap& table);
+	void CreateObjects(Objects& objects);
 	void CreateSubmeshes(MeshMap& meshes);
 
 protected:
@@ -37,7 +35,7 @@ protected:
 
 
 public:
-	RenderObjects(MeshMap& staticMeshes, MeshMap& dynamicMeshes, WorldMap& table, ID3D12Device* device, ID3D12GraphicsCommandList* cmdList);
+	RenderObjects(MeshMap& staticMeshes, MeshMap& dynamicMeshes, Objects& table, ID3D12Device* device, ID3D12GraphicsCommandList* cmdList);
 	RenderObjects(RenderObjects& rhs) = delete;
 	RenderObjects operator=(RenderObjects& rhs) = delete;
 

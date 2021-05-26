@@ -39,9 +39,9 @@ void DX12Engine::Initialize()
 	_SwapChain = std::make_unique<SwapChainManager>(_Factory.Get(), _Device.Get(), m_CommandQueue.Get());
 	_DepthStencil = std::make_unique<DepthStencilManager>(_Device.Get());
 
-	_RootSignature = std::make_unique<RootSignature>(_Device.Get(), 2);
+	_RootSignature = std::make_unique<RootSignature>(_Device.Get(), 3); // TODO: set this in a define I think
 	_Shaders = std::make_unique<HLSLShaders>((wchar_t*)Settings::Get("graphics-shader-entypoint"), nullptr);
-	_FrameCycle = std::make_unique<FrameCycle>(_Device.Get(), 30);
+	_FrameCycle = std::make_unique<FrameCycle>(_Device.Get(), 30, 3); // TODO: this should come from somewhere else
 
 	Command::CreateList(_Device.Get(), _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
 	m_CommandList->SetName(L"Main");
@@ -118,23 +118,30 @@ void DX12Engine::BuildGeometry()
 	wirefence.FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	wirefence.Roughness = 0.25f;
 
-	auto box = Geometry::CreateBox(4, 4, 4);
+	auto sphere = Geometry::CreateGeosphere(2, 3);
 
 	RenderObjects::MeshMap staticMeshes = {
-		{ "box", &box }, // TODO: fix empty static mesh breaking
+		{ "s", &sphere }, // TODO: fix empty static mesh breaking
 	};
 
 	RenderObjects::MeshMap dynamicMeshes = {
 		// { "sphere", &_Sphere }
 	};
 
-	// TODO: rename to transforms or worlds
-	RenderObjects::WorldMap positions = {
-		// { "mug", XMMatrixIdentity() },
-		{ "box", XMMatrixIdentity() },
+	RenderObjects::Objects objs = {
+		{ "s", XMMatrixIdentity(), wirefence },
 	};
 
-	_Objects = std::make_unique<RenderObjects>(staticMeshes, dynamicMeshes, positions, _Device.Get(), m_CommandList.Get());
+	/*
+	TODO: instead of passing three objects, try something like this
+	
+	auto origin = XMMatrixIdentity();
+	auto x = {
+		{ "box", &origin, &box, &material, &texture },
+	}
+	*/
+
+	_Objects = std::make_unique<RenderObjects>(staticMeshes, dynamicMeshes, objs, _Device.Get(), m_CommandList.Get());
 }
 
 void DX12Engine::ShowFrameStats(milliseconds& dt)
@@ -194,12 +201,14 @@ void DX12Engine::OnUpdate(milliseconds dt)
 
 	auto currFrameRes = _FrameCycle->GetCurrentFrameResource();
 
-	// update main pass
+	currFrameRes->UpdateMainPassConstantBuffers({ 
+		_Camera->GetViewProj(), 
+		_Camera->GetEyePosition(), 
+		static_cast<f32>(t),
+		static_cast<f32>(dt),
+	});
 
-	auto viewProj = _Camera->GetViewProj();
-	currFrameRes->UpdateMainPassConstantBuffers({ viewProj, static_cast<f32>(t) });
-
-	// update render items
+	// update render items and materials
 
 	auto& items = _Objects->items();
 	for (auto i = 0; i < items.size(); i++)
@@ -209,6 +218,12 @@ void DX12Engine::OnUpdate(milliseconds dt)
 		{
 			currFrameRes->UpdateObjectConstantBuffers(i, { obj.World });
 			obj.Clean();
+		}
+
+		if (obj.Material->IsDirty())
+		{
+			currFrameRes->UpdateMaterialConstantBuffers(obj.Material->MatCBIndex, obj.Material->GetConstants());
+			obj.Material->Clean();
 		}
 	}
 
@@ -254,11 +269,14 @@ void DX12Engine::OnDraw()
 	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
 
 	auto objCBV = currFrameRes->_ObjectCB.GetBufferView();
+	auto matCBV = currFrameRes->_MaterialCB.GetBufferView();
 	for (auto& obj : _Objects->items())
 	{
 		// this sets the world matrix in the cbuffer
 		m_CommandList->SetGraphicsRootConstantBufferView(0, objCBV.BufferLocation);
 		objCBV.BufferLocation += objCBV.ElementByteSize;
+
+		m_CommandList->SetGraphicsRootConstantBufferView(2, matCBV.BufferLocation + (u64) obj.Material->MatCBIndex * matCBV.ElementByteSize);
 
 		auto vbv = obj.GetVertexBufferView();
 		m_CommandList->IASetVertexBuffers(0, 1, &vbv);

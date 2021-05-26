@@ -1,13 +1,13 @@
 #include "FrameCycle.h"
 #include <Helpers/Settings/Settings.h>
 
-FrameCycle::FrameCycle(ID3D12Device* device, u32 objectCount) :
+FrameCycle::FrameCycle(ID3D12Device* device, u32 objectCount, u32 materialCount) :
 	_Fence(device)
 {
 	auto numFrameResources = Settings::GetInt("graphics-frame-resources");
 	_FrameResources.resize(numFrameResources);
 	for (auto i = 0; i < numFrameResources; i++)
-		_FrameResources[i] = std::make_unique<FrameResource>(device, objectCount, i);
+		_FrameResources[i] = std::make_unique<FrameResource>(device, objectCount, materialCount, i);
 }
 
 void FrameCycle::SyncFrameResource(u64 frameFence)

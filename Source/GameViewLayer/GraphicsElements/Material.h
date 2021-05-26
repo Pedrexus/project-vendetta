@@ -16,5 +16,10 @@ struct Material : public IRendered, public MaterialConstants
 {
 	u32 MatCBIndex = -1;
 	u32 DiffuseSRVHeapIndex = -1;
+
+	MaterialConstants GetConstants()
+	{
+		return { DiffuseAlbedo, FresnelR0, Roughness, Transform };
+	}
 };
 

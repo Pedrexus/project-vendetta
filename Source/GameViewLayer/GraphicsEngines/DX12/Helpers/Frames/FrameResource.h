@@ -4,18 +4,20 @@
 
 #include <dx12pch.h>
 
+#include <GameViewLayer/GraphicsElements/Material.h>
+#include <GameViewLayer/GraphicsElements/Object.h>
+
 #include "../Buffers/ConstantBuffer.h"
 
+// TODO: remove this constant definitions from here
 struct RenderPassConstants
 {
 	XMMATRIX ViewProj = XMMatrixIdentity();
-	f32 Time = .0f;
-	f64 DeltaTime = .0f;
-};
 
-struct ObjectConstants
-{
-	XMFLOAT4X4 World;
+	XMFLOAT3 EyePosition = {};
+	f32 Time = .0f;
+
+	f32 dt = .0f;
 };
 
 // Stores the resources needed for the CPU to build the command lists
@@ -32,6 +34,7 @@ struct FrameResource
 	// that reference it. So each frame needs their own cbuffers.
 	ConstantBuffer<RenderPassConstants> _PassCB;
 	ConstantBuffer<ObjectConstants> _ObjectCB;
+	ConstantBuffer<MaterialConstants> _MaterialCB;
 
 	Descriptor::ConstantBuffer::Heap _cbvHeap;
 
@@ -41,12 +44,13 @@ protected:
 public:
 	const u8 Index;
 
-	FrameResource(ID3D12Device* device, u32 objectCount, u8 index);
+	FrameResource(ID3D12Device* device, u32 objectCount, u32 materialCount, u8 index);
 	FrameResource(const FrameResource& rhs) = delete;
 	FrameResource& operator=(const FrameResource& rhs) = delete;
 
-	void UpdateObjectConstantBuffers(u32 objIndex, const ObjectConstants& objConstants);
 	void UpdateMainPassConstantBuffers(const RenderPassConstants& passConstants);
+	void UpdateObjectConstantBuffers(u32 objIndex, const ObjectConstants& objConstants);
+	void UpdateMaterialConstantBuffers(u32 index, const MaterialConstants& matCtes);
 
 	ID3D12DescriptorHeap* GetDescriptorHeap() const;
 	CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUHandle();
