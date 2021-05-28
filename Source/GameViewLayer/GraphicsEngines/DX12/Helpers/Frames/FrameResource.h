@@ -36,8 +36,6 @@ struct FrameResource
 	ConstantBuffer<ObjectConstants> _ObjectCB;
 	ConstantBuffer<MaterialConstants> _MaterialCB;
 
-	Descriptor::ConstantBuffer::Heap _cbvHeap;
-
 protected:
 	u64 Fence = 0;
 
@@ -51,9 +49,4 @@ public:
 	void UpdateMainPassConstantBuffers(const RenderPassConstants& passConstants);
 	void UpdateObjectConstantBuffers(u32 objIndex, const ObjectConstants& objConstants);
 	void UpdateMaterialConstantBuffers(u32 index, const MaterialConstants& matCtes);
-
-	ID3D12DescriptorHeap* GetDescriptorHeap() const;
-	CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUHandle();
-
-	void CreateConstantBufferViews(ID3D12Device* device, u32 objectCount);
 };

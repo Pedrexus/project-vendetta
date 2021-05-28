@@ -11,7 +11,7 @@
 #include <array>
 #include <algorithm>
 #include <execution>
-// TODO: #include <format> C++ 20
+#include <format>
 #include <functional>
 #include <iterator>
 #include <list>
@@ -20,7 +20,7 @@
 #include <mutex>
 #include <numeric>
 #include <optional>
-// TODO: #include <ranges> C++ 20
+#include <ranges>
 #include <set>
 #include <string>
 #include <vector>
@@ -30,6 +30,8 @@
 
 #include <cmath>
 
+#undef max
+#undef min
 
 /*
 	Third Party libraries
@@ -54,9 +56,6 @@
 #include <Windows.h>
 #include <Shlobj.h>
 #include <Knownfolders.h>
-
-// DirectX Headers
-#include <XAudio2.h>
 
 #include <wrl/client.h>
 #include <comdef.h>

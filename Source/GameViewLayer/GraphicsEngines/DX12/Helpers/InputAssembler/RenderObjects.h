@@ -19,6 +19,13 @@ public:
 
 	using FrameDynamicBuffer = std::vector<DynamicMeshBuffer>;
 
+	// TODO: this class should hold almost all elements the engine should render
+	// - materials
+	// - objects
+	// - meshes
+	// - lights
+	// - textures
+	// - etc.
 private:
 	void CreateObjects(Objects& objects);
 	void CreateSubmeshes(MeshMap& meshes);

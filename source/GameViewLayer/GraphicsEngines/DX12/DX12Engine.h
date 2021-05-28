@@ -1,9 +1,10 @@
 #pragma once
 
-#include <pch.h>
 #include <types.h>
-
 #include <dx12pch.h>
+
+#include "Common/DeviceResources.h"
+
 
 #include "../IGraphicsEngine.h"
 
@@ -17,10 +18,13 @@
 #include "Helpers/Shaders/HLSLShaders.h"
 #include "Helpers/Frames/FrameCycle.h"
 #include "Helpers/InputAssembler/RenderItem.h"
+#include "Helpers/Descriptors/GeneralResource.h"
 
 
 class DX12Engine : public IGraphicsEngine
 {
+	std::unique_ptr<DX::DeviceResources> _deviceResources;
+
 	ComPtr<IDXGIFactory> _Factory;
 	ComPtr<ID3D12Device> _Device;
 
@@ -42,12 +46,20 @@ class DX12Engine : public IGraphicsEngine
 	std::unique_ptr<RenderObjects> _Objects;
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
 
-	Mesh _Sphere;
+	// DirectX Tool Kit 12
+	std::unique_ptr<DescriptorHeap> _resourceDescriptors;
+
+	enum Descriptors
+	{
+		BrickTexture,
+		CrateTexture,
+		Count // the last enum obj is the count of items
+	};
 
 public:
 	DX12Engine() = default;
-	DX12Engine(const DX12Engine & rhs) = delete;
-	DX12Engine& operator=(const DX12Engine & rhs) = delete;
+	DX12Engine(const DX12Engine& rhs) = delete;
+	DX12Engine& operator=(const DX12Engine& rhs) = delete;
 	~DX12Engine();
 
 public:
@@ -65,7 +77,7 @@ protected:
 	void CloseCommandList();
 	void ExecuteCommandLists();
 	void SignalFrameAndAdvance();
-	
+
 public:
 	inline bool IsReady() override { return _Device && _SwapChain->IsReady() && _FrameCycle; };
 	void SetCameraPosition(CameraPosition3D pos) override;

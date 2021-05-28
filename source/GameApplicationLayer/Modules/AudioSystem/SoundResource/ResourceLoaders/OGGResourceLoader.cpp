@@ -1,3 +1,5 @@
+#include <XAudio2.h>
+
 #include "OGGResourceLoader.h"
 #include "OGG/Vorbis.h"
 

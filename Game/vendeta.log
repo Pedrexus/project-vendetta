@@ -6,15 +6,10 @@ Line: 33
 Function: HadSuccessCreatingDevice
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Device.h
 Line: 12
-[ERROR] Lighting.hlsli(149,5-39): warning X3557: loop only executes for 1 iteration(s), forcing loop to unroll
-
-Function: PipelineStageShader::CompileShader
-Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp
-Line: 18
 [INFO] Using MSAA with 4 samples and 0 quality levels
 Function: DX12Engine::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.cpp
-Line: 50
+Line: 53
 [Graphics] 
 Adapter 7200: NVIDIA GeForce GTX 1060
 Adapter 22811: Intel(R) HD Graphics 630
@@ -71,7 +66,7 @@ Line: 88
 Function: Game::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
 Line: 17
-[INFO] Synced with GPU 2846 times.
+[INFO] Synced with GPU 550 times.
 Function: FenceManager::~FenceManager
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.h
 Line: 35

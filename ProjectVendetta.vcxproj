@@ -19,8 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Dependencies\DirectX12\DDSTextureLoader12.h" />
     <ClInclude Include="Source\dx12pch.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\DeviceResources.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\ThrowIfFailed.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\ConstantBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\DynamicBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\StaticBuffer.h" />
@@ -29,9 +30,10 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\InputAssembler\DynamicMeshBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Camera\Camera.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\BaseHeap.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\ConstantBuffer.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\GeneralResource.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\DepthStencil.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\RenderTarget.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\Sampler.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DepthStencilBuffer\DepthStencilManager.h" />
     <ClInclude Include="Source\Dependencies\DirectX12\d3dx12.h" />
     <ClInclude Include="Source\Dependencies\LuaPlus\Lua53\lapi.h" />
@@ -150,6 +152,7 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\SubmeshGeometry.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometry.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\RenderItem.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Texture.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\RootSignature\RootSignature.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\HLSLShaders.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.h" />
@@ -196,7 +199,8 @@
     <Xml Include="Game\settings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Dependencies\DirectX12\DDSTextureLoader12.cpp" />
+    <ClCompile Include="Source\dx12pch.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\DeviceResources.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\StaticBuffer.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12DepthStencilBuffer\DepthStencilManager.cpp" />
     <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lapi.c" />
@@ -304,7 +308,6 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DXGISwapChain\SwapChainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\Artes\Blender\mug.dae" />
     <None Include=".gitignore" />
     <None Include="cpp.hint" />
     <None Include="CppProperties.json" />

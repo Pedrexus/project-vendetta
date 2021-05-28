@@ -6,9 +6,9 @@ struct Vertex
 {
 	XMFLOAT3 Position = {};
 	XMFLOAT3 Normal = {};
-	XMFLOAT3 Tangent = {};
 	XMFLOAT2 Texture = {};
 	XMFLOAT4 Color = {};
+	XMFLOAT3 Tangent = {};
 
 	static inline D3D12_INPUT_LAYOUT_DESC SpecifyInputLayout()
 	{

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <XAudio2.h>
+
 #include "../IAudioManager.h"
 
 class XAudioManager : public IAudioManager

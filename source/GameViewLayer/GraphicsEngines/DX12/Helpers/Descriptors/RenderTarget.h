@@ -23,10 +23,10 @@ namespace Descriptor
 				return rtvHeapDesc;
 			}
 		public:
-			Heap(ID3D12Device* device, u32 swapChainBufferCount) : BaseHeap(device, RenderTarget::Type)
+			Heap(ID3D12Device* device, u32 swapChainBufferCount)
 			{
 				const auto rtvDesc = Specify(swapChainBufferCount);
-				Create(device, &rtvDesc);
+				Create(device, &rtvDesc, RenderTarget::Type);
 			}
 
 			// Each RTV buffer has its own handle

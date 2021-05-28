@@ -12,6 +12,9 @@ class IRendered
 public:
     std::string Name;
 
+    IRendered() = default;
+    IRendered(std::string& name) : Name(name) {};
+
     // void* buffer;
     // std::unordered_map<string, u64> indices;
 

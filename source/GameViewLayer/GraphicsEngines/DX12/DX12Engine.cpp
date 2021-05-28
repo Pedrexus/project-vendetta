@@ -14,6 +14,9 @@
 #include <assimp/scene.h>      
 #include <assimp/postprocess.h>
 #include <GameViewLayer/GraphicsElements/Material.h>
+#include <GameViewLayer/GraphicsElements/Texture.h>
+
+
 
 
 DX12Engine::~DX12Engine()
@@ -48,6 +51,9 @@ void DX12Engine::Initialize()
 
 	_MSAA = MSAA::Check(_Device.Get(), _SwapChain->BackBufferFormat, _MSAA.Count, _MSAA.Quality);
 	LOG_INFO(fmt::format("Using MSAA with {} samples and {} quality levels", _MSAA.Count, _MSAA.Quality));
+
+	// DirectX Tool Kit 12
+	_resourceDescriptors = std::make_unique<DescriptorHeap>(_Device.Get(), Descriptors::Count);
 
 #ifdef _DEBUG
 	Display::LogInformation(_Factory.Get(), _SwapChain->BackBufferFormat);
@@ -110,18 +116,44 @@ void DX12Engine::BuildGeometry()
 	//	for (u32 j = 0; j < 3; j++)
 	//		mug.Indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
 
-	Material wirefence;
-	wirefence.Name = "wirefence";
-	wirefence.MatCBIndex = 0;
-	wirefence.DiffuseSRVHeapIndex = 0;
-	wirefence.DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	wirefence.FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	wirefence.Roughness = 0.25f;
+	Material woodCrate;
+	woodCrate.Name = "woodCrate";
+	woodCrate.MatCBIndex = 0;
+	woodCrate.DiffuseSRVHeapIndex = 0;
+	woodCrate.DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	woodCrate.FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);
+	woodCrate.Roughness = 0.2f;
+	XMStoreFloat4x4(&woodCrate.Transform, XMMatrixIdentity());
 
-	auto sphere = Geometry::CreateGeosphere(2, 3);
+	Texture tex;
+	tex.Name = "fenceTex";
+	tex.Filename = L"Textures\\bricks3.dds";
+
+	ResourceUploadBatch resourceUpload(_Device.Get());
+
+	resourceUpload.Begin();
+
+	CreateDDSTextureFromFile(
+		_Device.Get(),
+		resourceUpload,
+		tex.Filename.c_str(), 
+		tex.Resource.GetAddressOf()
+	);
+
+	resourceUpload.End(m_CommandQueue.Get());
+
+	CreateShaderResourceView(
+		_Device.Get(),
+		tex.Resource.Get(),
+		_resourceDescriptors->GetCpuHandle(Descriptors::BrickTexture)
+	);
+
+	auto m = Geometry::CreateBox(4, 4, 4);
+
+	// auto m = GeometricPrimitive::CreateBox({ 3, 3, 3 });
 
 	RenderObjects::MeshMap staticMeshes = {
-		{ "s", &sphere }, // TODO: fix empty static mesh breaking
+		{ "m", &m }, // TODO: fix empty static mesh breaking
 	};
 
 	RenderObjects::MeshMap dynamicMeshes = {
@@ -129,7 +161,7 @@ void DX12Engine::BuildGeometry()
 	};
 
 	RenderObjects::Objects objs = {
-		{ "s", XMMatrixIdentity(), wirefence },
+		{ "m", XMMatrixIdentity(), XMMatrixIdentity(), woodCrate, tex },
 	};
 
 	/*
@@ -216,7 +248,7 @@ void DX12Engine::OnUpdate(milliseconds dt)
 		auto& obj = items[i];
 		if (obj.IsDirty())
 		{
-			currFrameRes->UpdateObjectConstantBuffers(i, { obj.World });
+			currFrameRes->UpdateObjectConstantBuffers(i, { obj.World, obj.TexTransform });
 			obj.Clean();
 		}
 
@@ -263,7 +295,7 @@ void DX12Engine::OnDraw()
 
 	auto currFrameRes = _FrameCycle->GetCurrentFrameResource();
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { currFrameRes->GetDescriptorHeap(), };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { _resourceDescriptors->Heap(), };
 	m_CommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
@@ -272,12 +304,6 @@ void DX12Engine::OnDraw()
 	auto matCBV = currFrameRes->_MaterialCB.GetBufferView();
 	for (auto& obj : _Objects->items())
 	{
-		// this sets the world matrix in the cbuffer
-		m_CommandList->SetGraphicsRootConstantBufferView(0, objCBV.BufferLocation);
-		objCBV.BufferLocation += objCBV.ElementByteSize;
-
-		m_CommandList->SetGraphicsRootConstantBufferView(2, matCBV.BufferLocation + (u64) obj.Material->MatCBIndex * matCBV.ElementByteSize);
-
 		auto vbv = obj.GetVertexBufferView();
 		m_CommandList->IASetVertexBuffers(0, 1, &vbv);
 
@@ -285,10 +311,20 @@ void DX12Engine::OnDraw()
 		m_CommandList->IASetIndexBuffer(&ibv);
 
 		m_CommandList->IASetPrimitiveTopology(obj.PrimitiveType);
+
+		// tex.Offset(ri->Mat->DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);
+		m_CommandList->SetGraphicsRootDescriptorTable(0, _resourceDescriptors->GetGpuHandle(Descriptors::BrickTexture));
+
+		// this sets the world matrix in the cbuffer
+		m_CommandList->SetGraphicsRootConstantBufferView(1, objCBV.BufferLocation);
+		objCBV.BufferLocation += objCBV.ElementByteSize;
+
+		m_CommandList->SetGraphicsRootConstantBufferView(3, matCBV.BufferLocation + (u64) obj.Material->MatCBIndex * matCBV.ElementByteSize);
+
 		m_CommandList->DrawIndexedInstanced(obj.Submesh.IndexCount, 1, obj.Submesh.StartIndexLocation, obj.Submesh.BaseVertexLocation, 0);
 	}
 
-	m_CommandList->SetGraphicsRootConstantBufferView(1, currFrameRes->_PassCB.GetBufferView().BufferLocation);
+	m_CommandList->SetGraphicsRootConstantBufferView(2, currFrameRes->_PassCB.GetBufferView().BufferLocation);
 
 	// Indicate a state transition on the resource usage.
 	m_CommandList->ResourceBarrier(1, _SwapChain->GetPresentTransition());

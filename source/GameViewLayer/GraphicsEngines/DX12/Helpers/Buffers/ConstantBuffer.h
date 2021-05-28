@@ -1,7 +1,6 @@
 #pragma once
 
 #include "DynamicBuffer.h"
-#include "../Descriptors/ConstantBuffer.h"
 
 template<typename T>
 class ConstantBuffer : public DynamicBuffer<T>

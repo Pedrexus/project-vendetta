@@ -1,3 +1,5 @@
+#include <XAudio2.h>
+
 #include "WaveResourceLoader.h"
 
 ResourceData::Sound* WaveResourceLoader::ParseWave(char* wavStream, size bufferLength, std::shared_ptr<ResourceHandle> handle)

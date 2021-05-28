@@ -4,11 +4,9 @@ FrameResource::FrameResource(ID3D12Device* device, u32 objectCount, u32 material
 	_PassCB(device, 1),
 	_ObjectCB(device, objectCount),
 	_MaterialCB(device, objectCount),
-	_cbvHeap(device, objectCount + 1), // TODO: using views now, not needed anymore
 	Index(index)
 {
 	ThrowIfFailed(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_CmdListAlloc)));
-	CreateConstantBufferViews(device, objectCount);
 }
 
 void FrameResource::UpdateObjectConstantBuffers(u32 objIndex, const ObjectConstants& objConstants)
@@ -21,11 +19,13 @@ void FrameResource::UpdateMaterialConstantBuffers(u32 index, const MaterialConst
 	_MaterialCB.Upload(index, matConstants);
 }
 
+
 void FrameResource::UpdateMainPassConstantBuffers(const RenderPassConstants& passConstants)
 {
 	_PassCB.Upload(&passConstants);
 }
 
+/*
 ID3D12DescriptorHeap* FrameResource::GetDescriptorHeap() const
 {
 	return _cbvHeap.heap.Get();
@@ -57,3 +57,4 @@ void FrameResource::CreateConstantBufferViews(ID3D12Device* device, u32 objectCo
 		device->CreateConstantBufferView(&cbvDesc, cpuHandle);
 	}
 }
+*/

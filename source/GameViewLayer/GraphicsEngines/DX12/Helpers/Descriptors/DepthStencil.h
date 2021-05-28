@@ -57,10 +57,10 @@ namespace Descriptor
 			}
 
 		public:
-			Heap(ID3D12Device* device) : BaseHeap(device, DepthStencil::Type)
+			Heap(ID3D12Device* device)
 			{
 				const auto dsvDesc = Specify();
-				Create(device, &dsvDesc);
+				Create(device, &dsvDesc, DepthStencil::Type);
 			}
 		};
 

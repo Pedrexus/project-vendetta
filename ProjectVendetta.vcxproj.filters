@@ -163,7 +163,7 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Window.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Camera\Camera.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\BaseHeap.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\ConstantBuffer.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\GeneralResource.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\DepthStencil.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\RenderTarget.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\StaticBuffer.h" />
@@ -194,7 +194,10 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsElements\Light.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsElements\World.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsElements\Texture.h" />
-    <ClInclude Include="Source\Dependencies\DirectX12\DDSTextureLoader12.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Texture.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Descriptors\Sampler.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\DeviceResources.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\ThrowIfFailed.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />
@@ -302,7 +305,8 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Geosphere.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Grid.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\RenderObjects.cpp" />
-    <ClCompile Include="Source\Dependencies\DirectX12\DDSTextureLoader12.cpp" />
+    <ClCompile Include="Source\dx12pch.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\DeviceResources.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Game\settings.xml" />
@@ -319,7 +323,6 @@
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaState.inl" />
     <None Include="cpp.hint" />
     <None Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.inl" />
-    <None Include="..\..\..\Artes\Blender\mug.dae" />
     <None Include="Game\mug.dae" />
     <None Include="Game\Shaders\lighting.hlsli" />
   </ItemGroup>

@@ -12,7 +12,6 @@
 #include <Helpers/Functions.h>
 
 #include <Dependencies/DirectX12/d3dx12.h>
-#include <Dependencies/DirectX12/DDSTextureLoader12.h>
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -22,6 +21,13 @@
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 #include <DirectXPackedVector.h>
+
+// DirectX Tool Kit 12
+#include <DirectXTK12/DescriptorHeap.h>
+#include <DirectXTK12/DDSTextureLoader.h>
+#include <DirectXTK12/ResourceUploadBatch.h>
+#include <DirectXTK12/DirectXHelpers.h>
+#include <DirectXTK12/GeometricPrimitive.h>
 
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;

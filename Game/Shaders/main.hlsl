@@ -6,11 +6,21 @@
 
 #include "Lighting.hlsli"
 
+Texture2D gDiffuseMap : register(t0);
+
+
+SamplerState gsamPointWrap : register(s0);
+SamplerState gsamPointClamp : register(s1);
+SamplerState gsamLinearWrap : register(s2);
+SamplerState gsamLinearClamp : register(s3);
+SamplerState gsamAnisotropicWrap : register(s4);
+SamplerState gsamAnisotropicClamp : register(s5);
+
 cbuffer cbPerObject : register(b0)
 {
     float4x4 gWorld;
     float4x4 gTexTransform;
-    Light gLights[32];
+    // Light gLights[32];
 };
 
 cbuffer cbPerPass : register(b1)
@@ -33,7 +43,7 @@ struct VertexIn
     float3 PosL : POSITION;
     float3 Normal : NORMAL;
     float2 Texture : TEXCOORD;
-    float4 Color : COLOR;
+    // float4 Color : COLOR;
 };
 
 struct VertexOut
@@ -50,21 +60,20 @@ VertexOut VS(VertexIn vin)
 	// vout.Color = vin.Color + vin.PosL.y / 10.0f;
 
     float4 posW = mul(gWorld, float4(vin.PosL, 1.0f));
-    float4 texC = mul(float4(vin.Texture, 0.0f, 1.0f), gTexTransform);
+    float4 texC = mul(gTexTransform, float4(vin.Texture, 0.0f, 1.0f));
     
     VertexOut vout;
     vout.PosW = posW.xyz;
     vout.PosH = mul(gViewProj, posW);
     vout.NormalW = mul(vin.Normal, (float3x3) gWorld);
-    vout.Texture = mul(texC, gMatTransform).xy;
+    vout.Texture = mul(gMatTransform, texC).xy;
 
     return vout;
 }
 
 float4 PS(VertexOut pin) : SV_Target
 {
-    // float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.TexC) * gDiffuseAlbedo;
-    float4 diffuseAlbedo = gDiffuseAlbedo;
+    float4 diffuseAlbedo = gDiffuseMap.Sample(gsamLinearWrap, pin.Texture) * gDiffuseAlbedo;
 	
     // Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);
@@ -74,14 +83,12 @@ float4 PS(VertexOut pin) : SV_Target
 
     // Light terms.
     const float4 ambientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
-    
-    
     float4 ambient = ambientLight * diffuseAlbedo;
     
     Light light =
     {
         {
-            0.9f, 0.9f, 0.9f
+            0.5f, 0.5f, 0.5f
         },
         1.0f,
         {
@@ -90,7 +97,6 @@ float4 PS(VertexOut pin) : SV_Target
         10.0f,
         {
             0.0f, 0.0f, 0.0f
-
         },
         64.0f
     };
