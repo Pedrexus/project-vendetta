@@ -88,7 +88,7 @@ void DX12Engine::ResetCommandList()
 
 	ThrowIfFailed(cmdListAlloc->Reset());
 
-	ThrowIfFailed(m_CommandList->Reset(cmdListAlloc, m_PSO.Get()));
+	ThrowIfFailed(m_CommandList->Reset(cmdListAlloc, nullptr));
 }
 
 void DX12Engine::ExecuteCommandLists()
@@ -317,6 +317,7 @@ void DX12Engine::OnDraw()
 	m_CommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
+	m_CommandList->SetPipelineState(m_PSO.Get());
 
 	auto objCBV = currFrameRes->_ObjectCB.GetBufferView();
 	auto matCBV = currFrameRes->_MaterialCB.GetBufferView();
