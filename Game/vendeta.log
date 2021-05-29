@@ -1,7 +1,7 @@
-[INFO] Game instantiated
-Function: Game::Get
-Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.h
-Line: 33
+[INFO] Logger initialized
+Function: Logger::Init
+Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Logger\Logger.cpp
+Line: 57
 [Graphics] D3D12Device created with NVIDIA GeForce GTX 1060
 Function: HadSuccessCreatingDevice
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12Device.h
@@ -66,7 +66,7 @@ Line: 88
 Function: Game::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
 Line: 17
-[INFO] Synced with GPU 1169 times.
+[INFO] Synced with GPU 123 times.
 Function: FenceManager::~FenceManager
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\D3D12Fence\FenceManager.h
 Line: 35

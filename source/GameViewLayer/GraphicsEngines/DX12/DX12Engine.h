@@ -23,7 +23,11 @@
 
 class DX12Engine : public IGraphicsEngine
 {
-	std::unique_ptr<DX::DeviceResources> _deviceResources;
+	DX::DeviceResources _deviceResources;
+
+	// DirectX Tool Kit 12
+	std::unique_ptr<DescriptorHeap>		_resourceDescriptors;
+	std::unique_ptr<GraphicsMemory>		_graphicsMemory;
 
 	ComPtr<IDXGIFactory> _Factory;
 	ComPtr<ID3D12Device> _Device;
@@ -46,13 +50,9 @@ class DX12Engine : public IGraphicsEngine
 	std::unique_ptr<RenderObjects> _Objects;
 	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
 
-	// DirectX Tool Kit 12
-	std::unique_ptr<DescriptorHeap> _resourceDescriptors;
-
 	enum Descriptors
 	{
 		BrickTexture,
-		CrateTexture,
 		Count // the last enum obj is the count of items
 	};
 

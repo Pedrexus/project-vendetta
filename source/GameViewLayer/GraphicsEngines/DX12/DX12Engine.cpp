@@ -149,7 +149,7 @@ void DX12Engine::BuildGeometry()
 	);
 
 	Mesh m;
-	GeometricPrimitive::CreateBox(m.Vertices, m.Indices, { 3, 3, 3 }, false);
+	GeometricPrimitive::CreateBox(m.Vertices, m.Indices, { 4, 4, 4 });
 
 	// auto m = GeometricPrimitive::CreateBox({ 3, 3, 3 });
 

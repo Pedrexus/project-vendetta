@@ -12,6 +12,7 @@
 #include <Helpers/Functions.h>
 
 #include <Dependencies/DirectX12/d3dx12.h>
+#include <GameViewLayer/GraphicsEngines/DX12/Common/ThrowIfFailed.h>
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -23,13 +24,15 @@
 #include <DirectXPackedVector.h>
 
 // DirectX Tool Kit 12
+#include <DirectXTK12/SimpleMath.h>
+#include <DirectXTK12/DirectXHelpers.h>
 #include <DirectXTK12/DescriptorHeap.h>
 #include <DirectXTK12/DDSTextureLoader.h>
-#include <DirectXTK12/ResourceUploadBatch.h>
-#include <DirectXTK12/DirectXHelpers.h>
 #include <DirectXTK12/GeometricPrimitive.h>
+#include <DirectXTK12/ResourceUploadBatch.h>
 
+using namespace DX;
 using namespace DirectX;
-using Microsoft::WRL::ComPtr;
+using namespace DirectX::SimpleMath;
 
-#define ThrowIfFailed(hr) if(FAILED(hr)) { LOG_FATAL("DirectX has failed with HRESULT ", Convert::int2hex(hr)); }
+using Microsoft::WRL::ComPtr;
