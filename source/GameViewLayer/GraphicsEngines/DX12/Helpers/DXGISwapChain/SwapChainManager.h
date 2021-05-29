@@ -119,6 +119,6 @@ public:
 
 	DXGI_FRAME_STATISTICS GetFrameStatistics();
 
-	CD3DX12_RESOURCE_BARRIER* GetPresentTransition();
-	CD3DX12_RESOURCE_BARRIER* GetRenderTransition();
+	CD3DX12_RESOURCE_BARRIER GetPresentTransition();
+	CD3DX12_RESOURCE_BARRIER GetRenderTransition();
 };

@@ -24,7 +24,7 @@
 namespace // engine constants
 {
 	static constexpr auto BACK_BUFFER_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
-	static constexpr auto BACK_BUFFER_COUNT = 2; // == # frame resources / canvas to draw
+	static constexpr auto BACK_BUFFER_COUNT = 3; // == # frame resources / canvas to draw
 
 	static constexpr auto DEPTH_BUFFER_FORMAT = DXGI_FORMAT_D32_FLOAT;
 	static constexpr auto MSAA_DEPTH_BUFFER_FORMAT = DXGI_FORMAT_UNKNOWN; /* If we were only doing MSAA rendering, we could skip the non-MSAA depth/stencil buffer with DXGI_FORMAT_UNKNOWN */
@@ -35,16 +35,12 @@ namespace // engine constants
 
 class DX12Engine : public IGraphicsEngine, public DX::IDeviceNotify
 {
-	DX::DeviceResources _deviceResources;
+	DX::DeviceResources _resources;
 
 	// DirectX Tool Kit 12
 	std::unique_ptr<DescriptorHeap>		_resourceDescriptors;
 	std::unique_ptr<GraphicsMemory>		_graphicsMemory;
-
-	ComPtr<IDXGIFactory> _Factory;
-	ComPtr<ID3D12Device> _Device;
-
-	ComPtr<ID3D12CommandQueue> m_CommandQueue;
+	
 	ComPtr<ID3D12GraphicsCommandList> m_CommandList;
 
 	std::unique_ptr<Camera> _Camera;
@@ -92,7 +88,7 @@ protected:
 	void SignalFrameAndAdvance();
 
 public:
-	inline bool IsReady() override { return _Device && _SwapChain->IsReady() && _FrameCycle; };
+	inline bool IsReady() override { return _resources.GetD3DDevice() && _SwapChain->IsReady() && _FrameCycle; };
 	void SetCameraPosition(CameraPosition3D pos) override;
 	void OnUpdate(milliseconds dt) override;
 	void OnDraw() override;

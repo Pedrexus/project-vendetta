@@ -18,9 +18,9 @@
 
 
 DX12Engine::DX12Engine() :
-	_deviceResources(BACK_BUFFER_FORMAT, DEPTH_BUFFER_FORMAT, BACK_BUFFER_COUNT)
+	_resources(BACK_BUFFER_FORMAT, DEPTH_BUFFER_FORMAT, BACK_BUFFER_COUNT)
 {
-	_deviceResources.RegisterDeviceNotify(this);
+	_resources.RegisterDeviceNotify(this);
 
 	_MSAA.Count = Settings::GetInt("graphics-msaa-count");
 }
@@ -28,7 +28,7 @@ DX12Engine::DX12Engine() :
 
 DX12Engine::~DX12Engine()
 {
-	if (_Device)
+	if (IsReady())
 		FlushCommandQueue();
 }
 
@@ -38,32 +38,33 @@ void DX12Engine::Initialize(HWND window, u16 width, u16 height)
 	EnableDebugLayer();
 #endif
 
-	// TODO: split into Constructor and initialize ?
-	_Factory = DXGI::Factory::CreateWithDebugLayer();
-	_Device = CreateHardwareDeviceWithHighestPerformanceAdapterAvailable(_Factory.Get());
+	_resources.SetWindow(window, width, height);
+	_resources.CreateDeviceResources();
+	// _resources.CreateWindowSizeDependentResources();
 
+	auto factory = _resources.GetDXGIFactory();
+	auto device = _resources.GetD3DDevice(); 
+	auto cmdQueue = _resources.GetCommandQueue();
+
+	_SwapChain = std::make_unique<SwapChainManager>(factory, device, cmdQueue);
+	_DepthStencil = std::make_unique<DepthStencilManager>(device);
+
+	_RootSignature = std::make_unique<RootSignature>(device, 3); // TODO: set this in a define I think
+	_Shaders = std::make_unique<HLSLShaders>((wchar_t*)Settings::Get("graphics-shader-entrypoint"), nullptr);
+	_FrameCycle = std::make_unique<FrameCycle>(device, 30, 3); // TODO: this should come from somewhere else
 	_Camera = std::make_unique<Camera>();
 
-	Command::CreateQueue(_Device.Get(), m_CommandQueue.GetAddressOf());
-
-	_SwapChain = std::make_unique<SwapChainManager>(_Factory.Get(), _Device.Get(), m_CommandQueue.Get());
-	_DepthStencil = std::make_unique<DepthStencilManager>(_Device.Get());
-
-	_RootSignature = std::make_unique<RootSignature>(_Device.Get(), 3); // TODO: set this in a define I think
-	_Shaders = std::make_unique<HLSLShaders>((wchar_t*)Settings::Get("graphics-shader-entrypoint"), nullptr);
-	_FrameCycle = std::make_unique<FrameCycle>(_Device.Get(), 30, 3); // TODO: this should come from somewhere else
-
-	Command::CreateList(_Device.Get(), _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
+	Command::CreateList(device, _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
 	m_CommandList->SetName(L"Main");
 
-	_MSAA = MSAA::Check(_Device.Get(), _SwapChain->BackBufferFormat, _MSAA.Count, _MSAA.Quality);
+	_MSAA = MSAA::Check(device, _SwapChain->BackBufferFormat, _MSAA.Count, _MSAA.Quality);
 	LOG_INFO(fmt::format("Using MSAA with {} samples and {} quality levels", _MSAA.Count, _MSAA.Quality));
 
 	// DirectX Tool Kit 12
-	_resourceDescriptors = std::make_unique<DescriptorHeap>(_Device.Get(), Descriptors::Count);
+	_resourceDescriptors = std::make_unique<DescriptorHeap>(device, Descriptors::Count);
 
 #ifdef _DEBUG
-	Display::LogInformation(_Factory.Get(), _SwapChain->BackBufferFormat);
+	Display::LogInformation(factory, _SwapChain->BackBufferFormat);
 #endif
 
 	CloseCommandList(); // The command list must be closed before passing it off to the GPU.
@@ -77,6 +78,8 @@ void DX12Engine::Initialize(HWND window, u16 width, u16 height)
 	SignalFrameAndAdvance();
 
 	OnResize(width, height);
+
+	m_CommandList = _resources.GetCommandList();
 }
 
 void DX12Engine::ResetCommandList()
@@ -91,12 +94,12 @@ void DX12Engine::ResetCommandList()
 void DX12Engine::ExecuteCommandLists()
 {
 	ID3D12CommandList* cmdsLists[] = { m_CommandList.Get() };
-	m_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+	_resources.GetCommandQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 }
 
 void DX12Engine::FlushCommandQueue()
 {
-	_FrameCycle->Flush(m_CommandQueue.Get());
+	_FrameCycle->Flush(_resources.GetCommandQueue());
 }
 
 void DX12Engine::BuildGeometry()
@@ -125,6 +128,8 @@ void DX12Engine::BuildGeometry()
 	//	for (u32 j = 0; j < 3; j++)
 	//		mug.Indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
 
+	auto device = _resources.GetD3DDevice();
+
 	Material woodCrate;
 	woodCrate.Name = "woodCrate";
 	woodCrate.MatCBIndex = 0;
@@ -138,21 +143,21 @@ void DX12Engine::BuildGeometry()
 	tex.Name = "fenceTex";
 	tex.Filename = L"Textures\\bricks3.dds";
 
-	ResourceUploadBatch resourceUpload(_Device.Get());
+	ResourceUploadBatch resourceUpload(device);
 
 	resourceUpload.Begin();
 
 	CreateDDSTextureFromFile(
-		_Device.Get(),
+		device,
 		resourceUpload,
 		tex.Filename.c_str(), 
 		tex.Resource.GetAddressOf()
 	);
 
-	resourceUpload.End(m_CommandQueue.Get());
+	resourceUpload.End(_resources.GetCommandQueue());
 
 	CreateShaderResourceView(
-		_Device.Get(),
+		device,
 		tex.Resource.Get(),
 		_resourceDescriptors->GetCpuHandle(Descriptors::BrickTexture)
 	);
@@ -183,7 +188,7 @@ void DX12Engine::BuildGeometry()
 	}
 	*/
 
-	_Objects = std::make_unique<RenderObjects>(staticMeshes, dynamicMeshes, objs, _Device.Get(), m_CommandList.Get());
+	_Objects = std::make_unique<RenderObjects>(staticMeshes, dynamicMeshes, objs, device, m_CommandList.Get());
 }
 
 void DX12Engine::ShowFrameStats(milliseconds& dt)
@@ -226,7 +231,9 @@ void DX12Engine::BuildPipelineStateObject()
 	psoDesc.RTVFormats[0] = _SwapChain->BackBufferFormat;
 	psoDesc.SampleDesc = { 1, 0 };
 	psoDesc.DSVFormat = _DepthStencil->depthStencilFormat;
-	ThrowIfFailed(_Device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSO)));
+
+	auto device = _resources.GetD3DDevice();
+	ThrowIfFailed(device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSO)));
 }
 
 void DX12Engine::SetCameraPosition(CameraPosition3D pos)
@@ -288,7 +295,8 @@ void DX12Engine::OnDraw()
 	ResetCommandList();
 
 	// Indicate a state transition on the resource usage.
-	m_CommandList->ResourceBarrier(1, _SwapChain->GetRenderTransition());
+	auto t1 = _SwapChain->GetRenderTransition();
+	m_CommandList->ResourceBarrier(1, &t1);
 
 	m_CommandList->RSSetViewports(1, &_ScreenViewport);
 	m_CommandList->RSSetScissorRects(1, &_ScissorRect);
@@ -337,7 +345,8 @@ void DX12Engine::OnDraw()
 	m_CommandList->SetGraphicsRootConstantBufferView(2, currFrameRes->_PassCB.GetBufferView().BufferLocation);
 
 	// Indicate a state transition on the resource usage.
-	m_CommandList->ResourceBarrier(1, _SwapChain->GetPresentTransition());
+	auto t2 = _SwapChain->GetPresentTransition();
+	m_CommandList->ResourceBarrier(1, &t2);
 
 	CloseCommandList();
 	ExecuteCommandLists();
@@ -358,9 +367,11 @@ void DX12Engine::OnResize(u16 width, u16 height)
 		LOG_FATAL("Called OnResize before graphics engine was ready");
 	ASSERT(width != NULL && height != NULL);
 
+	auto device = _resources.GetD3DDevice();
+
 	// Release the previous resources we will be recreating.
-	_SwapChain->Resize(_Device.Get(), width, height);
-	_DepthStencil->Resize(_Device.Get(), width, height);
+	_SwapChain->Resize(device, width, height);
+	_DepthStencil->Resize(device, width, height);
 
 	ResetCommandList();
 
@@ -378,7 +389,7 @@ void DX12Engine::OnResize(u16 width, u16 height)
 
 void DX12Engine::SignalFrameAndAdvance()
 {
-	_FrameCycle->SignalCurrentFrame(m_CommandQueue.Get());
+	_FrameCycle->SignalCurrentFrame(_resources.GetCommandQueue());
 	_FrameCycle->Advance();
 }
 
