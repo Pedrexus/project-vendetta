@@ -15,9 +15,9 @@ u32 GetTotalIndexCount(RenderObjects::MeshMap& meshes)
 	return GetTotalSize(meshes, [] (RenderObjects::MeshMapItem i) { return (u32) i.second->Indices.size(); });
 };
 
-std::vector<Vertex> BuildPackedVertexVector(RenderObjects::MeshMap& meshes)
+std::vector<Mesh::Vertex> BuildPackedVertexVector(RenderObjects::MeshMap& meshes)
 {
-	std::vector<Vertex> vertices;
+	std::vector<Mesh::Vertex> vertices;
 	vertices.reserve(GetTotalVertexCount(meshes));
 
 	for (auto& [_, mesh] : meshes)
@@ -30,16 +30,15 @@ std::vector<Vertex> BuildPackedVertexVector(RenderObjects::MeshMap& meshes)
 	return vertices;
 }
 
-std::vector<u64> BuildPackedIndexVector(RenderObjects::MeshMap& meshes)
+std::vector<Mesh::Index> BuildPackedIndexVector(RenderObjects::MeshMap& meshes)
 {
-	std::vector<u64> indices;
+	std::vector<Mesh::Index> indices;
 	indices.reserve(GetTotalIndexCount(meshes));
 
 	for (auto& [_, mesh] : meshes)
 	{
-		auto meshIndices = mesh->GetIndices<u64>();
-		auto begin = std::make_move_iterator(meshIndices.begin());
-		auto end = std::make_move_iterator(meshIndices.end());
+		auto begin = std::make_move_iterator(mesh->Indices.begin());
+		auto end = std::make_move_iterator(mesh->Indices.end());
 		indices.insert(indices.end(), begin, end);
 	}
 

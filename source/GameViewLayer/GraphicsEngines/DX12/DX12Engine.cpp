@@ -148,7 +148,8 @@ void DX12Engine::BuildGeometry()
 		_resourceDescriptors->GetCpuHandle(Descriptors::BrickTexture)
 	);
 
-	auto m = Geometry::CreateBox(4, 4, 4);
+	Mesh m;
+	GeometricPrimitive::CreateBox(m.Vertices, m.Indices, { 3, 3, 3 }, false);
 
 	// auto m = GeometricPrimitive::CreateBox({ 3, 3, 3 });
 
@@ -202,7 +203,7 @@ void DX12Engine::BuildPipelineStateObject()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
 	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = Vertex::SpecifyInputLayout();
+	psoDesc.InputLayout = Mesh::Vertex::InputLayout;
 	psoDesc.pRootSignature = _RootSignature->Get();
 	psoDesc.VS = _Shaders->GetVSByteCode();
 	psoDesc.PS = _Shaders->GetPSByteCode();

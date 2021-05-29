@@ -17,5 +17,5 @@ namespace Geometry
     }
 
     void Subdivide(Mesh& data);
-    Vertex CreateMidpoint(const Vertex& v0, const Vertex& v1);
+    Mesh::Vertex CreateMidpoint(const Mesh::Vertex& v0, const Mesh::Vertex& v1);
 }

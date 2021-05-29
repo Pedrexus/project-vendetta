@@ -6,10 +6,8 @@
 
 class DynamicMeshBuffer : public IMeshBuffer
 {
-	using Index = u16;
-
-	using VertexBufferGPU = DynamicBuffer<Vertex>;
-	using IndexBufferGPU = DynamicBuffer<Index>;
+	using VertexBufferGPU = DynamicBuffer<Mesh::Vertex>;
+	using IndexBufferGPU = DynamicBuffer<Mesh::Index>;
 
 	VertexBufferGPU _VB;
 	IndexBufferGPU _IB;
@@ -37,7 +35,7 @@ public:
 	void Update(const Mesh* mesh)
 	{
 		_VB.Upload(mesh->Vertices.data());
-		_IB.Upload(mesh->GetIndices<Index>().data());
+		_IB.Upload(mesh->Indices.data());
 	}
 
 	D3D12_VERTEX_BUFFER_VIEW GetVertexBufferView() const override { 

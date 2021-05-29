@@ -40,9 +40,9 @@ cbuffer cbMaterial : register(b2)
 
 struct VertexIn
 {
-    float3 PosL : POSITION;
+    float3 PosL : SV_POSITION;
     float3 Normal : NORMAL;
-    float2 Texture : TEXCOORD;
+    float2 Texture : TEXCOORD0;
     // float4 Color : COLOR;
 };
 

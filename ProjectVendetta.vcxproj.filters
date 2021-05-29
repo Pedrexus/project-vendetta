@@ -176,7 +176,6 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameCycle.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameResource.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\RenderItem.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometry.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\RenderObjects.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\InputAssembler\DynamicMeshBuffer.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\InputAssembler\IMeshBuffer.h" />
@@ -185,7 +184,6 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Buffers\DynamicBuffer.h" />
     <ClInclude Include="Source\Helpers\Settings\Settings.h" />
     <ClInclude Include="Source\Helpers\Concurrency\Asynchronous.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Vertex.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsElements\Mesh.h" />
     <ClInclude Include="Source\Helpers\Concepts\concepts.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsElements\Material.h" />
@@ -298,12 +296,6 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameCycle.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Frames\FrameResource.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Cylinder.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Box.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Sphere.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Icosahedron.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Geosphere.cpp" />
-    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\Objects\Geometries\Grid.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\InputAssembler\RenderObjects.cpp" />
     <ClCompile Include="Source\dx12pch.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\DeviceResources.cpp" />
