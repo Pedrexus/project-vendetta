@@ -17,6 +17,13 @@
 #include <GameViewLayer/GraphicsElements/Texture.h>
 
 
+DX12Engine::DX12Engine() :
+	_deviceResources(BACK_BUFFER_FORMAT, DEPTH_BUFFER_FORMAT, BACK_BUFFER_COUNT)
+{
+	_deviceResources.RegisterDeviceNotify(this);
+
+	_MSAA.Count = Settings::GetInt("graphics-msaa-count");
+}
 
 
 DX12Engine::~DX12Engine()
@@ -25,7 +32,7 @@ DX12Engine::~DX12Engine()
 		FlushCommandQueue();
 }
 
-void DX12Engine::Initialize()
+void DX12Engine::Initialize(HWND window, u16 width, u16 height)
 {
 #ifdef _DEBUG
 	EnableDebugLayer();
@@ -43,7 +50,7 @@ void DX12Engine::Initialize()
 	_DepthStencil = std::make_unique<DepthStencilManager>(_Device.Get());
 
 	_RootSignature = std::make_unique<RootSignature>(_Device.Get(), 3); // TODO: set this in a define I think
-	_Shaders = std::make_unique<HLSLShaders>((wchar_t*)Settings::Get("graphics-shader-entypoint"), nullptr);
+	_Shaders = std::make_unique<HLSLShaders>((wchar_t*)Settings::Get("graphics-shader-entrypoint"), nullptr);
 	_FrameCycle = std::make_unique<FrameCycle>(_Device.Get(), 30, 3); // TODO: this should come from somewhere else
 
 	Command::CreateList(_Device.Get(), _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
@@ -68,6 +75,8 @@ void DX12Engine::Initialize()
 	CloseCommandList();
 	ExecuteCommandLists();
 	SignalFrameAndAdvance();
+
+	OnResize(width, height);
 }
 
 void DX12Engine::ResetCommandList()
@@ -343,7 +352,7 @@ void DX12Engine::CloseCommandList()
 	ThrowIfFailed(m_CommandList->Close());
 }
 
-void DX12Engine::OnResize(u32 width, u32 height)
+void DX12Engine::OnResize(u16 width, u16 height)
 {
 	if (!IsReady())
 		LOG_FATAL("Called OnResize before graphics engine was ready");
@@ -371,4 +380,20 @@ void DX12Engine::SignalFrameAndAdvance()
 {
 	_FrameCycle->SignalCurrentFrame(m_CommandQueue.Get());
 	_FrameCycle->Advance();
+}
+
+void DX12Engine::OnDeviceLost()
+{
+	_resourceDescriptors.reset();
+	_graphicsMemory.reset();
+
+	_Camera.reset();
+}
+
+void DX12Engine::OnDeviceRestored()
+{
+	throw std::exception("not ready");
+	// TODO
+	// CreateDeviceDependentResources();
+	// CreateWindowSizeDependentResources();
 }

@@ -21,7 +21,19 @@
 #include "Helpers/Descriptors/GeneralResource.h"
 
 
-class DX12Engine : public IGraphicsEngine
+namespace // engine constants
+{
+	static constexpr auto BACK_BUFFER_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+	static constexpr auto BACK_BUFFER_COUNT = 2; // == # frame resources / canvas to draw
+
+	static constexpr auto DEPTH_BUFFER_FORMAT = DXGI_FORMAT_D32_FLOAT;
+	static constexpr auto MSAA_DEPTH_BUFFER_FORMAT = DXGI_FORMAT_UNKNOWN; /* If we were only doing MSAA rendering, we could skip the non-MSAA depth/stencil buffer with DXGI_FORMAT_UNKNOWN */
+
+	static constexpr u32 TARGET_SAMPLE_COUNT = 4;
+}
+
+
+class DX12Engine : public IGraphicsEngine, public DX::IDeviceNotify
 {
 	DX::DeviceResources _deviceResources;
 
@@ -57,13 +69,14 @@ class DX12Engine : public IGraphicsEngine
 	};
 
 public:
-	DX12Engine() = default;
-	DX12Engine(const DX12Engine& rhs) = delete;
-	DX12Engine& operator=(const DX12Engine& rhs) = delete;
+	DX12Engine();
 	~DX12Engine();
 
-public:
-	void Initialize() override;
+	void Initialize(HWND window, u16 width, u16 height) override;
+
+	// IDeviceNotify
+	void OnDeviceLost() override;
+	void OnDeviceRestored() override;
 
 private:
 	void BuildPipelineStateObject();
@@ -83,5 +96,11 @@ public:
 	void SetCameraPosition(CameraPosition3D pos) override;
 	void OnUpdate(milliseconds dt) override;
 	void OnDraw() override;
-	void OnResize(u32 width = NULL, u32 height = NULL) override;
+	void OnResize(u16 width = NULL, u16 height = NULL) override;
+
+	// no copy, no move
+	DX12Engine(DX12Engine& rhs) = delete;
+	DX12Engine(const DX12Engine& rhs) = delete;
+	DX12Engine& operator=(DX12Engine& rhs) = delete;
+	DX12Engine& operator=(const DX12Engine& rhs) = delete;
 };

@@ -31,6 +31,10 @@
 #include <DirectXTK12/GeometricPrimitive.h>
 #include <DirectXTK12/ResourceUploadBatch.h>
 
+#include <DirectXTK12/Effects.h>
+#include <DirectXTK12/EffectPipelineStateDescription.h>
+#include <DirectXTK12/CommonStates.h>
+
 using namespace DX;
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

@@ -21,8 +21,9 @@ HumanView::~HumanView()
 void HumanView::Initialize()
 {
 	m_windowManager->Initialize();
-	m_graphicsEngine->Initialize();
-	OnResize();
+
+	auto [width, height] = m_windowManager->GetDimensions();
+	m_graphicsEngine->Initialize(m_windowManager->GetMainWnd(), width, height);
 }
 
 void HumanView::OnUpdate(milliseconds dt)
