@@ -25,6 +25,7 @@
 #include <DirectXPackedVector.h>
 
 // DirectX Tool Kit 12
+#include <DirectXTK12/Model.h>
 #include <DirectXTK12/SimpleMath.h>
 #include <DirectXTK12/CommonStates.h>
 #include <DirectXTK12/BufferHelpers.h>

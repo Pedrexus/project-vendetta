@@ -171,6 +171,9 @@ void DX12Engine::CreateDeviceDependentResources()
 	ResourceUploadBatch resourceUpload(device);
 	resourceUpload.Begin();
 
+	/*auto box = GeometricPrimitive::CreateBox({ 4, 4, 4 });
+	box->LoadStaticBuffers(device, resourceUpload);*/
+
 	// Create vertex buffer.
 	{
 		DX::ThrowIfFailed(

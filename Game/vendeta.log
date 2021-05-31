@@ -14,7 +14,4 @@ Line: 30
 Function: Game::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
 Line: 17
-[INFO] Game shutdown
-Function: Game::Shutdown
-Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
-Line: 28
+[INFO] Logger destroyed
