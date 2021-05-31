@@ -1,194 +1,247 @@
 #include "DX12Engine.h"
 
-#include "Helpers/DX12Debug.h"
-#include "Helpers/DX12DXGI.h"
-#include "Helpers/DX12Device.h"
-#include "Helpers/DX12MSAA.h"
-#include "Helpers/DX12Command.h"
-#include "Helpers/DX12Window.h"
-
-#include <GameLogicLayer/Game.h>
-
-#include <vector>
-#include <assimp/Importer.hpp> 
-#include <assimp/scene.h>      
-#include <assimp/postprocess.h>
-#include <GameViewLayer/GraphicsElements/Material.h>
-#include <GameViewLayer/GraphicsElements/Texture.h>
-
+#include "Common/Pix.h"
+#include <GameViewLayer/GraphicsEngines/DX12/Helpers/Shaders/HLSLShaders.h>
 
 DX12Engine::DX12Engine() :
-	_resources(BACK_BUFFER_FORMAT, DEPTH_BUFFER_FORMAT, BACK_BUFFER_COUNT)
+	_camera(),
+	_resources(BACK_BUFFER_FORMAT, DEPTH_BUFFER_FORMAT, BACK_BUFFER_COUNT, D3D_FEATURE_LEVEL_11_0, DX::DeviceResources::c_AllowTearing)
 {
 	_resources.RegisterDeviceNotify(this);
-
-	_MSAA.Count = Settings::GetInt("graphics-msaa-count");
 }
-
 
 DX12Engine::~DX12Engine()
 {
-	if (IsReady())
-		FlushCommandQueue();
+	_resources.WaitForGpu();
 }
 
+
+// Initialize the Direct3D resources required to run.
 void DX12Engine::Initialize(HWND window, u16 width, u16 height)
 {
-#ifdef _DEBUG
-	EnableDebugLayer();
-#endif
-
+	_camera.Resize(width, height);
 	_resources.SetWindow(window, width, height);
-	_resources.CreateDeviceResources();
-	// _resources.CreateWindowSizeDependentResources();
 
-	auto factory = _resources.GetDXGIFactory();
-	auto device = _resources.GetD3DDevice(); 
+	_resources.CreateDeviceResources();
+	CreateDeviceDependentResources();
+
+	_resources.CreateWindowSizeDependentResources();
+	CreateWindowSizeDependentResources();
+
+	_resources.WaitForGpu();
+}
+
+// TODO: update to use step_timer class
+void DX12Engine::OnUpdate(milliseconds dt)
+{
+	PixEvent e(DirectX::Colors::AliceBlue, L"Update");
+
+	static milliseconds t = 0;
+	t += dt / 1000.0f;
+
+	ShowFrameStats(dt);
+
+	auto i = _resources.GetCurrentFrameIndex();
+
+	// render pass
+	{
+		PassConstants pc = { _camera.GetViewProj() };
+		auto& rpr = m_renderPassResource[i];
+		memcpy(rpr.Memory(), &pc, rpr.Size());
+	}
+
+	// object constants
+	/*{
+		ObjectConstants oc = { Matrix::CreateRotationZ(t) * Matrix::CreateRotationX(t) };
+		auto& res = m_constantBufferResource[i];
+		memcpy(res.Memory(), &oc, res.Size());
+	}*/
+}
+
+
+#pragma region Frame Render
+// Draws the scene.
+void DX12Engine::OnDraw()
+{
+	// Prepare the command list to render a new frame.
+	_resources.Prepare();
+	_resources.Clear(Colors::DimGray);
+
+	auto i = _resources.GetCurrentFrameIndex();
+	auto commandList = _resources.GetCommandList();
+
+	// render the mesh
+	{
+		PixEvent pixRender(DirectX::Colors::Crimson, L"Render");
+
+		commandList->SetGraphicsRootSignature(_rootSignature.Get());
+		commandList->SetPipelineState(_pipelineState.Get());
+
+		ID3D12DescriptorHeap* descriptorHeaps[] = { _descriptors->Heap(), };
+		commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
+		// Set necessary state.
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
+		commandList->IASetIndexBuffer(&m_indexBufferView);
+
+		commandList->SetGraphicsRootConstantBufferView(RootParameterIndex::PassConstant, m_renderPassResource[i].GpuAddress());
+		commandList->SetGraphicsRootConstantBufferView(RootParameterIndex::ObjectConstant, m_constantBufferResource[i].GpuAddress());
+		commandList->SetGraphicsRootDescriptorTable(RootParameterIndex::TextureSRV, _descriptors->GetGpuHandle(Descriptors::BrickTexture));
+
+		// Draw
+		commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+	}
+
 	auto cmdQueue = _resources.GetCommandQueue();
 
-	_SwapChain = std::make_unique<SwapChainManager>(factory, device, cmdQueue);
-	_DepthStencil = std::make_unique<DepthStencilManager>(device);
+	// Show the new frame.
+	{
+		PixEvent pixPresent(cmdQueue, DirectX::Colors::Teal, L"Present");
 
-	_RootSignature = std::make_unique<RootSignature>(device, 3); // TODO: set this in a define I think
-	_Shaders = std::make_unique<HLSLShaders>((wchar_t*)Settings::Get("graphics-shader-entrypoint"), nullptr);
-	_FrameCycle = std::make_unique<FrameCycle>(device, 30, 3); // TODO: this should come from somewhere else
-	_Camera = std::make_unique<Camera>();
+		_resources.Present();
+		_graphicsMemory->Commit(cmdQueue);
+	}
 
-	Command::CreateList(device, _FrameCycle->GetCurrentFrameAllocatorWhenAvailable(), m_CommandList.GetAddressOf());
-	m_CommandList->SetName(L"Main");
+}
+#pragma endregion
 
-	_MSAA = MSAA::Check(device, _SwapChain->BackBufferFormat, _MSAA.Count, _MSAA.Quality);
-	LOG_INFO(fmt::format("Using MSAA with {} samples and {} quality levels", _MSAA.Count, _MSAA.Quality));
-
-	// DirectX Tool Kit 12
-	_resourceDescriptors = std::make_unique<DescriptorHeap>(device, Descriptors::Count);
-
-#ifdef _DEBUG
-	Display::LogInformation(factory, _SwapChain->BackBufferFormat);
-#endif
-
-	CloseCommandList(); // The command list must be closed before passing it off to the GPU.
-	ResetCommandList(); // Reset the command list to prep for initialization commands.
-
-	BuildPipelineStateObject();
-	BuildGeometry();
-
-	CloseCommandList();
-	ExecuteCommandLists();
-	SignalFrameAndAdvance();
-
-	OnResize(width, height);
-
-	m_CommandList = _resources.GetCommandList();
+void DX12Engine::OnResize(u16 width, u16 height)
+{
+	_camera.Resize(width, height);
+	_resources.WindowSizeChanged(width, height);
 }
 
-void DX12Engine::ResetCommandList()
+#pragma region Direct3D Resources
+// Allocate all memory resources that change on a window SizeChanged event.
+
+void DX12Engine::CreateDeviceDependentResources()
 {
-	auto cmdListAlloc = _FrameCycle->GetCurrentFrameAllocatorWhenAvailable();
-
-	ThrowIfFailed(cmdListAlloc->Reset());
-
-	ThrowIfFailed(m_CommandList->Reset(cmdListAlloc, nullptr));
-}
-
-void DX12Engine::ExecuteCommandLists()
-{
-	ID3D12CommandList* cmdsLists[] = { m_CommandList.Get() };
-	_resources.GetCommandQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-}
-
-void DX12Engine::FlushCommandQueue()
-{
-	_FrameCycle->Flush(_resources.GetCommandQueue());
-}
-
-void DX12Engine::BuildGeometry()
-{
-	// TODO: after learning materials and lights, make a proper importer in the GameApp resource loader
-	//Assimp::Importer importer;
-
-	//const aiScene* scene = importer.ReadFile("mug.dae",
-	//	aiProcess_Triangulate |
-	//	aiProcess_JoinIdenticalVertices |
-	//	aiProcess_SortByPType
-	//	// aiProcess_MakeLeftHanded
-	//);
-
-	//if (!scene)
-	//	LOG_ERROR(importer.GetErrorString());
-
-	//Mesh mug = {};
-
-	//mug.Vertices.resize(scene->mMeshes[0]->mNumVertices);
-	//auto vBegin = std::make_move_iterator(scene->mMeshes[0]->mVertices);
-	//auto vEnd = std::make_move_iterator(scene->mMeshes[0]->mVertices + scene->mMeshes[0]->mNumVertices);
-	//std::transform(vBegin, vEnd, mug.Vertices.begin(), [] (aiVector3D v) { return Vertex(v); });
-
-	//for (u32 i = 0; i < scene->mMeshes[0]->mNumFaces; i++)
-	//	for (u32 j = 0; j < 3; j++)
-	//		mug.Indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
-
 	auto device = _resources.GetD3DDevice();
 
-	Material woodCrate;
-	woodCrate.Name = "woodCrate";
-	woodCrate.MatCBIndex = 0;
-	woodCrate.DiffuseSRVHeapIndex = 0;
-	woodCrate.DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	woodCrate.FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);
-	woodCrate.Roughness = 0.2f;
-	XMStoreFloat4x4(&woodCrate.Transform, XMMatrixIdentity());
+	_graphicsMemory = std::make_unique<DirectX::GraphicsMemory>(device);
+	_descriptors = std::make_unique<DirectX::DescriptorHeap>(device, Descriptors::Count);
 
-	Texture tex;
-	tex.Name = "fenceTex";
-	tex.Filename = L"Textures\\bricks3.dds";
+	// Create an 1 buffer root signature.
+	{
+		D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
+			D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
+
+		CD3DX12_ROOT_PARAMETER slotRootParameters[RootParameterIndex::RootParameterCount] = {};
+		slotRootParameters[RootParameterIndex::PassConstant].InitAsConstantBufferView(0);
+		slotRootParameters[RootParameterIndex::ObjectConstant].InitAsConstantBufferView(1);
+
+		// textures (t0, ..., tn)
+		CD3DX12_DESCRIPTOR_RANGE textureSRV(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+		slotRootParameters[RootParameterIndex::TextureSRV].InitAsDescriptorTable(1, &textureSRV, D3D12_SHADER_VISIBILITY_PIXEL);
+
+		D3D12_STATIC_SAMPLER_DESC samplers[2] = { CommonStates::StaticLinearClamp(0), CommonStates::StaticAnisotropicWrap(1) };
+
+		CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(
+			RootParameterIndex::RootParameterCount, slotRootParameters, _countof(samplers), samplers, rootSignatureFlags
+		);
+
+		DX::ThrowIfFailed(
+			CreateRootSignature(device, &rootSignatureDesc, _rootSignature.ReleaseAndGetAddressOf())
+		);
+	}
+
+	RenderTargetState rtState(_resources.GetBackBufferFormat(), _resources.GetDepthBufferFormat());
+
+	EffectPipelineStateDescription pd(
+		&GeometricPrimitive::VertexType::InputLayout,
+		CommonStates::Opaque,
+		CommonStates::DepthDefault,
+		CommonStates::CullCounterClockwise,
+		rtState);
+
+	HLSLShaders shaders((LPWSTR) Settings::Get("graphics-shader-entrypoint"), nullptr);
+
+	pd.CreatePipelineState(
+		device, _rootSignature.Get(), shaders.GetVSByteCode(), shaders.GetPSByteCode(), &_pipelineState
+	);
+
+	std::vector<GeometricPrimitive::VertexType> vertices;
+	std::vector<UINT16> indices;
+	GeometricPrimitive::CreateBox(vertices, indices, { 4, 4, 4 });
 
 	ResourceUploadBatch resourceUpload(device);
-
 	resourceUpload.Begin();
 
-	CreateDDSTextureFromFile(
-		device,
-		resourceUpload,
-		tex.Filename.c_str(), 
-		tex.Resource.GetAddressOf()
-	);
+	// Create vertex buffer.
+	{
+		DX::ThrowIfFailed(
+			CreateStaticBuffer(device, resourceUpload, vertices, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_vertexBuffer)
+		);
+
+		// Initialize the vertex buffer view.
+		m_vertexBufferView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
+		m_vertexBufferView.StrideInBytes = sizeof(GeometricPrimitive::VertexType);
+		m_vertexBufferView.SizeInBytes = vertices.size() * sizeof(GeometricPrimitive::VertexType);
+	}
+
+	// Create index buffer.
+	{
+		DX::ThrowIfFailed(
+			CreateStaticBuffer(device, resourceUpload, indices, D3D12_RESOURCE_STATE_INDEX_BUFFER, &m_indexBuffer)
+		);
+
+		// Initialize the vertex buffer view.
+		m_indexBufferView.BufferLocation = m_indexBuffer->GetGPUVirtualAddress();
+		m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
+		m_indexBufferView.SizeInBytes = indices.size() * sizeof(UINT16);
+	}
+
+	// create cbuffer
+	{
+		PassConstants pc = { _camera.GetViewProj() };
+		for (auto i = 0; i < _resources.GetBackBufferCount(); i++)
+			m_renderPassResource.push_back(std::move(_graphicsMemory->AllocateConstant(pc)));
+
+
+		ObjectConstants oc = { Matrix::Identity };
+		for (auto i = 0; i < _resources.GetBackBufferCount(); i++)
+			m_constantBufferResource.push_back(std::move(_graphicsMemory->AllocateConstant(oc)));
+	}
+
+	// create texture
+	{
+		auto filename = L"Textures\\bricks3.dds";
+
+		CreateDDSTextureFromFile(device, resourceUpload, filename,
+			m_textureResource.ReleaseAndGetAddressOf()
+		);
+
+		CreateShaderResourceView(device, m_textureResource.Get(),
+			_descriptors->GetCpuHandle(Descriptors::BrickTexture)
+		);
+	}
 
 	resourceUpload.End(_resources.GetCommandQueue());
+}
 
-	CreateShaderResourceView(
-		device,
-		tex.Resource.Get(),
-		_resourceDescriptors->GetCpuHandle(Descriptors::BrickTexture)
-	);
+void DX12Engine::CreateWindowSizeDependentResources() {}
 
-	Mesh m;
-	GeometricPrimitive::CreateBox(m.Vertices, m.Indices, { 4, 4, 4 });
+void DX12Engine::OnDeviceLost()
+{
+	_descriptors.reset();
+	_graphicsMemory.reset();
+}
 
-	// auto m = GeometricPrimitive::CreateBox({ 3, 3, 3 });
+void DX12Engine::OnDeviceRestored()
+{
+	CreateDeviceDependentResources();
+	CreateWindowSizeDependentResources();
+}
+#pragma endregion
 
-	RenderObjects::MeshMap staticMeshes = {
-		{ "m", &m }, // TODO: fix empty static mesh breaking
-	};
-
-	RenderObjects::MeshMap dynamicMeshes = {
-		// { "sphere", &_Sphere }
-	};
-
-	RenderObjects::Objects objs = {
-		{ "m", XMMatrixIdentity(), XMMatrixIdentity(), woodCrate, tex },
-	};
-
-	/*
-	TODO: instead of passing three objects, try something like this
-	
-	auto origin = XMMatrixIdentity();
-	auto x = {
-		{ "box", &origin, &box, &material, &texture },
-	}
-	*/
-
-	_Objects = std::make_unique<RenderObjects>(staticMeshes, dynamicMeshes, objs, device, m_CommandList.Get());
+#pragma region Extras
+void DX12Engine::SetCameraPosition(CameraPosition3D pos)
+{
+	_camera.UpdateCameraView(pos);
 }
 
 void DX12Engine::ShowFrameStats(milliseconds& dt)
@@ -196,7 +249,8 @@ void DX12Engine::ShowFrameStats(milliseconds& dt)
 	static auto presentCount = 0;
 	static f64 elapsedTimeSinceLastWrite = 0;
 
-	auto stats = _SwapChain->GetFrameStatistics();
+	DXGI_FRAME_STATISTICS stats;
+	_resources.GetSwapChain()->GetFrameStatistics(&stats);
 
 	elapsedTimeSinceLastWrite += dt;
 	if (elapsedTimeSinceLastWrite >= 2000)
@@ -205,207 +259,11 @@ void DX12Engine::ShowFrameStats(milliseconds& dt)
 		auto mspf = 1.0f / fpms;
 
 		// TODO: - camera: ({:.2f}, {:.2f}, {:.2f})
-		auto windowText = fmt::format(L"fps: {:.0f} mspf: {:.2f}", 1000.0f * fpms, mspf);
-		SetWindowText(Game::Get()->GetWindow()->GetMainWnd(), windowText.c_str());
+		auto windowText = std::format(L"fps: {:.0f} mspf: {:.2f}", 1000.0f * fpms, mspf);
+		SetWindowText(_resources.GetWindow(), windowText.c_str());
 
 		elapsedTimeSinceLastWrite = 0;
 		presentCount = stats.PresentCount;
 	}
 }
-
-void DX12Engine::BuildPipelineStateObject()
-{
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
-	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = Mesh::Vertex::InputLayout;
-	psoDesc.pRootSignature = _RootSignature->Get();
-	psoDesc.VS = _Shaders->GetVSByteCode();
-	psoDesc.PS = _Shaders->GetPSByteCode();
-	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	// psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
-	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	psoDesc.SampleMask = UINT32_MAX;
-	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	psoDesc.NumRenderTargets = 1;
-	psoDesc.RTVFormats[0] = _SwapChain->BackBufferFormat;
-	psoDesc.SampleDesc = { 1, 0 };
-	psoDesc.DSVFormat = _DepthStencil->depthStencilFormat;
-
-	auto device = _resources.GetD3DDevice();
-	ThrowIfFailed(device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&m_PSO)));
-}
-
-void DX12Engine::SetCameraPosition(CameraPosition3D pos)
-{
-	_Camera->UpdateCameraView(pos);
-}
-
-void DX12Engine::OnUpdate(milliseconds dt)
-{
-	static milliseconds t = 0;
-	t += dt / 1000.0f;
-
-	ShowFrameStats(dt);
-
-	auto currFrameRes = _FrameCycle->GetCurrentFrameResource();
-
-	currFrameRes->UpdateMainPassConstantBuffers({ 
-		_Camera->GetViewProj(), 
-		_Camera->GetEyePosition(), 
-		static_cast<f32>(t),
-		static_cast<f32>(dt),
-	});
-
-	// update render items and materials
-
-	auto& items = _Objects->items();
-	for (auto i = 0; i < items.size(); i++)
-	{
-		auto& obj = items[i];
-		if (obj.IsDirty())
-		{
-			currFrameRes->UpdateObjectConstantBuffers(i, { obj.World, obj.TexTransform });
-			obj.Clean();
-		}
-
-		if (obj.Material->IsDirty())
-		{
-			currFrameRes->UpdateMaterialConstantBuffers(obj.Material->MatCBIndex, obj.Material->GetConstants());
-			obj.Material->Clean();
-		}
-	}
-
-	// auto newMesh = wavesActor.Update(dt);
-	
-	/*auto dp = sin(10 * t);
-	Mesh newMesh = _Sphere;
-	for (auto& v : newMesh.Vertices)
-	{
-		auto newPos = XMLoadFloat3(&v.Position) + XMVectorSet(0, dp, 0, 0);
-		XMStoreFloat3(&v.Position, newPos);
-	}
-
-	_Objects->UpdateMesh("sphere", currFrameRes->Index, &newMesh);*/
-	
-}
-
-void DX12Engine::OnDraw()
-{
-	ResetCommandList();
-
-	// Indicate a state transition on the resource usage.
-	auto t1 = _SwapChain->GetRenderTransition();
-	m_CommandList->ResourceBarrier(1, &t1);
-
-	m_CommandList->RSSetViewports(1, &_ScreenViewport);
-	m_CommandList->RSSetScissorRects(1, &_ScissorRect);
-
-	const auto cbbCPUHandle = _SwapChain->GetCurrentBackBufferCPUHandle();
-	const auto dsCPUHandle = _DepthStencil->GetCPUHandle();
-
-	// Clear the back buffer and depth buffer.
-	m_CommandList->ClearRenderTargetView(cbbCPUHandle, Colors::LightSteelBlue, 0, nullptr);
-	m_CommandList->ClearDepthStencilView(dsCPUHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
-
-	// Specify the buffers we are going to render to.
-	m_CommandList->OMSetRenderTargets(1, &cbbCPUHandle, true, &dsCPUHandle);
-
-	auto currFrameRes = _FrameCycle->GetCurrentFrameResource();
-
-	ID3D12DescriptorHeap* descriptorHeaps[] = { _resourceDescriptors->Heap(), };
-	m_CommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
-
-	m_CommandList->SetGraphicsRootSignature(_RootSignature->Get());
-	m_CommandList->SetPipelineState(m_PSO.Get());
-
-	auto objCBV = currFrameRes->_ObjectCB.GetBufferView();
-	auto matCBV = currFrameRes->_MaterialCB.GetBufferView();
-	for (auto& obj : _Objects->items())
-	{
-		auto vbv = obj.GetVertexBufferView();
-		m_CommandList->IASetVertexBuffers(0, 1, &vbv);
-
-		auto ibv = obj.GetIndexBufferView();
-		m_CommandList->IASetIndexBuffer(&ibv);
-
-		m_CommandList->IASetPrimitiveTopology(obj.PrimitiveType);
-
-		// tex.Offset(ri->Mat->DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);
-		m_CommandList->SetGraphicsRootDescriptorTable(0, _resourceDescriptors->GetGpuHandle(Descriptors::BrickTexture));
-
-		// this sets the world matrix in the cbuffer
-		m_CommandList->SetGraphicsRootConstantBufferView(1, objCBV.BufferLocation);
-		objCBV.BufferLocation += objCBV.ElementByteSize;
-
-		m_CommandList->SetGraphicsRootConstantBufferView(3, matCBV.BufferLocation + (u64) obj.Material->MatCBIndex * matCBV.ElementByteSize);
-
-		m_CommandList->DrawIndexedInstanced(obj.Submesh.IndexCount, 1, obj.Submesh.StartIndexLocation, obj.Submesh.BaseVertexLocation, 0);
-	}
-
-	m_CommandList->SetGraphicsRootConstantBufferView(2, currFrameRes->_PassCB.GetBufferView().BufferLocation);
-
-	// Indicate a state transition on the resource usage.
-	auto t2 = _SwapChain->GetPresentTransition();
-	m_CommandList->ResourceBarrier(1, &t2);
-
-	CloseCommandList();
-	ExecuteCommandLists();
-
-	_SwapChain->Present();
-
-	SignalFrameAndAdvance();
-}
-
-void DX12Engine::CloseCommandList()
-{
-	ThrowIfFailed(m_CommandList->Close());
-}
-
-void DX12Engine::OnResize(u16 width, u16 height)
-{
-	if (!IsReady())
-		LOG_FATAL("Called OnResize before graphics engine was ready");
-	ASSERT(width != NULL && height != NULL);
-
-	auto device = _resources.GetD3DDevice();
-
-	// Release the previous resources we will be recreating.
-	_SwapChain->Resize(device, width, height);
-	_DepthStencil->Resize(device, width, height);
-
-	ResetCommandList();
-
-	m_CommandList->ResourceBarrier(1, _DepthStencil->GetWriteTransition());
-
-	CloseCommandList();
-	ExecuteCommandLists();
-
-	_ScreenViewport = CreateViewport(width, height);
-	_ScissorRect = CreateScissorRectangle(width, height);
-	_Camera->Resize(width, height);
-
-	SignalFrameAndAdvance();
-}
-
-void DX12Engine::SignalFrameAndAdvance()
-{
-	_FrameCycle->SignalCurrentFrame(_resources.GetCommandQueue());
-	_FrameCycle->Advance();
-}
-
-void DX12Engine::OnDeviceLost()
-{
-	_resourceDescriptors.reset();
-	_graphicsMemory.reset();
-
-	_Camera.reset();
-}
-
-void DX12Engine::OnDeviceRestored()
-{
-	throw std::exception("not ready");
-	// TODO
-	// CreateDeviceDependentResources();
-	// CreateWindowSizeDependentResources();
-}
+#pragma endregion

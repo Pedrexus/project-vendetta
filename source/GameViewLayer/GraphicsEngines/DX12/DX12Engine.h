@@ -1,99 +1,98 @@
 #pragma once
 
 #include <types.h>
-#include <dx12pch.h>
+
+#include <Helpers/Settings/Settings.h>
 
 #include "Common/DeviceResources.h"
-
+#include "Helpers/Camera/Camera.h"
 
 #include "../IGraphicsEngine.h"
-
-#include "Helpers/D3D12Fence/FenceManager.h"
-#include "Helpers/DXGISwapChain/SwapChainManager.h"
-#include "Helpers/DX12DepthStencilBuffer/DepthStencilManager.h"
-
-#include "Helpers/Camera/Camera.h"
-#include "Helpers/InputAssembler/RenderObjects.h"
-#include "Helpers/RootSignature/RootSignature.h"
-#include "Helpers/Shaders/HLSLShaders.h"
-#include "Helpers/Frames/FrameCycle.h"
-#include "Helpers/InputAssembler/RenderItem.h"
-#include "Helpers/Descriptors/GeneralResource.h"
 
 
 namespace // engine constants
 {
 	static constexpr auto BACK_BUFFER_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
-	static constexpr auto BACK_BUFFER_COUNT = 3; // == # frame resources / canvas to draw
+	static const auto BACK_BUFFER_COUNT = Settings::GetInt("graphics-frame-resources");
 
-	static constexpr auto DEPTH_BUFFER_FORMAT = DXGI_FORMAT_D32_FLOAT;
+	static constexpr auto DEPTH_BUFFER_FORMAT = DXGI_FORMAT_D24_UNORM_S8_UINT; // DXGI_FORMAT_D32_FLOAT; 
 	static constexpr auto MSAA_DEPTH_BUFFER_FORMAT = DXGI_FORMAT_UNKNOWN; /* If we were only doing MSAA rendering, we could skip the non-MSAA depth/stencil buffer with DXGI_FORMAT_UNKNOWN */
 
-	static constexpr u32 TARGET_SAMPLE_COUNT = 4;
+	static const auto MSAA_SAMPLE_COUNT = Settings::GetInt("graphics-msaa-count");
 }
+
+
+struct alignas(16) PassConstants
+{
+	Matrix viewProj;
+};
+
+struct alignas(16) ObjectConstants
+{
+	Matrix world;
+};
 
 
 class DX12Engine : public IGraphicsEngine, public DX::IDeviceNotify
 {
-	DX::DeviceResources _resources;
+	Camera _camera;
+
+	DX::DeviceResources _resources; // TODO: test if making this a pointer improves performance
 
 	// DirectX Tool Kit 12
-	std::unique_ptr<DescriptorHeap>		_resourceDescriptors;
-	std::unique_ptr<GraphicsMemory>		_graphicsMemory;
-	
-	ComPtr<ID3D12GraphicsCommandList> m_CommandList;
+	std::unique_ptr<DirectX::DescriptorHeap>		_descriptors;
+	std::unique_ptr<DirectX::GraphicsMemory>		_graphicsMemory;
 
-	std::unique_ptr<Camera> _Camera;
-	std::unique_ptr<SwapChainManager> _SwapChain;
-	std::unique_ptr<DepthStencilManager> _DepthStencil;
-	std::unique_ptr<RootSignature> _RootSignature;
-	std::unique_ptr<HLSLShaders> _Shaders;
-	std::unique_ptr<FrameCycle> _FrameCycle;
+	Microsoft::WRL::ComPtr<ID3D12RootSignature>		_rootSignature;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState>		_pipelineState;
 
-	DXGI_SAMPLE_DESC _MSAA = { 4, 0 }; // This is the default - TODO: make it work with count > 1
-	D3D12_VIEWPORT _ScreenViewport;
-	D3D12_RECT _ScissorRect;
+	Microsoft::WRL::ComPtr<ID3D12Resource>			m_vertexBuffer;
+	D3D12_VERTEX_BUFFER_VIEW						m_vertexBufferView;
 
-	// by the book
-	std::unique_ptr<RenderObjects> _Objects;
-	ComPtr<ID3D12PipelineState> m_PSO = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource>			m_indexBuffer;
+	D3D12_INDEX_BUFFER_VIEW							m_indexBufferView;
+
+	std::vector<DirectX::GraphicsResource>			m_renderPassResource;
+	std::vector<DirectX::GraphicsResource>			m_constantBufferResource;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource>			m_textureResource;
+
+	enum RootParameterIndex
+	{
+		PassConstant,
+		ObjectConstant,
+		TextureSRV,
+		// TextureSampler,
+		RootParameterCount
+	};
 
 	enum Descriptors
 	{
 		BrickTexture,
-		Count // the last enum obj is the count of items
+		Count
 	};
 
+protected:
+	void CreateDeviceDependentResources();
+	void CreateWindowSizeDependentResources();
+
 public:
-	DX12Engine();
+	DX12Engine() noexcept(false);
 	~DX12Engine();
 
 	void Initialize(HWND window, u16 width, u16 height) override;
+	inline bool IsReady() override { return _resources.GetD3DDevice() && _resources.GetSwapChain(); };
 
 	// IDeviceNotify
 	void OnDeviceLost() override;
 	void OnDeviceRestored() override;
-
-private:
-	void BuildPipelineStateObject();
-	void BuildGeometry();
-
-	void ShowFrameStats(milliseconds& dt);
-
-protected:
-	void FlushCommandQueue();
-	void ResetCommandList();
-	void CloseCommandList();
-	void ExecuteCommandLists();
-	void SignalFrameAndAdvance();
-
-public:
-	inline bool IsReady() override { return _resources.GetD3DDevice() && _SwapChain->IsReady() && _FrameCycle; };
-	void SetCameraPosition(CameraPosition3D pos) override;
 	void OnUpdate(milliseconds dt) override;
 	void OnDraw() override;
 	void OnResize(u16 width = NULL, u16 height = NULL) override;
 
+	void SetCameraPosition(CameraPosition3D pos) override;
+	void ShowFrameStats(milliseconds& dt);
+	
 	// no copy, no move
 	DX12Engine(DX12Engine& rhs) = delete;
 	DX12Engine(const DX12Engine& rhs) = delete;

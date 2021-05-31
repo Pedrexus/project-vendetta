@@ -14,6 +14,7 @@
 #include <Dependencies/DirectX12/d3dx12.h>
 #include <GameViewLayer/GraphicsEngines/DX12/Common/ThrowIfFailed.h>
 
+#include <pix3.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>
@@ -25,6 +26,8 @@
 
 // DirectX Tool Kit 12
 #include <DirectXTK12/SimpleMath.h>
+#include <DirectXTK12/CommonStates.h>
+#include <DirectXTK12/BufferHelpers.h>
 #include <DirectXTK12/DirectXHelpers.h>
 #include <DirectXTK12/DescriptorHeap.h>
 #include <DirectXTK12/DDSTextureLoader.h>
@@ -33,7 +36,6 @@
 
 #include <DirectXTK12/Effects.h>
 #include <DirectXTK12/EffectPipelineStateDescription.h>
-#include <DirectXTK12/CommonStates.h>
 
 using namespace DX;
 using namespace DirectX;

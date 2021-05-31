@@ -15,10 +15,9 @@ class FrameCycle
 public:
 	FrameCycle(ID3D12Device* device, u32 objectCount, u32 materialCount);
 
-protected:
+public:
 	void SyncFrameResource(u64 frameFence);
 
-public:
 	// Cycle through the circular frame resource array
 	void Advance();
 

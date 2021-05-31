@@ -31,8 +31,8 @@
 		resources-filesize="50"
 		saves-directory="ProjectVendetta"
 		saves-filename=""
-		graphics-shader-entrypoint="Shaders\\main.hlsl"
-		graphics-frame-resources="2"
+		graphics-shader-entrypoint="Shaders\\base.hlsl"
+		graphics-frame-resources="3"
 		graphics-msaa-count="4"
 	/>
 </Settings>

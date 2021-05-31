@@ -1,9 +1,11 @@
-﻿#pragma once
+﻿//
+// DeviceResources.h - A wrapper for the Direct3D 12 device and swapchain
+//
 
-#include <d3d12.h>
-#include <dxgi1_6.h>
-#include <wrl/wrappers/corewrappers.h>
-#include <Dependencies/DirectX12/d3dx12.h>
+#pragma once
+
+#include <dx12pch.h>
+#include <wrl/event.h>
 
 namespace DX
 {
@@ -17,20 +19,18 @@ namespace DX
         ~IDeviceNotify() = default;
     };
 
-
-    // A wrapper for the Direct3D 12 device and swapchain
     // Controls all the DirectX device resources.
     class DeviceResources
     {
     public:
-        static const unsigned int c_AllowTearing    = 0x1;
-        static const unsigned int c_EnableHDR       = 0x2;
+        static const unsigned int c_AllowTearing = 0x1;
+        static const unsigned int c_EnableHDR = 0x2;
 
         DeviceResources(DXGI_FORMAT backBufferFormat = DXGI_FORMAT_B8G8R8A8_UNORM,
-                        DXGI_FORMAT depthBufferFormat = DXGI_FORMAT_D32_FLOAT,
-                        UINT backBufferCount = 2,
-                        D3D_FEATURE_LEVEL minFeatureLevel = D3D_FEATURE_LEVEL_11_0,
-                        unsigned int flags = 0) noexcept(false);
+            DXGI_FORMAT depthBufferFormat = DXGI_FORMAT_D32_FLOAT,
+            UINT backBufferCount = 2,
+            D3D_FEATURE_LEVEL minFeatureLevel = D3D_FEATURE_LEVEL_11_0,
+            unsigned int flags = 0) noexcept(false);
         ~DeviceResources();
 
         void CreateDeviceResources();
@@ -42,14 +42,15 @@ namespace DX
         void Prepare(D3D12_RESOURCE_STATES beforeState = D3D12_RESOURCE_STATE_PRESENT);
         void Present(D3D12_RESOURCE_STATES beforeState = D3D12_RESOURCE_STATE_RENDER_TARGET);
         void WaitForGpu() noexcept;
+        void Clear(XMVECTORF32 backgroundColor);
 
         // Device Accessors.
         RECT GetOutputSize() const { return m_outputSize; }
 
         // Direct3D Accessors.
-        ID3D12Device8*              GetD3DDevice() const            { return m_d3dDevice.Get(); }
-        IDXGISwapChain4*            GetSwapChain() const            { return m_swapChain.Get(); }
-        IDXGIFactory7*              GetDXGIFactory() const          { return m_dxgiFactory.Get(); }
+        ID3D12Device*               GetD3DDevice() const            { return m_d3dDevice.Get(); }
+        IDXGISwapChain3*            GetSwapChain() const            { return m_swapChain.Get(); }
+        IDXGIFactory4*              GetDXGIFactory() const          { return m_dxgiFactory.Get(); }
         D3D_FEATURE_LEVEL           GetDeviceFeatureLevel() const   { return m_d3dFeatureLevel; }
         ID3D12Resource*             GetRenderTarget() const         { return m_renderTargets[m_backBufferIndex].Get(); }
         ID3D12Resource*             GetDepthStencil() const         { return m_depthStencil.Get(); }
@@ -64,6 +65,7 @@ namespace DX
         UINT                        GetBackBufferCount() const      { return m_backBufferCount; }
         DXGI_COLOR_SPACE_TYPE       GetColorSpace() const           { return m_colorSpace; }
         unsigned int                GetDeviceOptions() const        { return m_options; }
+        HWND                        GetWindow() const               { return m_window; }
 
         CD3DX12_CPU_DESCRIPTOR_HANDLE GetRenderTargetView() const
         {
@@ -86,14 +88,14 @@ namespace DX
         UINT                                                m_backBufferIndex;
 
         // Direct3D objects.
-        Microsoft::WRL::ComPtr<ID3D12Device8>               m_d3dDevice;
+        Microsoft::WRL::ComPtr<ID3D12Device>                m_d3dDevice;
         Microsoft::WRL::ComPtr<ID3D12CommandQueue>          m_commandQueue;
         Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>   m_commandList;
         Microsoft::WRL::ComPtr<ID3D12CommandAllocator>      m_commandAllocators[MAX_BACK_BUFFER_COUNT];
 
         // Swap chain objects.
-        Microsoft::WRL::ComPtr<IDXGIFactory7>               m_dxgiFactory;
-        Microsoft::WRL::ComPtr<IDXGISwapChain4>             m_swapChain;
+        Microsoft::WRL::ComPtr<IDXGIFactory4>               m_dxgiFactory;
+        Microsoft::WRL::ComPtr<IDXGISwapChain3>             m_swapChain;
         Microsoft::WRL::ComPtr<ID3D12Resource>              m_renderTargets[MAX_BACK_BUFFER_COUNT];
         Microsoft::WRL::ComPtr<ID3D12Resource>              m_depthStencil;
 
@@ -128,6 +130,6 @@ namespace DX
         unsigned int                                        m_options;
 
         // The IDeviceNotify can be held directly as it owns the DeviceResources.
-        IDeviceNotify*                                      m_deviceNotify;
+        IDeviceNotify* m_deviceNotify;
     };
 }

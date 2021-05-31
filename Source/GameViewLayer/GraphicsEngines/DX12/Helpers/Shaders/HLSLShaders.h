@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dx12pch.h>
+
 #include "PipelineStageShader.h"
 
 class HLSLShaders

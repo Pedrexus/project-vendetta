@@ -87,8 +87,8 @@ ComPtr<ID3DBlob> RootSignature::SpecifyAndSerialize(u32 numConstantBuffers)
 	std::vector<CD3DX12_ROOT_PARAMETER1> slotRootParameters(numParams);
 
 	// textures (t0, ..., tn)
-	auto texTable = CD3DX12_DESCRIPTOR_RANGE1(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	slotRootParameters[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	CD3DX12_DESCRIPTOR_RANGE1 textureSRV(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	slotRootParameters[0].InitAsDescriptorTable(1, &textureSRV, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	// objects, pass, materials (b0, ..., bn)
 	for (u32 i = 0; i < numConstantBuffers; i++)

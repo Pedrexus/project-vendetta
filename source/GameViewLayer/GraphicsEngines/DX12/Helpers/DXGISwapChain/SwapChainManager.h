@@ -24,8 +24,6 @@ class SwapChainManager
 
 	Descriptor::RenderTarget::Heap rtvHeap;
 
-	CD3DX12_RESOURCE_BARRIER Transition;
-
 public:
 	static constexpr auto BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 
@@ -98,6 +96,10 @@ public:
 		ID3D12Device* device,
 		ID3D12CommandQueue* cmdQueue
 	);
+
+	SwapChainManager(IDXGISwapChain4* sc, ID3D12Device* device) : 
+		swapChain(sc), rtvHeap(device, SwapChainBufferCount) 
+	{}
 
 	inline bool IsReady() { return swapChain; }
 

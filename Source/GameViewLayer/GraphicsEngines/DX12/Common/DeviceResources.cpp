@@ -2,16 +2,13 @@
 // DeviceResources.cpp - A wrapper for the Direct3D 12 device and swapchain
 //
 
-#include <stdexcept>
-
-#ifdef _DEBUG
 #include <dxgidebug.h>
-#endif
 
 #include "DeviceResources.h"
-#include "ThrowIfFailed.h"
 
+using namespace DirectX;
 using namespace DX;
+
 using Microsoft::WRL::ComPtr;
 
 namespace
@@ -20,10 +17,10 @@ namespace
     {
         switch (fmt)
         {
-        case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:   return DXGI_FORMAT_R8G8B8A8_UNORM;
-        case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:   return DXGI_FORMAT_B8G8R8A8_UNORM;
-        case DXGI_FORMAT_B8G8R8X8_UNORM_SRGB:   return DXGI_FORMAT_B8G8R8X8_UNORM;
-        default:                                return fmt;
+            case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:   return DXGI_FORMAT_R8G8B8A8_UNORM;
+            case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:   return DXGI_FORMAT_B8G8R8A8_UNORM;
+            case DXGI_FORMAT_B8G8R8X8_UNORM_SRGB:   return DXGI_FORMAT_B8G8R8X8_UNORM;
+            default:                                return fmt;
         }
     }
 };
@@ -35,22 +32,22 @@ DeviceResources::DeviceResources(
     UINT backBufferCount,
     D3D_FEATURE_LEVEL minFeatureLevel,
     unsigned int flags) noexcept(false) :
-        m_backBufferIndex(0),
-        m_fenceValues{},
-        m_rtvDescriptorSize(0),
-        m_screenViewport{},
-        m_scissorRect{},
-        m_backBufferFormat(backBufferFormat),
-        m_depthBufferFormat(depthBufferFormat),
-        m_backBufferCount(backBufferCount),
-        m_d3dMinFeatureLevel(minFeatureLevel),
-        m_window(nullptr),
-        m_d3dFeatureLevel(D3D_FEATURE_LEVEL_11_0),
-        m_dxgiFactoryFlags(0),
-        m_outputSize{0, 0, 1, 1},
-        m_colorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709),
-        m_options(flags),
-        m_deviceNotify(nullptr)
+    m_backBufferIndex(0),
+    m_fenceValues{},
+    m_rtvDescriptorSize(0),
+    m_screenViewport{},
+    m_scissorRect{},
+    m_backBufferFormat(backBufferFormat),
+    m_depthBufferFormat(depthBufferFormat),
+    m_backBufferCount(backBufferCount),
+    m_d3dMinFeatureLevel(minFeatureLevel),
+    m_window(nullptr),
+    m_d3dFeatureLevel(D3D_FEATURE_LEVEL_11_0),
+    m_dxgiFactoryFlags(0),
+    m_outputSize{ 0, 0, 1, 1 },
+    m_colorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709),
+    m_options(flags),
+    m_deviceNotify(nullptr)
 {
     if (backBufferCount < 2 || backBufferCount > MAX_BACK_BUFFER_COUNT)
     {
@@ -139,7 +136,7 @@ void DeviceResources::CreateDeviceResources()
         adapter.Get(),
         m_d3dMinFeatureLevel,
         IID_PPV_ARGS(m_d3dDevice.ReleaseAndGetAddressOf())
-        ));
+    ));
 
     m_d3dDevice->SetName(L"DeviceResources");
 
@@ -150,7 +147,7 @@ void DeviceResources::CreateDeviceResources()
     {
 #ifdef _DEBUG
         d3dInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
-        // TODO: d3dInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
+        d3dInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 #endif
         D3D12_MESSAGE_ID hide[] =
         {
@@ -282,7 +279,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
             backBufferHeight,
             backBufferFormat,
             (m_options & c_AllowTearing) ? DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING : 0u
-            );
+        );
 
         if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
         {
@@ -331,7 +328,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
             &fsSwapChainDesc,
             nullptr,
             swapChain.GetAddressOf()
-            ));
+        ));
 
         ThrowIfFailed(swapChain.As(&m_swapChain));
 
@@ -377,7 +374,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
             backBufferHeight,
             1, // This depth stencil view has only one texture.
             1  // Use a single mipmap level.
-            );
+        );
         depthStencilDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
         D3D12_CLEAR_VALUE depthOptimizedClearValue = {};
@@ -392,7 +389,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
             D3D12_RESOURCE_STATE_DEPTH_WRITE,
             &depthOptimizedClearValue,
             IID_PPV_ARGS(m_depthStencil.ReleaseAndGetAddressOf())
-            ));
+        ));
 
         m_depthStencil->SetName(L"Depth stencil");
 
@@ -509,13 +506,6 @@ void DeviceResources::Prepare(D3D12_RESOURCE_STATES beforeState)
 // Present the contents of the swap chain to the screen.
 void DeviceResources::Present(D3D12_RESOURCE_STATES beforeState)
 {
-    if (beforeState != D3D12_RESOURCE_STATE_PRESENT)
-    {
-        // Transition the render target to the state that allows it to be presented to the display.
-        D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_renderTargets[m_backBufferIndex].Get(), beforeState, D3D12_RESOURCE_STATE_PRESENT);
-        m_commandList->ResourceBarrier(1, &barrier);
-    }
-
     // Send the command list off to the GPU for processing.
     ThrowIfFailed(m_commandList->Close());
     m_commandQueue->ExecuteCommandLists(1, CommandListCast(m_commandList.GetAddressOf()));
@@ -578,6 +568,30 @@ void DeviceResources::WaitForGpu() noexcept
             }
         }
     }
+}
+
+void DX::DeviceResources::Clear(XMVECTORF32 backgroundColor)
+{
+    auto commandList = GetCommandList();
+
+    PIXBeginEvent(commandList, PIX_COLOR_DEFAULT, L"Clear");
+
+    // Clear the views.
+    auto rtvDescriptor = GetRenderTargetView();
+    auto dsvDescriptor = GetDepthStencilView();
+
+    commandList->OMSetRenderTargets(1, &rtvDescriptor, FALSE, &dsvDescriptor);
+
+    // Use linear clear color for gamma-correct rendering.
+    commandList->ClearRenderTargetView(rtvDescriptor, backgroundColor, 0, nullptr);
+
+    commandList->ClearDepthStencilView(dsvDescriptor, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+    // Set the viewport and scissor rect.
+    commandList->RSSetViewports(1, &m_screenViewport);
+    commandList->RSSetScissorRects(1, &m_scissorRect);
+
+    PIXEndEvent(commandList);
 }
 
 // Prepare to render the next frame.
@@ -727,18 +741,18 @@ void DeviceResources::UpdateColorSpace()
     {
         switch (m_backBufferFormat)
         {
-        case DXGI_FORMAT_R10G10B10A2_UNORM:
-            // The application creates the HDR10 signal.
-            colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-            break;
+            case DXGI_FORMAT_R10G10B10A2_UNORM:
+                // The application creates the HDR10 signal.
+                colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+                break;
 
-        case DXGI_FORMAT_R16G16B16A16_FLOAT:
-            // The system creates the HDR10 signal; application uses linear values.
-            colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
-            break;
+            case DXGI_FORMAT_R16G16B16A16_FLOAT:
+                // The system creates the HDR10 signal; application uses linear values.
+                colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
     }
 
