@@ -82,7 +82,7 @@ namespace Logger
 		unsigned int lineNum
 	)
 	{
-		std::thread(FailSync, errorMessage, isFatal, funcName, sourceFile, lineNum).detach();
+		FailSync(errorMessage, isFatal, funcName, sourceFile, lineNum);
 	}
 
 }

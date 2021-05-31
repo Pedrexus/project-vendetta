@@ -10,14 +10,14 @@ class HLSLShaders
 	PipelineStageShader m_ps;
 
 public:
-	HLSLShaders(std::wstring filename, D3D_SHADER_MACRO* defines) :
-		m_vs(filename, defines, VertexShader),
-		m_ps(filename, defines, PixelShader)
+	HLSLShaders(std::wstring filename, const D3D12_FEATURE_DATA_SHADER_MODEL& shaderModel, D3D_SHADER_MACRO* defines) :
+		m_vs(filename, shaderModel, defines, VertexShader),
+		m_ps(filename, shaderModel, defines, PixelShader)
 	{}
 
-	HLSLShaders(std::wstring vs, std::wstring ps, D3D_SHADER_MACRO* defines) :
-		m_vs(vs, defines, VertexShader),
-		m_ps(ps, defines, PixelShader)
+	HLSLShaders(std::wstring vs, std::wstring ps, const D3D12_FEATURE_DATA_SHADER_MODEL& shaderModel, D3D_SHADER_MACRO* defines) :
+		m_vs(vs, shaderModel, defines, VertexShader),
+		m_ps(ps, shaderModel, defines, PixelShader)
 	{}
 
 	inline D3D12_SHADER_BYTECODE GetVSByteCode() { return m_vs.GetByteCode(); }

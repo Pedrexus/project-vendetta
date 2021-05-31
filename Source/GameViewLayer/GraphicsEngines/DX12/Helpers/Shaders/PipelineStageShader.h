@@ -24,15 +24,15 @@ class PipelineStageShader
 		const std::string& target
 	);
 
-	std::string GetStageTarget();
+	std::string GetStageTarget(const D3D12_FEATURE_DATA_SHADER_MODEL& shaderModel);
 	std::string GetStageEntrypoint();
 
 public:
-	PipelineStageShader(const std::wstring& filename, const D3D_SHADER_MACRO* defines, Stage stage) :
+	PipelineStageShader(const std::wstring& filename, const D3D12_FEATURE_DATA_SHADER_MODEL& shaderModel, const D3D_SHADER_MACRO* defines, Stage stage) :
 		m_PipelineStage(stage)
 	{
 		auto entrypoint = GetStageEntrypoint();
-		auto target = GetStageTarget();
+		auto target = GetStageTarget(shaderModel);
 		m_ByteCode = CompileShader(filename, defines, entrypoint, target);
 	}
 

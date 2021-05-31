@@ -27,11 +27,11 @@
 #ifdef _DEBUG
 
 // TODO: set LOG to work like fmt::format and use _bstr_t_ to convert everything to str
-#define LOG(tag, ...) Logger::Log(tag, fmt::format(##__VA_ARGS__),  __FUNCTION__, __FILE__, __LINE__)
+#define LOG(tag, ...) Logger::Log(tag, std::format(##__VA_ARGS__),  __FUNCTION__, __FILE__, __LINE__)
 #define LOG_INFO(...) LOG("INFO", ##__VA_ARGS__)
 #define LOG_WARNING(...) LOG("WARNING", ##__VA_ARGS__)
 
-#define ERRORBOX(isFatal, ...) Logger::Fail(fmt::format(##__VA_ARGS__), isFatal, __FUNCTION__, __FILE__, __LINE__)
+#define ERRORBOX(isFatal, ...) Logger::Fail(std::format(##__VA_ARGS__), isFatal, __FUNCTION__, __FILE__, __LINE__)
 
 #define LOG_ERROR(...) ERRORBOX(false, ##__VA_ARGS__)
 #define LOG_FATAL(...) ERRORBOX(true, ##__VA_ARGS__)

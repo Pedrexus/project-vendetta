@@ -23,19 +23,44 @@ ComPtr<ID3DBlob> PipelineStageShader::CompileShader(const std::wstring& filename
 }
 
 
-std::string PipelineStageShader::GetStageTarget()
+std::string PipelineStageShader::GetStageTarget(const D3D12_FEATURE_DATA_SHADER_MODEL& shaderModel)
 {
-	switch (m_PipelineStage)
+	auto model = [&] ()
 	{
-		case VertexShader: return "vs_5_0";
-		case PixelShader: return "ps_5_0";
-		case HullShader: return "hs_5_0";
-		case GeometryShader: return "gs_5_0";
-		case DomainShader: return "ds_5_0";
-		case ComputeShader: return "cs_5_0";
-		default:
-			throw std::exception("Invalid Shader Stage");
-	}
+		LOG_WARNING("Unable to compile shader model 6 with D3DCompileFromFile");
+		return "5_1";
+
+		switch (shaderModel.HighestShaderModel)
+		{
+			case D3D_SHADER_MODEL_5_1: return "5_1";
+			case D3D_SHADER_MODEL_6_0: return "6_0";
+			case D3D_SHADER_MODEL_6_1: return "6_1";
+			case D3D_SHADER_MODEL_6_2: return "6_2";
+			case D3D_SHADER_MODEL_6_3: return "6_3";
+			case D3D_SHADER_MODEL_6_4: return "6_4";
+			case D3D_SHADER_MODEL_6_5: return "6_5";
+			case D3D_SHADER_MODEL_6_6: return "6_6";
+			default:
+				return "";
+		};
+	};
+
+	auto stage = [&] ()
+	{
+		switch (m_PipelineStage)
+		{
+			case VertexShader:		return "vs";
+			case PixelShader:		return "ps";
+			case HullShader:		return "hs";
+			case GeometryShader:	return "gs";
+			case DomainShader:		return "ds";
+			case ComputeShader:		return "cs";
+			default:
+				throw std::exception("Invalid Shader Stage");
+		};
+	};
+
+	return std::format("{}_{}", stage(), model());
 }
 
 std::string PipelineStageShader::GetStageEntrypoint()
@@ -49,7 +74,7 @@ std::string PipelineStageShader::GetStageEntrypoint()
 		case DomainShader: return "DS";
 		case ComputeShader: return "CS";
 		default:
-			throw std::exception("Invalid Shader Stage");
+			throw std::exception("Invalid Shader Entrypoint");
 	}
 }
 

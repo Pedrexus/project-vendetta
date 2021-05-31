@@ -158,7 +158,7 @@ void DX12Engine::CreateDeviceDependentResources()
 		CommonStates::CullCounterClockwise,
 		rtState);
 
-	HLSLShaders shaders((LPWSTR) Settings::Get("graphics-shader-entrypoint"), nullptr);
+	HLSLShaders shaders((LPWSTR) Settings::Get("graphics-shader-entrypoint"), _resources.GetShaderFeatureData(), nullptr);
 
 	pd.CreatePipelineState(
 		device, _rootSignature.Get(), shaders.GetVSByteCode(), shaders.GetPSByteCode(), &_pipelineState

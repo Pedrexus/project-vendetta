@@ -2,8 +2,19 @@
 Function: Logger::Init
 Function: D:\Coding\C++\ProjectVendetta\Source\Helpers\Logger\Logger.cpp
 Line: 57
+[WARNING] Unable to compile shader model 6 with D3DCompileFromFile
+Function: PipelineStageShader::GetStageTarget::<lambda_1>::operator ()
+Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp
+Line: 30
+[WARNING] Unable to compile shader model 6 with D3DCompileFromFile
+Function: PipelineStageShader::GetStageTarget::<lambda_1>::operator ()
+Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp
+Line: 30
 [INFO] Game initialized
 Function: Game::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
 Line: 17
-[INFO] Logger destroyed
+[INFO] Game shutdown
+Function: Game::Shutdown
+Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp
+Line: 28
