@@ -5,13 +5,17 @@
 #include <Helpers/Settings/Settings.h>
 
 #include "Common/DeviceResources.h"
+#include "Common/Elements.h"
+
 #include "Helpers/Camera/Camera.h"
 
 #include "../IGraphicsEngine.h"
 
 
+
 namespace // engine constants
 {
+	static constexpr auto MAX_BACK_BUFFER_COUNT = 3;
 	static constexpr auto BACK_BUFFER_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 	static const auto BACK_BUFFER_COUNT = Settings::GetInt("graphics-frame-resources");
 
@@ -25,19 +29,36 @@ namespace // engine constants
 struct alignas(16) PassConstants
 {
 	Matrix viewProj;
+	Vector3 eyePosition;
+	f32 time;
 };
 
-struct alignas(16) ObjectConstants
-{
-	Matrix world;
-};
+
+//struct Object
+//{
+//	// might use shared pointer in the end
+//	std::string model; // mesh
+//	std::string material;
+//	std::string texture;
+//	// blending
+//	// effects
+//	// ...
+//
+//	DirectX::GraphicsResource constBuffer[MAX_BACK_BUFFER_COUNT]; // constant buffer
+//};
+//
+//class World
+//{
+//	std::vector<Object> objects;
+//	void* lights;
+//};
 
 
 class DX12Engine : public IGraphicsEngine, public DX::IDeviceNotify
 {
 	Camera _camera;
 
-	DX::DeviceResources _resources; // TODO: test if making this a pointer improves performance
+	DX::DeviceResources _resources;
 
 	// DirectX Tool Kit 12
 	std::unique_ptr<DirectX::DescriptorHeap>		_descriptors;
@@ -46,23 +67,25 @@ class DX12Engine : public IGraphicsEngine, public DX::IDeviceNotify
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>		_rootSignature;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState>		_pipelineState;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource>			m_vertexBuffer;
-	D3D12_VERTEX_BUFFER_VIEW						m_vertexBufferView;
+	DirectX::GraphicsResource						m_renderPassResource[MAX_BACK_BUFFER_COUNT];
 
-	Microsoft::WRL::ComPtr<ID3D12Resource>			m_indexBuffer;
-	D3D12_INDEX_BUFFER_VIEW							m_indexBufferView;
-
-	std::vector<DirectX::GraphicsResource>			m_renderPassResource;
-	std::vector<DirectX::GraphicsResource>			m_constantBufferResource;
-
+	// referenced by object
+	DirectX::GraphicsResource						m_objectResource[MAX_BACK_BUFFER_COUNT];
 	Microsoft::WRL::ComPtr<ID3D12Resource>			m_textureResource;
+	DirectX::GraphicsResource						m_materialResource[MAX_BACK_BUFFER_COUNT];
+
+
+	// std::vector<Model> where this is a class with strings defining source for meshes, textures, material, etc 
+	// to be used in maps that have the proper instances.
+	// std::vector<Object::Element> _objects;
+	std::vector<std::unique_ptr<DirectX::GeometricPrimitive>> _models;
 
 	enum RootParameterIndex
 	{
-		PassConstant,
-		ObjectConstant,
-		TextureSRV,
-		// TextureSampler,
+		Texture,
+		Pass,
+		Object,
+		Material,
 		RootParameterCount
 	};
 
@@ -80,19 +103,21 @@ public:
 	DX12Engine() noexcept(false);
 	~DX12Engine();
 
+	// IGraphicsEngine
 	void Initialize(HWND window, u16 width, u16 height) override;
 	inline bool IsReady() override { return _resources.GetD3DDevice() && _resources.GetSwapChain(); };
 
-	// IDeviceNotify
-	void OnDeviceLost() override;
-	void OnDeviceRestored() override;
 	void OnUpdate(milliseconds dt) override;
 	void OnDraw() override;
 	void OnResize(u16 width = NULL, u16 height = NULL) override;
 
-	void SetCameraPosition(CameraPosition3D pos) override;
-	void ShowFrameStats(milliseconds& dt);
-	
+	// IDeviceNotify
+	void OnDeviceLost() override;
+	void OnDeviceRestored() override;
+
+	void SetCameraPosition(CameraPosition3D pos) override; // TODO: remove this, use DXTK12
+	void ShowFrameStats(milliseconds& dt); // TODO: use timer
+
 	// no copy, no move
 	DX12Engine(DX12Engine& rhs) = delete;
 	DX12Engine(const DX12Engine& rhs) = delete;

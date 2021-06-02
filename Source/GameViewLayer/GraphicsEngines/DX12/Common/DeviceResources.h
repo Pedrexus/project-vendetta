@@ -66,7 +66,7 @@ namespace DX
         DXGI_COLOR_SPACE_TYPE           GetColorSpace() const           { return m_colorSpace; }
         unsigned int                    GetDeviceOptions() const        { return m_options; }
         HWND                            GetWindow() const               { return m_window; }
-        D3D12_FEATURE_DATA_SHADER_MODEL GetShaderFeatureData() const    { return m_shaderModel; }
+        D3D12_FEATURE_DATA_SHADER_MODEL GetShaderModel() const    { return m_shaderModel; }
 
         CD3DX12_CPU_DESCRIPTOR_HANDLE GetRenderTargetView() const
         {

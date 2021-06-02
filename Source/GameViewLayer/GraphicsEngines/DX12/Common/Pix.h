@@ -15,7 +15,7 @@ class PixEvent
 	inline u32 GetPixColor(_In_ XMVECTOR color)
 	{
 		auto c3 = Vector3(color * 256);
-		return PIX_COLOR(c3.x, c3.y, c3.z);
+		return PIX_COLOR((u8) c3.x, (u8) c3.y, (u8) c3.z);
 	}
 
 public:
@@ -43,7 +43,7 @@ public:
 		{
 			if (mCommandList)
 				PIXEndEvent(mCommandList);
-			else if(mCommandQueue)
+			else if (mCommandQueue)
 				PIXEndEvent(mCommandQueue);
 			else
 				PIXEndEvent();

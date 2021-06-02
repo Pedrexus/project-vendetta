@@ -154,14 +154,7 @@
     <ClInclude Include="Source\dx12pch.h" />
     <ClInclude Include="Source\Helpers\Settings\Settings.h" />
     <ClInclude Include="Source\Helpers\Concurrency\Asynchronous.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Mesh.h" />
     <ClInclude Include="Source\Helpers\Concepts\concepts.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Material.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Object.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\IRendered.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Light.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\World.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Texture.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\DeviceResources.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\ThrowIfFailed.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.h" />
@@ -169,6 +162,8 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\HLSLShaders.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Camera\Camera.h" />
+    <ClInclude Include="Source\Helpers\Colors\Colors.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\Elements.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />
@@ -263,6 +258,7 @@
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\DeviceResources.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\Elements.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Game\settings.xml" />
@@ -280,11 +276,10 @@
     <None Include="cpp.hint" />
     <None Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceCache.inl" />
     <None Include="Game\mug.dae" />
-    <None Include="Game\Shaders\lighting.hlsli" />
     <None Include="packages.config" />
+    <None Include="Game\Shaders\lighting.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Game\Shaders\main.hlsl" />
     <FxCompile Include="Game\Shaders\base.hlsl" />
   </ItemGroup>
   <ItemGroup>

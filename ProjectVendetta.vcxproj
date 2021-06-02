@@ -126,16 +126,10 @@
     <ClInclude Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.h" />
     <ClInclude Include="Source\GameLogicLayer\Game.h" />
     <ClInclude Include="Source\GameViewLayer\GameView.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\Elements.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Camera\Camera.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\HLSLShaders.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\IRendered.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Light.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Material.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Mesh.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Object.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\Texture.h" />
-    <ClInclude Include="Source\GameViewLayer\GraphicsElements\World.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\IGraphicsEngine.h" />
     <ClInclude Include="Source\GameViewLayer\InputHandlers\Controller.h" />
     <ClInclude Include="Source\GameViewLayer\Interfaces\Enums.h" />
@@ -144,6 +138,7 @@
     <ClInclude Include="Source\GameViewLayer\OutputHandlers\WindowManager.h" />
     <ClInclude Include="Source\GameViewLayer\UserInterface\Console.h" />
     <ClInclude Include="Source\GameViewLayer\UserInterface\HumanView.h" />
+    <ClInclude Include="Source\Helpers\Colors\Colors.h" />
     <ClInclude Include="Source\Helpers\Concepts\concepts.h" />
     <ClInclude Include="Source\Helpers\Concurrency\Asynchronous.h" />
     <ClInclude Include="Source\Helpers\Geometry\Point.h" />
@@ -172,6 +167,7 @@
   <ItemGroup>
     <ClCompile Include="Source\dx12pch.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\DeviceResources.cpp" />
+    <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\Elements.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\DX12Engine.cpp" />
     <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lapi.c" />
     <ClCompile Include="Source\Dependencies\LuaPlus\Lua53\lauxlib.c" />
@@ -268,7 +264,9 @@
     <None Include="cpp.hint" />
     <None Include="CppProperties.json" />
     <None Include="Game\mug.dae" />
-    <None Include="Game\Shaders\lighting.hlsli" />
+    <None Include="Game\Shaders\lighting.hlsli">
+      <FileType>Document</FileType>
+    </None>
     <None Include="packages.config" />
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaCall.inl" />
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaObject.inl" />
@@ -285,12 +283,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Game\Shaders\main.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">6.5</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">6.5</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.5</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.5</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">VS</EntryPointName>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
