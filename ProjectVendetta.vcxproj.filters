@@ -102,7 +102,6 @@
     <ClInclude Include="Source\Helpers\Geometry\Point.h" />
     <ClInclude Include="Source\GameViewLayer\Interfaces\InputHandlers.h" />
     <ClInclude Include="Source\GameViewLayer\OutputHandlers\WindowManager.h" />
-    <ClInclude Include="Source\GameViewLayer\InputHandlers\Controller.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\IGraphicsEngine.h" />
     <ClInclude Include="Source\Helpers\ZipFile\ZipFile.h" />
     <ClInclude Include="Source\GameApplicationLayer\Modules\Actors\Components\BaseScriptComponent.h" />
@@ -164,6 +163,7 @@
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Camera\Camera.h" />
     <ClInclude Include="Source\Helpers\Colors\Colors.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\Elements.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12MSAA.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\pch.cpp" />
@@ -220,7 +220,6 @@
     <ClCompile Include="Source\GameLogicLayer\Game.cpp" />
     <ClCompile Include="Source\GameViewLayer\UserInterface\HumanView.cpp" />
     <ClCompile Include="Source\GameViewLayer\OutputHandlers\WindowManager.cpp" />
-    <ClCompile Include="Source\GameViewLayer\InputHandlers\Controller.cpp" />
     <ClCompile Include="Source\Helpers\ZipFile\ZipFile.cpp" />
     <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\Pickups\AmmoPickup.cpp" />
     <ClCompile Include="Source\GameApplicationLayer\Modules\Actors\Pickups\HealthPickup.cpp" />

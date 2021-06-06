@@ -46,7 +46,7 @@ public:
 	void Shutdown();
 
 	inline bool IsReady() { return m_humanView->IsReady(); }
-	inline std::shared_ptr<WindowManager> GetWindow() { return m_humanView->GetWindow(); }
+	inline WindowManager* GetWindow() { return m_humanView->GetWindow(); }
 	void OnResize(u32 width = NULL, u32 height = NULL) { return m_humanView->OnResize(width, height); };
 
 public:
@@ -54,6 +54,5 @@ public:
 
 protected:
 	void DispatchWindowMessage(MSG& msg);
-	void DispatchGameMessage(MSG& msg);
 	void OnUpdate(milliseconds dt);
 };

@@ -38,11 +38,6 @@ void Game::DispatchWindowMessage(MSG& msg)
 	}
 }
 
-void Game::DispatchGameMessage(MSG& msg)
-{
-	m_humanView->OnMessage(msg);
-}
-
 void Game::OnUpdate(milliseconds dt)
 {
 	m_humanView->OnUpdate(dt);
@@ -58,7 +53,6 @@ void Game::Run()
 		m_timer.Tick();
 
 		DispatchWindowMessage(msg);
-		DispatchGameMessage(msg);
 		OnUpdate(m_timer.GetDeltaMilliseconds());
 	}
 }

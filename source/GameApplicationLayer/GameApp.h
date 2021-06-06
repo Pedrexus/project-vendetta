@@ -87,7 +87,6 @@ private:
 	void TickAndDispatchGameMessage(MSG& msg);
 
 protected:
-	virtual void DispatchGameMessage(MSG& msg) = 0;
 	virtual void OnUpdate(milliseconds dt) = 0;
 
 public:

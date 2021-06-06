@@ -13,6 +13,5 @@ public:
 	virtual GameViewType GetType() = 0;
 	virtual GameViewId GetId() const = 0;
 
-	virtual void OnMessage(MSG msg) = 0;
 	virtual void OnUpdate(milliseconds dt) = 0;
 };

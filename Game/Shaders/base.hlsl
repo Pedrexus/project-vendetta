@@ -11,15 +11,15 @@ cbuffer RenderPassConstants : register(b0)
     float4x4 gViewProj;
     float3 gEyePosW;
     float gTime;
+    
+    uint gNumLights;
+    Light gLights[MaxLights];
 };
 
 cbuffer ObjectConstants : register(b1)
 {
     float4x4 gWorld;
     float4x4 gTextureTransform;
-    
-    uint gNumLights;
-    Light gLights[MaxLights];
 };
 
 cbuffer MaterialConstants : register(b2)
@@ -61,8 +61,11 @@ VertexOut VS(Vertex In)
 }
 
 float4 PS(VertexOut In) : SV_TARGET0
-{
+{   
     float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, In.texcoord) * gDiffuseAlbedo;
+    
+    if(diffuseAlbedo.x == 0 && diffuseAlbedo.y == 0 && diffuseAlbedo.z == 0)
+        diffuseAlbedo = gDiffuseAlbedo;
 	
     // Interpolating normal can unnormalize it, so renormalize it.
     In.normalW = normalize(In.normalW);

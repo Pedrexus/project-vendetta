@@ -10,11 +10,6 @@ Line: 30
 Function: PipelineStageShader::GetStageTarget::<lambda_1>::operator ()
 Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp
 Line: 30
-[ERROR] Lighting.hlsli(95,20): warning X4000: use of potentially uninitialized variable (ComputePointLight)
-
-Function: PipelineStageShader::CompileShader
-Function: D:\Coding\C++\ProjectVendetta\Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp
-Line: 18
 [INFO] Game initialized
 Function: Game::Initialize
 Function: D:\Coding\C++\ProjectVendetta\Source\GameLogicLayer\Game.cpp

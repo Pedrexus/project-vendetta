@@ -128,10 +128,10 @@
     <ClInclude Include="Source\GameViewLayer\GameView.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Common\Elements.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Camera\Camera.h" />
+    <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\DX12MSAA.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\HLSLShaders.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.h" />
     <ClInclude Include="Source\GameViewLayer\GraphicsEngines\IGraphicsEngine.h" />
-    <ClInclude Include="Source\GameViewLayer\InputHandlers\Controller.h" />
     <ClInclude Include="Source\GameViewLayer\Interfaces\Enums.h" />
     <ClInclude Include="Source\GameViewLayer\Interfaces\IGameView.h" />
     <ClInclude Include="Source\GameViewLayer\Interfaces\InputHandlers.h" />
@@ -245,7 +245,6 @@
     <ClCompile Include="Source\GameApplicationLayer\Modules\ResourceCache\ResourceLoaders\XMLResourceLoader.cpp" />
     <ClCompile Include="Source\GameLogicLayer\Game.cpp" />
     <ClCompile Include="Source\GameViewLayer\GraphicsEngines\DX12\Helpers\Shaders\PipelineStageShader.cpp" />
-    <ClCompile Include="Source\GameViewLayer\InputHandlers\Controller.cpp" />
     <ClCompile Include="Source\GameViewLayer\OutputHandlers\WindowManager.cpp" />
     <ClCompile Include="Source\GameViewLayer\UserInterface\HumanView.cpp" />
     <ClCompile Include="Source\GameViewLayer\OutputHandlers\WindowProcedure.cpp" />
@@ -266,6 +265,10 @@
     <None Include="Game\mug.dae" />
     <None Include="Game\Shaders\lighting.hlsli">
       <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </None>
     <None Include="packages.config" />
     <None Include="Source\Dependencies\LuaPlus\LuaPlus\LuaCall.inl" />

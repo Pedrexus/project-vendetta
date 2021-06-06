@@ -94,40 +94,6 @@ void GameApp::Shutdown()
 	SAFE_DELETE(m_ResCache);
 }
 
-void GameApp::Run()
-{
-	MSG msg = {};
-	m_timer.Reset();
-
-	while (msg.message != WM_QUIT)
-		ProcessMessage(msg);
-}
-
-void GameApp::ProcessMessage(MSG& msg)
-{
-	auto isWindowMessage = PeekMessage(&msg, 0, 0, 0, PM_REMOVE);
-	if (isWindowMessage)
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-	else
-		TickAndDispatchGameMessage(msg);
-}
-
-void GameApp::TickAndDispatchGameMessage(MSG& msg)
-{
-	m_timer.Tick();
-
-	if (IsSuspended())
-		Sleep(100);
-	else
-	{
-		DispatchGameMessage(msg);
-		OnUpdate(m_timer.GetDeltaMilliseconds());
-	}
-}
-
 UINT GameApp::MapCharToKeycode(const char pHotKey)
 {
 	UINT keycode = 0;

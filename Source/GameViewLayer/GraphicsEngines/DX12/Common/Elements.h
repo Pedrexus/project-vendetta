@@ -4,13 +4,20 @@
 #include <Helpers/Settings/Settings.h>
 
 
+static constexpr auto MAX_BACK_BUFFER_COUNT = 3;
+
+
 class IRendered
 {
     // Indicates object data has changed 
     // and we need to update the constant buffer
-    u32 _NumFramesDirty = Settings::GetInt("graphics-frame-resources");
+    u32                         _NumFramesDirty = Settings::GetInt("graphics-frame-resources");
 
 public:
+    DirectX::GraphicsResource	resources[MAX_BACK_BUFFER_COUNT];
+
+    // IRendered(&)
+
     bool IsDirty() const
     {
         return _NumFramesDirty > 0;
@@ -25,6 +32,7 @@ public:
     }
 };
 
+
 struct IElement
 {
     std::string                             name;
@@ -32,11 +40,12 @@ struct IElement
 
 struct Texture : public IElement
 {
+    u32                                     id;
     std::wstring                            filename;
     Microsoft::WRL::ComPtr<ID3D12Resource>  resource;
 };
 
-namespace Material
+struct Material
 {
     struct alignas(16) Constants
     {
@@ -48,16 +57,15 @@ namespace Material
         Matrix                              transform;
     };
 
-    struct Element : public IElement, public IRendered, public Constants {
-        static const Element Wood;
-    };
+    struct Element : public Constants, public IElement, public IRendered {};
 
-    static const auto Wood = Element::Wood;
-}
+    static Constants Wood;
+    static Constants Ivory;
+};
 
-namespace Light
+struct Light
 {
-    static constexpr auto MAXIMUM_AMOUNT = 128; // TODO: test this limit
+    static constexpr u32 MAXIMUM_AMOUNT = 16; // TODO: test with a very high limit,like 1024
 
     enum Kind : u32
     {
@@ -80,15 +88,12 @@ namespace Light
         Kind kind;
     };
 
-    struct Element : public IElement, public IRendered, public Constants {
-        static const Element DirectionalDefault;
-        static const Element PointDefault;
-    };
+    struct Element : public Constants, public IElement, public IRendered {};
 
-    static const auto DirectionalDefault = Element::DirectionalDefault;
-    static const Element PointDefault = Element::PointDefault;
-    /*static const Element SpotlightDefault;*/
-}
+    static const Constants DirectionalDefault;
+    static const Constants PointDefault;
+    static const Constants SpotlightDefault;
+};
 
 namespace Object
 {
@@ -96,33 +101,12 @@ namespace Object
     {
         Matrix world;
         Matrix textureTransform;
-        
-        u32 numLights;
-        Light::Constants lights[Light::MAXIMUM_AMOUNT]; // could make a WorldConstants for this - all lights that affect the object
     };
 
-    struct Element : public IElement, public IRendered 
+    struct Element : public Constants, public IElement, public IRendered
     {
-        Matrix world;
-        Matrix textureTransform;
-
         std::shared_ptr<GeometricPrimitive> model; // todo: std::variant
         std::shared_ptr<Material::Element> material;
         std::shared_ptr<Texture> texture;
-
-        /*Constants GetConstants(std::vector<Light::Constants>& worldLights)
-        {
-            Constants c;
-            c.world = world;
-            c.textureTransform = textureTransform;
-
-            Quaternion rotation;
-            Vector3 scale, translation;
-            world.Decompose(scale, rotation, translation);
-
-            for (u32 i = 0; i < Light::MAXIMUM_AMOUNT; i++)
-                if (Vector3::Distance(worldLights[i].position, translation) < worldLights[i].falloffEnd)
-                    c.lights[i] = worldLights[i];
-        }*/
     };
 }

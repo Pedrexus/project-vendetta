@@ -20,9 +20,3 @@ constexpr auto LOOP_EXECUTION_POLICY = std::execution::par_unseq; // parallel un
 
 constexpr auto WINDOW_STYLE = WS_OVERLAPPEDWINDOW;
 constexpr auto WINDOW_HAS_MENU = FALSE;
-
-// graphics system specifications
-
-#include <d3dcommon.h>
-
-constexpr auto DXD12_MINIMUM_FEATURE_LEVEL = D3D_FEATURE_LEVEL_11_0;

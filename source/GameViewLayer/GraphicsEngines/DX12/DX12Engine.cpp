@@ -39,8 +39,10 @@ void DX12Engine::OnUpdate(milliseconds dt)
 {
 	PixEvent e(DirectX::Colors::AliceBlue, L"Update");
 
-	static milliseconds t = 0;
+	static milliseconds t = 0; // TODO: pass timer
 	t += dt / 1000.0f;
+
+	_camera.Update();
 
 	ShowFrameStats(dt);
 
@@ -49,16 +51,15 @@ void DX12Engine::OnUpdate(milliseconds dt)
 	// render pass
 	{
 		PassConstants pc = { _camera.GetViewProj(), _camera.GetEyePosition(), static_cast<f32>(t) };
+		
+		// TODO: make a constant just for this
+		pc.numLights = (u32) _lights.size();
+		memcpy(pc.lights, _lights.data(), sizeof(Light::Constants) * _lights.size());
+		
 		auto& rpr = m_renderPassResource[i];
 		memcpy(rpr.Memory(), &pc, rpr.Size());
 	}
 
-	// object constants
-	/*{
-		ObjectConstants oc = { Matrix::CreateRotationZ(t) * Matrix::CreateRotationX(t) };
-		auto& res = m_constantBufferResource[i];
-		memcpy(res.Memory(), &oc, res.Size());
-	}*/
 }
 
 static const auto DarkGray = FromHex(0x111111);
@@ -84,14 +85,16 @@ void DX12Engine::OnDraw()
 		ID3D12DescriptorHeap* descriptorHeaps[] = { _descriptors->Heap(), };
 		commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-		for (auto& m : _models)
+		for (auto& [name, obj] : _objects)
 		{
-			commandList->SetGraphicsRootConstantBufferView(RootParameterIndex::Pass, m_renderPassResource[i].GpuAddress());
-			commandList->SetGraphicsRootConstantBufferView(RootParameterIndex::Object, m_objectResource[i].GpuAddress());
-			commandList->SetGraphicsRootConstantBufferView(RootParameterIndex::Material, m_materialResource[i].GpuAddress());
-			commandList->SetGraphicsRootDescriptorTable(RootParameterIndex::Texture, _descriptors->GetGpuHandle(Descriptors::BrickTexture));
+			commandList->SetGraphicsRootConstantBufferView(PassCB, m_renderPassResource[i].GpuAddress());
+			commandList->SetGraphicsRootConstantBufferView(ObjectCB, obj->resources[i].GpuAddress());
+			commandList->SetGraphicsRootConstantBufferView(MaterialCB, obj->material->resources[i].GpuAddress());
 
-			m->Draw(commandList);
+			auto index = obj->texture ? obj->texture->id : Descriptors::None;
+			commandList->SetGraphicsRootDescriptorTable(TextureSRV, _descriptors->GetGpuHandle(index));
+
+			obj->model->Draw(commandList);
 		}
 	}
 
@@ -115,8 +118,6 @@ void DX12Engine::OnResize(u16 width, u16 height)
 }
 
 #pragma region Direct3D Resources
-// Allocate all memory resources that change on a window SizeChanged event.
-
 void DX12Engine::CreateDeviceDependentResources()
 {
 	auto device = _resources.GetD3DDevice();
@@ -133,13 +134,13 @@ void DX12Engine::CreateDeviceDependentResources()
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
 
 		CD3DX12_ROOT_PARAMETER slotRootParameters[RootParameterIndex::RootParameterCount] = {};
-		slotRootParameters[RootParameterIndex::Pass].InitAsConstantBufferView(0);
-		slotRootParameters[RootParameterIndex::Object].InitAsConstantBufferView(1);
-		slotRootParameters[RootParameterIndex::Material].InitAsConstantBufferView(2);
+		slotRootParameters[RootParameterIndex::PassCB].InitAsConstantBufferView(0);
+		slotRootParameters[RootParameterIndex::ObjectCB].InitAsConstantBufferView(1);
+		slotRootParameters[RootParameterIndex::MaterialCB].InitAsConstantBufferView(2);
 
 		// textures (t0, ..., tn)
 		CD3DX12_DESCRIPTOR_RANGE textureSRV(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-		slotRootParameters[RootParameterIndex::Texture].InitAsDescriptorTable(1, &textureSRV, D3D12_SHADER_VISIBILITY_PIXEL);
+		slotRootParameters[RootParameterIndex::TextureSRV].InitAsDescriptorTable(1, &textureSRV, D3D12_SHADER_VISIBILITY_PIXEL);
 
 		D3D12_STATIC_SAMPLER_DESC samplers[2] = { CommonStates::StaticLinearClamp(0), CommonStates::StaticAnisotropicWrap(1) };
 
@@ -152,55 +153,105 @@ void DX12Engine::CreateDeviceDependentResources()
 		);
 	}
 
-	RenderTargetState rtState(_resources.GetBackBufferFormat(), _resources.GetDepthBufferFormat());
+	// create pipeline state
+	{
+		RenderTargetState rtState(_resources.GetBackBufferFormat(), _resources.GetDepthBufferFormat());
 
-	EffectPipelineStateDescription pd(
-		&GeometricPrimitive::VertexType::InputLayout,
-		CommonStates::Opaque,
-		CommonStates::DepthDefault,
-		CommonStates::CullCounterClockwise,
-		rtState);
+		EffectPipelineStateDescription pd(
+			&GeometricPrimitive::VertexType::InputLayout,
+			CommonStates::Opaque,
+			CommonStates::DepthDefault,
+			CommonStates::CullCounterClockwise,
+			rtState);
 
-	HLSLShaders shaders((LPWSTR) Settings::Get("graphics-shader-entrypoint"), _resources.GetShaderModel(), nullptr);
+		HLSLShaders shaders((LPWSTR) Settings::Get("graphics-shader-entrypoint"), _resources.GetShaderModel(), nullptr);
 
-	pd.CreatePipelineState(
-		device, _rootSignature.Get(), shaders.GetVSByteCode(), shaders.GetPSByteCode(), &_pipelineState
-	);
+		pd.CreatePipelineState(
+			device, _rootSignature.Get(), shaders.GetVSByteCode(), shaders.GetPSByteCode(), &_pipelineState
+		);
+	}
 
 	ResourceUploadBatch resourceUpload(device);
 	resourceUpload.Begin();
 
-	auto box = GeometricPrimitive::CreateBox({ 4, 4, 4 });
-	_models.emplace_back(std::move(box));
+	// build up _lights
+	_lights.emplace_back(Light::DirectionalDefault);
 
-	for (auto& m : _models)
-		m->LoadStaticBuffers(device, resourceUpload);
+	// build up _textures
+	Texture bricks;
+	bricks.id = 1;
+	bricks.filename = L"Textures\\bricks3.dds";
+	_textures["bricks"] = std::make_shared<Texture>(bricks);
+
+	// build up _materials
+	_materials["wood"] = std::make_shared<Material::Element>(Material::Wood);
+	_materials["ivory"] = std::make_shared<Material::Element>(Material::Ivory);
+
+	// build up _models
+	auto geo = GeometricPrimitive::CreateTeapot(4);
+	_models["teapot"] = std::move(geo);
+	_models["teapot"]->LoadStaticBuffers(device, resourceUpload);
+
+	auto geo2 = GeometricPrimitive::CreateBox({ 100, 100, 100 }, false, true);
+	_models["room"] = std::move(geo2);
+	_models["room"]->LoadStaticBuffers(device, resourceUpload);
+
+	// build up _objects
+	_objects["teapot"] = std::make_shared<Object::Element>();
+	_objects["teapot"]->name = "teapot";
+	_objects["teapot"]->world = Matrix::Identity;
+	_objects["teapot"]->textureTransform = Matrix::Identity;
+	_objects["teapot"]->model = _models["teapot"];
+	_objects["teapot"]->material = _materials["wood"];
+	_objects["teapot"]->texture = _textures["bricks"];
+
+	_objects["teapot2"] = std::make_shared<Object::Element>();
+	_objects["teapot2"]->name = "teapot2";
+	_objects["teapot2"]->world = Matrix::CreateTranslation({ -5, 0, -5 }) * Matrix::CreateRotationY(1);
+	_objects["teapot2"]->textureTransform = Matrix::Identity;
+	_objects["teapot2"]->model = _models["teapot"];
+	_objects["teapot2"]->material = _materials["wood"];
+	_objects["teapot2"]->texture = _textures["bricks"];
+	
+	_objects["room"] = std::make_shared<Object::Element>();
+	_objects["room"]->name = "room";
+	_objects["room"]->world = Matrix::CreateTranslation({ 0, 48, 0 });
+	_objects["room"]->textureTransform = Matrix::Identity;
+	_objects["room"]->model = _models["room"];
+	_objects["room"]->material = _materials["ivory"];
+	_objects["room"]->texture = _textures["room"];
 
 	// create cbuffer
 	{
 		for (u32 i = 0; i < _resources.GetBackBufferCount(); i++)
 		{
+			// add pass
 			m_renderPassResource[i] = std::move(_graphicsMemory->AllocateConstant<PassConstants>());
-			m_materialResource[i] = std::move(_graphicsMemory->AllocateConstant<Material::Constants>(Material::Wood));
 
-			Object::Constants oc = { Matrix::Identity, Matrix::Identity };
-			oc.lights[0] = { Light::PointDefault };
-			oc.numLights = 1;
-			m_objectResource[i] = std::move(_graphicsMemory->AllocateConstant(oc));
+			// add materials
+			for (auto& [name, material] : _materials)
+			{
+				auto cbResource = _graphicsMemory->AllocateConstant<Material::Constants>(*material.get());
+				material->resources[i] = std::move(cbResource);
+			}
+
+			for (auto& [name, object] : _objects)
+			{
+				auto cbResource = _graphicsMemory->AllocateConstant<Object::Constants>(*object.get());
+				object->resources[i] = std::move(cbResource);
+			}
 		}
 	}
 
 	// create texture
 	{
-		auto filename = L"Textures\\bricks3.dds";
+		auto index = _textures["bricks"]->id;
+		auto filename = _textures["bricks"]->filename.c_str();
+		auto& resource = _textures["bricks"]->resource;
 
-		CreateDDSTextureFromFile(device, resourceUpload, filename,
-			m_textureResource.ReleaseAndGetAddressOf()
-		);
+		CreateDDSTextureFromFile(device, resourceUpload, filename, resource.ReleaseAndGetAddressOf());
 
-		CreateShaderResourceView(device, m_textureResource.Get(),
-			_descriptors->GetCpuHandle(Descriptors::BrickTexture)
-		);
+		CreateShaderResourceView(device, resource.Get(), _descriptors->GetCpuHandle(index));
 	}
 
 	resourceUpload.End(_resources.GetCommandQueue());
@@ -222,11 +273,6 @@ void DX12Engine::OnDeviceRestored()
 #pragma endregion
 
 #pragma region Extras
-void DX12Engine::SetCameraPosition(CameraPosition3D pos)
-{
-	_camera.UpdateCameraView(pos);
-}
-
 void DX12Engine::ShowFrameStats(milliseconds& dt)
 {
 	static auto presentCount = 0;

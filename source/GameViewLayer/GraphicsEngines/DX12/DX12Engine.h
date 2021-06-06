@@ -11,11 +11,8 @@
 
 #include "../IGraphicsEngine.h"
 
-
-
 namespace // engine constants
 {
-	static constexpr auto MAX_BACK_BUFFER_COUNT = 3;
 	static constexpr auto BACK_BUFFER_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
 	static const auto BACK_BUFFER_COUNT = Settings::GetInt("graphics-frame-resources");
 
@@ -31,28 +28,10 @@ struct alignas(16) PassConstants
 	Matrix viewProj;
 	Vector3 eyePosition;
 	f32 time;
+
+	u32 numLights;
+	Light::Constants lights[Light::MAXIMUM_AMOUNT];
 };
-
-
-//struct Object
-//{
-//	// might use shared pointer in the end
-//	std::string model; // mesh
-//	std::string material;
-//	std::string texture;
-//	// blending
-//	// effects
-//	// ...
-//
-//	DirectX::GraphicsResource constBuffer[MAX_BACK_BUFFER_COUNT]; // constant buffer
-//};
-//
-//class World
-//{
-//	std::vector<Object> objects;
-//	void* lights;
-//};
-
 
 class DX12Engine : public IGraphicsEngine, public DX::IDeviceNotify
 {
@@ -74,23 +53,27 @@ class DX12Engine : public IGraphicsEngine, public DX::IDeviceNotify
 	Microsoft::WRL::ComPtr<ID3D12Resource>			m_textureResource;
 	DirectX::GraphicsResource						m_materialResource[MAX_BACK_BUFFER_COUNT];
 
+	// world for the graphics engine
+	std::unordered_map<std::string, std::shared_ptr<Texture>> _textures;
 
-	// std::vector<Model> where this is a class with strings defining source for meshes, textures, material, etc 
-	// to be used in maps that have the proper instances.
-	// std::vector<Object::Element> _objects;
-	std::vector<std::unique_ptr<DirectX::GeometricPrimitive>> _models;
+	std::unordered_map<std::string, std::shared_ptr<Material::Element>> _materials;
+	std::unordered_map<std::string, std::shared_ptr<GeometricPrimitive>> _models;
+	std::unordered_map<std::string, std::shared_ptr<Object::Element>> _objects;
+	
+	std::vector<Light::Constants> _lights;
 
 	enum RootParameterIndex
 	{
-		Texture,
-		Pass,
-		Object,
-		Material,
+		TextureSRV,
+		PassCB,
+		ObjectCB,
+		MaterialCB,
 		RootParameterCount
 	};
 
 	enum Descriptors
 	{
+		None,
 		BrickTexture,
 		Count
 	};
@@ -115,7 +98,6 @@ public:
 	void OnDeviceLost() override;
 	void OnDeviceRestored() override;
 
-	void SetCameraPosition(CameraPosition3D pos) override; // TODO: remove this, use DXTK12
 	void ShowFrameStats(milliseconds& dt); // TODO: use timer
 
 	// no copy, no move

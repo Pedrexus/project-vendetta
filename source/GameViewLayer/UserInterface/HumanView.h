@@ -22,11 +22,8 @@ protected:
 	bool m_isRunningFullSpeed;
 	
 	// Interface sensitive objects
-	u32 m_PointerRadius = 1; // we assume we are on a mouse enabled machine - if this were a tablet we should detect and change the value in the constructor.
-	std::shared_ptr<IPointerHandler> m_PointerHandler;
-	std::shared_ptr<IKeyboardHandler> m_KeyboardHandler;
-	std::shared_ptr<WindowManager> m_windowManager;
-	std::shared_ptr<IGraphicsEngine> m_graphicsEngine;
+	std::unique_ptr<WindowManager> m_windowManager;
+	std::unique_ptr<IGraphicsEngine> m_graphicsEngine;
 
 public:
 	HumanView(HINSTANCE hInstance);
@@ -39,7 +36,6 @@ public:
 	inline bool IsReady() { return m_windowManager->IsReady() && m_graphicsEngine->IsReady(); }
 
 	virtual void OnUpdate(milliseconds dt);
-	virtual void OnMessage(MSG msg);
 	virtual inline void OnResize(u32 width = NULL, u32 height = NULL) 
 	{
 		if (width == NULL || height == NULL)
@@ -49,5 +45,5 @@ public:
 		m_graphicsEngine->OnResize(width, height);
 	}
 
-	inline std::shared_ptr<WindowManager> GetWindow() { return m_windowManager; };
+	inline WindowManager* GetWindow() { return m_windowManager.get(); };
 };

@@ -5,12 +5,6 @@
 #include "../Interfaces/InputHandlers.h"
 
 
-template<typename T>
-static T Threshold(const T& x, const T& low, const T& high)
-{
-	return x < low ? low : (x > high ? high : x);
-}
-
 class Controller : public IPointerHandler // TODO: public IKeyboardHandler
 {
 	Point m_lastMousePos;
