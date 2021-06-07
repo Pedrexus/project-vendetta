@@ -35,6 +35,9 @@
 #include <DirectXTK12/GeometricPrimitive.h>
 #include <DirectXTK12/ResourceUploadBatch.h>
 
+#include <DirectXTK12/SpriteFont.h>
+#include <DirectXTK12/SpriteBatch.h>
+
 #include <DirectXTK12/Effects.h>
 #include <DirectXTK12/EffectPipelineStateDescription.h>
 

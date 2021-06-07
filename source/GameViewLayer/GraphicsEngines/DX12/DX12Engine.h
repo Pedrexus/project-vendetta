@@ -1,6 +1,7 @@
 #pragma once
 
 #include <types.h>
+#include <dx12pch.h>
 
 #include <Helpers/Settings/Settings.h>
 
@@ -46,20 +47,16 @@ class DX12Engine : public IGraphicsEngine, public DX::IDeviceNotify
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>		_rootSignature;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState>		_pipelineState;
 
-	DirectX::GraphicsResource						m_renderPassResource[MAX_BACK_BUFFER_COUNT];
+	std::unique_ptr<DirectX::SpriteFont>            _spriteFont;
+	std::unique_ptr<DirectX::SpriteBatch>           _spriteBatch;
 
-	// referenced by object
-	DirectX::GraphicsResource						m_objectResource[MAX_BACK_BUFFER_COUNT];
-	Microsoft::WRL::ComPtr<ID3D12Resource>			m_textureResource;
-	DirectX::GraphicsResource						m_materialResource[MAX_BACK_BUFFER_COUNT];
+	DirectX::GraphicsResource						_renderPassResource[MAX_BACK_BUFFER_COUNT];
 
 	// world for the graphics engine
 	std::unordered_map<std::string, std::shared_ptr<Texture>> _textures;
-
 	std::unordered_map<std::string, std::shared_ptr<Material::Element>> _materials;
 	std::unordered_map<std::string, std::shared_ptr<GeometricPrimitive>> _models;
 	std::unordered_map<std::string, std::shared_ptr<Object::Element>> _objects;
-	
 	std::vector<Light::Constants> _lights;
 
 	enum RootParameterIndex
@@ -74,7 +71,8 @@ class DX12Engine : public IGraphicsEngine, public DX::IDeviceNotify
 	enum Descriptors
 	{
 		None,
-		BrickTexture,
+		BrickTexture, // TODO: create a specific descriptor for textures
+		UIFont,
 		Count
 	};
 

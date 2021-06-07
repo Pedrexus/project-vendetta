@@ -277,6 +277,8 @@
     <None Include="Game\mug.dae" />
     <None Include="packages.config" />
     <None Include="Game\Shaders\lighting.hlsli" />
+    <None Include="..\Xbox-ATG-Samples\Media\Fonts\SegoeUI_18.spritefont" />
+    <None Include="Assets\SegoeUI_18.spritefont" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Game\Shaders\base.hlsl" />

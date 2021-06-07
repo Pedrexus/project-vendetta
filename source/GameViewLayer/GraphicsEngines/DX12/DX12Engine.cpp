@@ -56,7 +56,7 @@ void DX12Engine::OnUpdate(milliseconds dt)
 		pc.numLights = (u32) _lights.size();
 		memcpy(pc.lights, _lights.data(), sizeof(Light::Constants) * _lights.size());
 		
-		auto& rpr = m_renderPassResource[i];
+		auto& rpr = _renderPassResource[i];
 		memcpy(rpr.Memory(), &pc, rpr.Size());
 	}
 
@@ -87,7 +87,7 @@ void DX12Engine::OnDraw()
 
 		for (auto& [name, obj] : _objects)
 		{
-			commandList->SetGraphicsRootConstantBufferView(PassCB, m_renderPassResource[i].GpuAddress());
+			commandList->SetGraphicsRootConstantBufferView(PassCB, _renderPassResource[i].GpuAddress());
 			commandList->SetGraphicsRootConstantBufferView(ObjectCB, obj->resources[i].GpuAddress());
 			commandList->SetGraphicsRootConstantBufferView(MaterialCB, obj->material->resources[i].GpuAddress());
 
@@ -98,9 +98,26 @@ void DX12Engine::OnDraw()
 		}
 	}
 
+	// Draw UI
+	{
+		PixEvent pixPresent(commandList, DirectX::Colors::ForestGreen, L"Draw UI");
+
+		auto size = _resources.GetOutputSize();
+		auto safe = Viewport::ComputeTitleSafeArea(size.right, size.bottom);
+
+		_spriteBatch->Begin(commandList);
+
+		Vector2 position((f32)safe.left, (f32)safe.top);
+		auto str = std::format("current frame index {}", i);
+
+		_spriteFont->DrawString(_spriteBatch.get(), str.c_str(), position, DarkGray);
+
+		_spriteBatch->End();
+	}
+
 	auto cmdQueue = _resources.GetCommandQueue();
 
-	// Show the new frame.
+	// Show the new frame
 	{
 		PixEvent pixPresent(cmdQueue, DirectX::Colors::Teal, L"Present");
 
@@ -180,7 +197,7 @@ void DX12Engine::CreateDeviceDependentResources()
 	// build up _textures
 	Texture bricks;
 	bricks.id = 1;
-	bricks.filename = L"Textures\\bricks3.dds";
+	bricks.filename = L"..\\Assets\\Textures\\bricks3.dds";
 	_textures["bricks"] = std::make_shared<Texture>(bricks);
 
 	// build up _materials
@@ -226,7 +243,7 @@ void DX12Engine::CreateDeviceDependentResources()
 		for (u32 i = 0; i < _resources.GetBackBufferCount(); i++)
 		{
 			// add pass
-			m_renderPassResource[i] = std::move(_graphicsMemory->AllocateConstant<PassConstants>());
+			_renderPassResource[i] = std::move(_graphicsMemory->AllocateConstant<PassConstants>());
 
 			// add materials
 			for (auto& [name, material] : _materials)
@@ -254,10 +271,28 @@ void DX12Engine::CreateDeviceDependentResources()
 		CreateShaderResourceView(device, resource.Get(), _descriptors->GetCpuHandle(index));
 	}
 
+	// create fonts
+	{
+		RenderTargetState rtStateUI(BACK_BUFFER_FORMAT, DXGI_FORMAT_UNKNOWN);
+		SpriteBatchPipelineStateDescription pd(rtStateUI);
+
+		_spriteBatch = std::make_unique<SpriteBatch>(device, resourceUpload, pd);
+
+		_spriteFont = std::make_unique<DirectX::SpriteFont>(device, resourceUpload,
+			Settings::Get("graphics-spritefont-filepath"),
+			_descriptors->GetCpuHandle(Descriptors::UIFont),
+			_descriptors->GetGpuHandle(Descriptors::UIFont));
+	}
+
 	resourceUpload.End(_resources.GetCommandQueue());
 }
 
-void DX12Engine::CreateWindowSizeDependentResources() {}
+void DX12Engine::CreateWindowSizeDependentResources() {
+
+	auto viewport = _resources.GetScreenViewport();
+	_spriteBatch->SetViewport(viewport);
+
+}
 
 void DX12Engine::OnDeviceLost()
 {

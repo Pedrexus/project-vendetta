@@ -43,9 +43,9 @@ class Camera
 	DirectX::Mouse::ButtonStateTracker _mouseButtons;
 
 protected:
-	inline void UpdateCameraView(CameraPosition3D pos)
+	inline void UpdateCameraView(Vector3 pos)
 	{
-		_eye = std::move(Vector3(pos.data()));
+		_eye = std::move(pos);
 		_view = Matrix::CreateLookAt(_eye, target, up);
 	};
 

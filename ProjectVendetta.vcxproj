@@ -259,7 +259,9 @@
     <ClCompile Include="Source\pch.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Xbox-ATG-Samples\Media\Fonts\SegoeUI_18.spritefont" />
     <None Include=".gitignore" />
+    <None Include="Assets\SegoeUI_18.spritefont" />
     <None Include="cpp.hint" />
     <None Include="CppProperties.json" />
     <None Include="Game\mug.dae" />
